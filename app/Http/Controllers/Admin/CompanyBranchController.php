@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\HRM\Company;
-use App\Helpers\Transformers\CompanyBranchTransformer;
+use App\Helpers\Transformers\CompanyTransformer;
 use App\Http\Requests\StoreCompanyBranchRequest;
 use App\Models\HRM\CompanyBranch;
 
@@ -15,7 +15,7 @@ class CompanyBranchController extends Controller
     {
         $companyBranches = $company->branches;
 
-        $companyBranches = $companyBranches->transform(fn($q) => CompanyBranchTransformer::transform($q));
+        $companyBranches = $companyBranches->transform(fn($q) => CompanyTransformer::branch($q));
 
         return response()->json([
             'branches' => $companyBranches,
@@ -28,7 +28,7 @@ class CompanyBranchController extends Controller
 
         return response()->json([
             'message' => 'Company branch stored successfully',
-            'companyBranch' => CompanyBranchTransformer::transform($companyBranch),
+            'companyBranch' => CompanyTransformer::branch($companyBranch),
         ], 201);
     }
 
@@ -38,7 +38,7 @@ class CompanyBranchController extends Controller
 
         return response()->json([
             'message' => 'Company branch updated successfully',
-            'companyBranch' => CompanyBranchTransformer::transform($companyBranch),
+            'companyBranch' => CompanyTransformer::branch($companyBranch),
         ], 200);
     }
 }

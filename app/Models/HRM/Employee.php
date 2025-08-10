@@ -28,8 +28,6 @@ class Employee extends Model
         'zip_code',
         'country',
         'register_number',
-        'bank_name',
-        'bank_account_number',
         'department_id',
     ];
 
@@ -68,5 +66,10 @@ class Employee extends Model
     public function department()
     {
         return $this->belongsTo(Department::class, 'department_id', 'id');
+    }
+
+    public function bankAccount()
+    {
+        return $this->hasOne(EmployeeBank::class, 'employee_id', 'id');
     }
 }

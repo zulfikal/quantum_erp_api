@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
+            // $table->string('employee_id')->unique();
             $table->foreignId('user_id')->nullable()->references('id')->on('users');
             $table->foreignId('company_branch_id')->references('id')->on('company_branches')->cascadeOnDelete();
             $table->foreignId('designation_id')->references('id')->on('designations')->cascadeOnDelete();
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('email')->unique();
             $table->string('phone')->nullable();
+            $table->double('basic_salary')->default(0);
             $table->enum('gender', ['male', 'female']);
             $table->enum('marital_status', ['single', 'married', 'divorced']);
             $table->string('nationality');
@@ -31,8 +33,6 @@ return new class extends Migration
             $table->string('zip_code');
             $table->string('country');
             $table->string('register_number')->nullable();
-            $table->string('bank_name')->nullable();
-            $table->string('bank_account_number')->nullable();
             $table->timestamps();
         });
     }

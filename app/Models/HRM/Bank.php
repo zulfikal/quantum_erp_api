@@ -4,16 +4,15 @@ namespace App\Models\HRM;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Designation extends Model
+class Bank extends Model
 {
     protected $fillable = [
-        'company_id',
         'name',
         'code',
     ];
 
-    public function company()
+    public function employeeBank()
     {
-        return $this->belongsTo(Company::class);
+        return $this->hasOne(EmployeeBank::class);
     }
 }

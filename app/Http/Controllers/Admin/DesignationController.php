@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\HRM\Company;
-use App\Helpers\Transformers\DesignationTransformer;
+use App\Helpers\Transformers\CompanyTransformer;
 use App\Http\Requests\StoreDesignationRequest;
 use App\Models\HRM\Designation;
 
@@ -15,7 +14,7 @@ class DesignationController extends Controller
     {
         $designations = $company->designations;
 
-        $designations = $designations->transform(fn($q) => DesignationTransformer::transform($q));
+        $designations = $designations->transform(fn($q) => CompanyTransformer::designation($q));
 
         return response()->json([
             'designations' => $designations,
@@ -28,7 +27,7 @@ class DesignationController extends Controller
 
         return response()->json([
             'message' => 'Designation stored successfully',
-            'designation' => DesignationTransformer::transform($designation),
+            'designation' => CompanyTransformer::designation($designation),
         ], 201);
     }
 
@@ -38,7 +37,7 @@ class DesignationController extends Controller
 
         return response()->json([
             'message' => 'Designation updated successfully',
-            'designation' => DesignationTransformer::transform($designation),
+            'designation' => CompanyTransformer::designation($designation),
         ], 200);
     }
 }

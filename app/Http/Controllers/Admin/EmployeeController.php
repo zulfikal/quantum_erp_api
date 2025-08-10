@@ -25,7 +25,9 @@ class EmployeeController extends Controller
 
     public function store(StoreEmployeeRequest $request, CompanyBranch $companyBranch)
     {
-        $employee = $companyBranch->employees()->create($request->validated());
+        $employee = $companyBranch->employees()->create($request->validated()['employee']);
+
+        $employee->bankAccount()->create($request->validated()['bank']);
 
         return response()->json([
             'message' => 'Employee stored successfully',

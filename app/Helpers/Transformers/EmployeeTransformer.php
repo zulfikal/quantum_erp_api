@@ -3,6 +3,7 @@
 namespace App\Helpers\Transformers;
 
 use App\Models\HRM\Employee;
+use App\Helpers\Transformers\CompanyTransformer;
 
 class EmployeeTransformer
 {
@@ -10,13 +11,15 @@ class EmployeeTransformer
     {
         return [
             'id' => $employee->id,
-            'designation' => $employee->designation->name,
-            'company' => $employee->company->name,
-            'branch' => $employee->companyBranch->name,
+            'designation' => CompanyTransformer::designation($employee->designation),
+            'company' => CompanyTransformer::company($employee->company),
+            'branch' => CompanyTransformer::branch($employee->companyBranch),
+            'department' => CompanyTransformer::department($employee->department),
             'first_name' => $employee->first_name,
             'last_name' => $employee->last_name,
             'email' => $employee->email,
             'phone' => $employee->phone,
+            'basic_salary' => $employee->basic_salary,
             'gender' => $employee->gender,
             'marital_status' => $employee->marital_status,
             'nationality' => $employee->nationality,
@@ -27,8 +30,15 @@ class EmployeeTransformer
             'zip_code' => $employee->zip_code,
             'country' => $employee->country,
             'register_number' => $employee->register_number,
-            'bank_name' => $employee->bank_name,
-            'bank_account_number' => $employee->bank_account_number,
+            'bank_account' => [
+                'bank' => [
+                    'bank_id' => $employee->bankAccount->bank->id,
+                    'name' => $employee->bankAccount->bank->name,
+                    'code' => $employee->bankAccount->bank->code,
+                ],
+                'account_number' => $employee->bankAccount->account_number,
+                'holder_name' => $employee->bankAccount->holder_name,
+            ],
         ];
     }
 }
