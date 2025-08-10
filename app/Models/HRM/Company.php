@@ -21,4 +21,9 @@ class Company extends Model
     {
         return $this->hasMany(Designation::class);
     }
+
+    public function departments()
+    {
+        return $this->hasMany(Department::class);
+    }
 }

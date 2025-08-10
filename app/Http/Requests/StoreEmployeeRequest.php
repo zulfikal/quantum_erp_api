@@ -23,8 +23,9 @@ class StoreEmployeeRequest extends FormRequest
     {
         return [
             'user_id' => 'nullable|exists:users,id',
-            'company_branch_id' => 'required|exists:company_branches,id',
             'designation_id' => 'required|exists:designations,id',
+            'department_id' => 'required|exists:departments,id',
+            'nric_number' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email',

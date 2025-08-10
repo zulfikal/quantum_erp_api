@@ -13,6 +13,7 @@ class Employee extends Model
         'user_id',
         'branch_id',
         'designation_id',
+        'nric_number',
         'first_name',
         'last_name',
         'email',
@@ -29,6 +30,7 @@ class Employee extends Model
         'register_number',
         'bank_name',
         'bank_account_number',
+        'department_id',
     ];
 
     public function user()
@@ -61,5 +63,10 @@ class Employee extends Model
     public function salaryItems() : HasMany
     {
         return $this->hasMany(SalaryItem::class, 'employee_id', 'id');
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id', 'id');
     }
 }
