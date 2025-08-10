@@ -125,7 +125,6 @@ class DatabaseSeeder extends Seeder
         $code = str_replace(" ", "_", strtolower($name));
         $designation = $company->designations()->create([
             "name" => $name,
-            "status" => "active",
             "code" => $code
         ]);
 
