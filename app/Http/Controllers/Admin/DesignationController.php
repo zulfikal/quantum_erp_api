@@ -10,6 +10,11 @@ use App\Models\HRM\Designation;
 
 class DesignationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:super_admin');
+    }
+
     public function index(Company $company)
     {
         $designations = $company->designations;
@@ -23,7 +28,11 @@ class DesignationController extends Controller
 
     public function store(StoreDesignationRequest $request, Company $company)
     {
-        $designation = $company->designations()->create($request->validated());
+        $designation = $company->designations()->create([
+            'name' => $request->name,
+            'code' => str_replace(" ", "_", strtolower($request->name)),
+            'status' => $request->status,
+        ]);
 
         return response()->json([
             'message' => 'Designation stored successfully',
@@ -33,7 +42,11 @@ class DesignationController extends Controller
 
     public function update(StoreDesignationRequest $request, Designation $designation)
     {
-        $designation->update($request->validated());
+        $designation->update([
+            'name' => $request->name,
+            'code' => str_replace(" ", "_", strtolower($request->name)),
+            'status' => $request->status,
+        ]);
 
         return response()->json([
             'message' => 'Designation updated successfully',

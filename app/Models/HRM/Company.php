@@ -26,4 +26,9 @@ class Company extends Model
     {
         return $this->hasMany(Department::class);
     }
+
+    public function employees()
+    {
+        return $this->hasManyThrough(Employee::class, CompanyBranch::class, 'company_id', 'company_branch_id', 'id', 'id');
+    }
 }

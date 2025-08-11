@@ -11,7 +11,7 @@ class Employee extends Model
 {
     protected $fillable = [
         'user_id',
-        'branch_id',
+        'company_branch_id',
         'designation_id',
         'nric_number',
         'first_name',
@@ -36,7 +36,7 @@ class Employee extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-        public function company(): HasOneThrough
+    public function company(): HasOneThrough
     {
         return $this->hasOneThrough(
             Company::class,
@@ -58,7 +58,7 @@ class Employee extends Model
         return $this->belongsTo(Designation::class, 'designation_id', 'id');
     }
 
-    public function salaryItems() : HasMany
+    public function salaryItems(): HasMany
     {
         return $this->hasMany(SalaryItem::class, 'employee_id', 'id');
     }
@@ -71,5 +71,10 @@ class Employee extends Model
     public function bankAccount()
     {
         return $this->hasOne(EmployeeBank::class, 'employee_id', 'id');
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class, 'employee_id', 'id');
     }
 }

@@ -93,5 +93,13 @@ class RolePermissionSeeder extends Seeder
         // Grant all permissions to super_admin
         $all_permissions = Permission::all();
         $super_admin_role->syncPermissions($all_permissions);
+
+        // Grant permissions to admin
+        $admin_permissions = Permission::where('guard_name', 'web')->whereNotIn('id', [1,2,3,4,5])->get();
+        $admin_role->syncPermissions($admin_permissions);
+
+        // Grant permissions to employee
+        $employee_permissions = Permission::where('guard_name', 'web')->whereIn('id', [2,6,7])->get();
+        $employee_role->syncPermissions($employee_permissions);
     }
 }

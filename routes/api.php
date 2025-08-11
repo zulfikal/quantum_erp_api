@@ -10,6 +10,11 @@ use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\SalaryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\User\AttendanceController as UserAttendanceController;
+use App\Http\Controllers\User\BranchController;
+use App\Http\Controllers\User\DepartmentController;
+use App\Http\Controllers\User\DesignationController as UserDesignationController;
+use App\Http\Controllers\User\EmployeeController as UserEmployeeController;
 
 Route::get('/welcome', function () {
     return response()->json([
@@ -36,6 +41,7 @@ Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
 
         Route::get('/', [CompanyController::class, 'index']);
         Route::post('/', [CompanyController::class, 'store']);
+        Route::get('/{company}', [CompanyController::class, 'show']);
         Route::post('/{company}', [CompanyController::class, 'update']);
 
         Route::prefix('branches')->group(function () {
@@ -55,7 +61,7 @@ Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
 
         Route::prefix('employees')->group(function () {
             Route::get('/{companyBranch}', [EmployeeController::class, 'index']);
-            Route::post('/{companyBranch}', [EmployeeController::class, 'store']);
+            Route::post('/', [EmployeeController::class, 'store']);
             Route::post('/update/{employee}', [EmployeeController::class, 'update']);
         });
 
@@ -79,5 +85,43 @@ Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
                 Route::post('/update/{salaryProcess}', [SalaryController::class, 'salaryProcessUpdate']);
             });
         });
+    });
+});
+
+Route::prefix('application')->middleware('auth:sanctum')->group(function () {
+    Route::prefix('branches')->group(function () {
+        Route::get('/', [BranchController::class, 'index']);
+        Route::post('/', [BranchController::class, 'store']);
+        Route::get('/{companyBranch}', [BranchController::class, 'show']);
+        Route::post('/update/{companyBranch}', [BranchController::class, 'update']);
+    });
+
+    Route::prefix('departments')->group(function () {
+        Route::get('/', [DepartmentController::class, 'index']);
+        Route::post('/', [DepartmentController::class, 'store']);
+        Route::get('/{department}', [DepartmentController::class, 'show']);
+        Route::post('/update/{department}', [DepartmentController::class, 'update']);
+    });
+
+    Route::prefix('designations')->group(function () {
+        Route::get('/', [UserDesignationController::class, 'index']);
+        Route::post('/', [UserDesignationController::class, 'store']);
+        Route::get('/{designation}', [UserDesignationController::class, 'show']);
+        Route::post('/update/{designation}', [UserDesignationController::class, 'update']);
+    });
+
+    Route::prefix('employees')->group(function () {
+        Route::get('/', [UserEmployeeController::class, 'index']);
+        Route::post('/', [UserEmployeeController::class, 'store']);
+        Route::get('/{employee}', [UserEmployeeController::class, 'show']);
+        Route::post('/update/{employee}', [UserEmployeeController::class, 'update']);
+    });
+
+    Route::prefix('attendances')->group(function () {
+        Route::get('/', [UserAttendanceController::class, 'index']);
+        Route::post('/clock-in', [UserAttendanceController::class, 'clockIn']);
+        Route::post('/clock-out/{attendance}', [UserAttendanceController::class, 'clockOut']);
+        Route::post('/break-start/{attendance}', [UserAttendanceController::class, 'breakStart']);
+        Route::post('/break-end/{attendanceBreak}', [UserAttendanceController::class, 'breakEnd']);
     });
 });

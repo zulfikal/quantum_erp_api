@@ -15,6 +15,11 @@ use App\Helpers\Transformers\SalaryTransformer;
 
 class SalaryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:super_admin');
+    }
+
     public function salaryTypeIndex()
     {
         $salaryTypes = SalaryType::all();

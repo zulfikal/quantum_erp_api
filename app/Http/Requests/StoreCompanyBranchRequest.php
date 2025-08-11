@@ -23,8 +23,6 @@ class StoreCompanyBranchRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'company_id' => 'required|exists:companies,id',
-            'status' => 'required|in:active,inactive',
             'address_1' => 'required',
             'city' => 'required',
             'state' => 'required',

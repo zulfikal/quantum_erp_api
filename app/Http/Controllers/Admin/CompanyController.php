@@ -11,12 +11,31 @@ use App\Models\User;
 class CompanyController extends Controller
 {
 
+    public function __construct()
+    {
+        // $this->middleware('can:company.index')->only('index');
+        // $this->middleware('can:company.create')->only('store');
+        // $this->middleware('can:company.edit')->only('update');
+        // $this->middleware('can:company.show')->only('show');
+
+        $this->middleware('role:super_admin');
+    }
+
     public function index()
     {
         $companies = Company::all();
 
         return response()->json([
-            'companies' => $companies->transform(fn($q) => CompanyTransformer::transform($q)),
+            'companies' => $companies->transform(fn($q) => CompanyTransformer::company($q)),
+        ]);
+    }
+
+    public function show(Company $company)
+    {
+        return response()->json([
+            'company' => CompanyTransformer::company($company),
+            'branches' => $company->branches->transform(fn($q) => CompanyTransformer::branch($q)),
+            'designations' => $company->designations->transform(fn($q) => CompanyTransformer::designation($q)),
         ]);
     }
 
@@ -26,7 +45,7 @@ class CompanyController extends Controller
 
         return response()->json([
             'message' => 'Company created successfully',
-            'company' => CompanyTransformer::transform($company),
+            'company' => CompanyTransformer::company($company),
         ], 201);
     }
 
@@ -36,20 +55,7 @@ class CompanyController extends Controller
 
         return response()->json([
             'message' => 'Company updated successfully',
-            'company' => CompanyTransformer::transform($company),
+            'company' => CompanyTransformer::company($company),
         ], 200);
-    }
-
-    public function createuser()
-    {
-        User::create([
-            'name' => 'Super Admin',
-            'email' => 'superadmin@quantumhrm.com',
-            'password' => bcrypt('password'),
-        ]);
-
-        return response()->json([
-            'message' => 'User created successfully',
-        ], 201);
     }
 }

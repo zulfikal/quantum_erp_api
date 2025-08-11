@@ -7,6 +7,7 @@ use App\Models\HRM\Company;
 use App\Models\Salary\SalaryType;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -49,18 +50,18 @@ class DatabaseSeeder extends Seeder
             ["name" => "STANDARD CHARTERED BANK MALAYSIA BERHAD", "code" => "SCBLMYKX"],
             ["name" => "SUMITOMO MITSUI BANKING CORP MSIA BHD", "code" => "SMBCMYKL"],
             ["name" => "UNITED OVERSEAS BANK MALAYSIA BERHAD", "code" => "UOVBMYKL"],
-            ["name" => "THE ROYAL BANK OF SCOTLAND BERHAD","code" =>  "ABNAMYKL"],
-            ["name" => "AFFIN ISLAMIC BANK BERHAD","code" =>  "AIBBMYKL"],
-            ["name" => "AMBANK ISLAMIC BERHAD","code" =>  "AISLMYKL"],
-            ["name" => "ALLIANCE ISLAMIC BANK BERHAD","code" =>  "ALSRMYKL"],
-            ["name" => "AMINVESTMENT BANK BHD - SPI","code" =>  "AMMBMY21"],
-            ["name" => "AMINVESTMENT BANK BERHAD","code" =>  "AMMBMYKL"],
-            ["name" => "BURSA MALAYSIA DERIVATIVES CLEARING BHD","code" =>  "BMDRMYK1"],
-            ["name" => "BURSA MALAYSIA SECURITIES BERHAD","code" =>  "BMSCMYK1"],
-            ["name" => "BANK NEGARA MALAYSIA","code" =>  "BNMAMYKL"],
-            ["name" => "BNP PARIBAS MALAYSIA BERHAD - SPI","code" =>  "BNPAMY21"],
-            ["name" => "MUFG BANK (MALAYSIA) BERHAD - SPI","code" =>  "BOTKMY21"],
-            ["name" => "BANK SIMPANAN NASIONAL - SPI","code" =>  "BSNAMY21"],
+            ["name" => "THE ROYAL BANK OF SCOTLAND BERHAD", "code" =>  "ABNAMYKL"],
+            ["name" => "AFFIN ISLAMIC BANK BERHAD", "code" =>  "AIBBMYKL"],
+            ["name" => "AMBANK ISLAMIC BERHAD", "code" =>  "AISLMYKL"],
+            ["name" => "ALLIANCE ISLAMIC BANK BERHAD", "code" =>  "ALSRMYKL"],
+            ["name" => "AMINVESTMENT BANK BHD - SPI", "code" =>  "AMMBMY21"],
+            ["name" => "AMINVESTMENT BANK BERHAD", "code" =>  "AMMBMYKL"],
+            ["name" => "BURSA MALAYSIA DERIVATIVES CLEARING BHD", "code" =>  "BMDRMYK1"],
+            ["name" => "BURSA MALAYSIA SECURITIES BERHAD", "code" =>  "BMSCMYK1"],
+            ["name" => "BANK NEGARA MALAYSIA", "code" =>  "BNMAMYKL"],
+            ["name" => "BNP PARIBAS MALAYSIA BERHAD - SPI", "code" =>  "BNPAMY21"],
+            ["name" => "MUFG BANK (MALAYSIA) BERHAD - SPI", "code" =>  "BOTKMY21"],
+            ["name" => "BANK SIMPANAN NASIONAL - SPI", "code" =>  "BSNAMY21"],
             ["name" => "CAGAMAS BERHAD - SPI", "code" => "CAGAMY21"],
             ["name" => "CAGAMAS BERHAD", "code" => "CAGAMYKL"],
             ["name" => "CITIBANK BERHAD - SPI", "code" => "CITIMYM1"],
@@ -115,13 +116,13 @@ class DatabaseSeeder extends Seeder
             "status" => "active"
         ]);
 
-        //Create departments
-        $department = $company->departments()->create([
-            "name" => "IT",
+        //Create admin department
+        $adminDepartment = $company->departments()->create([
+            "name" => "Admin",
         ]);
 
         //Create designations
-        $name = "Software Engineer";
+        $name = "System Admin";
         $code = str_replace(" ", "_", strtolower($name));
         $designation = $company->designations()->create([
             "name" => $name,
@@ -131,51 +132,72 @@ class DatabaseSeeder extends Seeder
         //Create company branches
         $companyBranch = $company->branches()->create([
             "name" => "Main Branch",
-            "address_1" => "Main Branch Address",
+            "address_1" => "Address",
             "company_id" => $company->id,
-            "city" => "Temerloh",
-            "state" => "Pahang",
-            "zip_code" => "28000",
+            "city" => "Kuala Lumpur",
+            "state" => "Selangor",
+            "zip_code" => "00000",
             "country" => "Malaysia",
             "phone" => "+60123456789"
         ]);
 
-        //Create employees
-        $employee = $companyBranch->employees()->create([
+        //Create admin employees
+        $companyAdmin = $companyBranch->employees()->create([
             "user_id" => null,
             "designation_id" => $designation->id,
-            "department_id" => $department->id,
-            "nric_number" => "1234567890",
-            "first_name" => "John",
-            "last_name" => "Doe 1",
-            "email" => "john.doe1@example.com",
-            "phone" => "1234567890",
-            "basic_salary" => 2000.50,
+            "department_id" => $adminDepartment->id,
+            "nric_number" => "000000000000",
+            "first_name" => "System",
+            "last_name" => "Admin",
+            "email" => "admin@example.com",
+            "phone" => "000000000000",
+            "basic_salary" => 0,
             "gender" => "male",
             "marital_status" => "single",
             "nationality" => "Malaysia",
-            "religion" => "Islam",
-            "address_1" => "123 Main St",
-            "city" => "New York",
-            "state" => "New York",
-            "zip_code" => "10001",
+            "religion" => "Other",
+            "address_1" => "Address",
+            "city" => "Kuala Lumpur",
+            "state" => "Selangor",
+            "zip_code" => "00000",
             "country" => "Malaysia",
-            "register_number" => "1234567890",
+            "register_number" => "0000000000",
+        ]);
+
+        //Create employees
+        $companyEmployee = $companyBranch->employees()->create([
+            "user_id" => null,
+            "designation_id" => $designation->id,
+            "department_id" => $adminDepartment->id,
+            "nric_number" => "000000000000",
+            "first_name" => "Employee",
+            "last_name" => "One",
+            "email" => "employee@example.com",
+            "phone" => "000000000000",
+            "basic_salary" => 0,
+            "gender" => "male",
+            "marital_status" => "single",
+            "nationality" => "Malaysia",
+            "religion" => "Other",
+            "address_1" => "Address",
+            "city" => "Kuala Lumpur",
+            "state" => "Selangor",
+            "zip_code" => "00000",
+            "country" => "Malaysia",
+            "register_number" => "0000000000",
         ]);
 
         //Create employee bank account
-        $employee->bankAccount()->create([
+        $companyAdmin->bankAccount()->create([
             "bank_id" => 21,
-            "account_number" => "1234567890",
-            "holder_name" => $employee->first_name . " " . $employee->last_name
+            "account_number" => "000000000000",
+            "holder_name" => $companyAdmin->first_name . " " . $companyAdmin->last_name
         ]);
-        
 
-        // Create super admin
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@quantum.com',
-            'password' => bcrypt('password'),
+        $companyEmployee->bankAccount()->create([
+            "bank_id" => 21,
+            "account_number" => "000000000000",
+            "holder_name" => $companyEmployee->first_name . " " . $companyEmployee->last_name
         ]);
 
         // Create salary types
@@ -185,5 +207,35 @@ class DatabaseSeeder extends Seeder
         SalaryType::create(['name' => 'Company Contribution', 'type' => 'company_contribution']);
 
         $this->call(RolePermissionSeeder::class);
+
+        $super_admin_role = Role::where('name', 'super_admin')->first();
+        $superAdmin = User::create([
+            'name' => 'Super Admin',
+            'email' => 'admin@quantum.com',
+            'password' => bcrypt('password'),
+        ]);
+        $superAdmin->assignRole($super_admin_role);
+
+        $admin_role = Role::where('name', 'admin')->first();
+        $admin = User::create([
+            'name' => 'System Admin',
+            'email' => 'admin@company.com',
+            'password' => bcrypt('password'),
+        ]);
+        $admin->assignRole($admin_role);
+        $companyAdmin->update([
+            'user_id' => $admin->id,
+        ]);
+
+        $employee_role = Role::where('name', 'employee')->first();
+        $employee = User::create([
+            'name' => 'Employee',
+            'email' => 'employee@company.com',
+            'password' => bcrypt('password'),
+        ]);
+        $employee->assignRole($employee_role);
+        $companyEmployee->update([
+            'user_id' => $employee->id,
+        ]);
     }
 }

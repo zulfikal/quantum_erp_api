@@ -11,6 +11,11 @@ use App\Models\HRM\CompanyBranch;
 
 class CompanyBranchController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:super_admin');
+    }
+    
     public function index(Company $company)
     {
         $companyBranches = $company->branches;
