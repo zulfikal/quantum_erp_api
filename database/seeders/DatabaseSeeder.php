@@ -183,5 +183,7 @@ class DatabaseSeeder extends Seeder
         SalaryType::create(['name' => 'Deduction', 'type' => 'deduction']);
         SalaryType::create(['name' => 'Overtime', 'type' => 'allowance']);
         SalaryType::create(['name' => 'Company Contribution', 'type' => 'company_contribution']);
+
+        $this->call(RolePermissionSeeder::class);
     }
 }

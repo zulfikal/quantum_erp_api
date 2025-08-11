@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\DesignationController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\SalaryController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AttendanceController;
 
 Route::get('/welcome', function () {
     return response()->json([
@@ -17,6 +18,17 @@ Route::get('/welcome', function () {
 });
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+Route::prefix('attendances')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [AttendanceController::class, 'index']);
+    Route::post('/clock-in', [AttendanceController::class, 'clockIn']);
+    Route::post('/clock-out', [AttendanceController::class, 'clockOut']);
+    Route::post('/break-start/{attendance}', [AttendanceController::class, 'breakStart']);
+    Route::post('/break-end/{attendance}', [AttendanceController::class, 'breakEnd']);
+    Route::post('/approve/{attendance}', [AttendanceController::class, 'approve']);
+    Route::post('/reject/{attendance}', [AttendanceController::class, 'reject']);
+});
 
 Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
 

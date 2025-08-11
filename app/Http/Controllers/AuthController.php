@@ -53,4 +53,13 @@ class AuthController extends Controller
             // 'roles' => $user->roles->transform(fn($q) => ['name' => $q->name, 'full_name' => $q->full_name])
         ]);
     }
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Logged out successfully',
+        ], 200);
+    }
 }

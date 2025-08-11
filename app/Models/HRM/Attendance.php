@@ -1,0 +1,84 @@
+<?php
+
+namespace App\Models\HRM;
+
+use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Attendance extends Model
+{
+    use SoftDeletes;
+
+    protected $fillable = [
+        'employee_id','date','shift_id',
+        'clock_in_at','clock_out_at',
+        'clock_in_method','clock_out_method',
+        'clock_in_lat','clock_in_lng',
+        'status','worked_seconds','total_break_seconds',
+        'device_id','notes','approved_by','approved_at','ip_address','created_by','updated_by',
+    ];
+
+    protected $casts = [
+        'date' => 'date',
+        'clock_in_at' => 'datetime',
+        'clock_out_at' => 'datetime',
+        'approved_at' => 'datetime',
+    ];
+
+    // Relationship
+    public function employee() {
+        return $this->belongsTo(Employee::class);
+    }
+
+    public function breaks() {
+        return $this->hasMany(AttendanceBreak::class);
+    }
+
+    public function approver() {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    // Scopes
+    public function scopeForEmployee($q, $employeeId) {
+        return $q->where('employee_id', $employeeId);
+    }
+
+    public function scopeBetweenDates($q, $from, $to) {
+        return $q->whereBetween('date', [$from, $to]);
+    }
+
+    public function scopePresent($q) {
+        return $q->where('status', 'present');
+    }
+
+    public function scopeAbsent($q) {
+        return $q->where('status', 'absent');
+    }
+
+    // Helpers
+    public function computeWorkedSeconds()
+    {
+        if (! $this->clock_in_at || ! $this->clock_out_at) return 0;
+
+        $seconds = $this->clock_in_at->diffInSeconds($this->clock_out_at);
+
+        // subtract breaks if stored
+        $breakSeconds = $this->breaks()->sum('duration_seconds') ?: $this->total_break_seconds ?? 0;
+
+        return max(0, $seconds - $breakSeconds);
+    }
+
+    public function updateWorkedTimes()
+    {
+        $this->total_break_seconds = $this->breaks()->sum('duration_seconds') ?: $this->total_break_seconds;
+        $this->worked_seconds = $this->computeWorkedSeconds();
+        $this->saveQuietly(); // avoid recursion if you have observers
+    }
+
+    // Accessor example: human readable hours
+    public function getWorkedHoursAttribute()
+    {
+        return round(($this->worked_seconds ?? 0) / 3600, 2);
+    }
+}
