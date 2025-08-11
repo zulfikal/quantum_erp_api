@@ -42,6 +42,10 @@ class AuthController extends Controller
         //     );
         // }
 
+        $user->load('roles');
+
+        $permissions = $user->getAllPermissions()->transform(fn($q) => ['name' => $q->name, 'display_name' => $q->display_name]);
+
         return response()->json([
             'plainTextToken' => $token->plainTextToken,
             'info' => [
@@ -50,7 +54,8 @@ class AuthController extends Controller
                 'user_name' => strtoupper($user->name),
                 'device' => $request->device_name
             ],
-            // 'roles' => $user->roles->transform(fn($q) => ['name' => $q->name, 'full_name' => $q->full_name])
+            'roles' => $user->roles->transform(fn($q) => ['name' => $q->name, 'display_name' => $q->display_name]),
+            'permissions' => $permissions
         ]);
     }
 
