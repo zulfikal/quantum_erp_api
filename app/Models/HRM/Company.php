@@ -3,6 +3,7 @@
 namespace App\Models\HRM;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Company extends Model
 {
@@ -30,5 +31,18 @@ class Company extends Model
     public function employees()
     {
         return $this->hasManyThrough(Employee::class, CompanyBranch::class, 'company_id', 'company_branch_id', 'id', 'id');
+    }
+
+    public function leaves()
+    {
+        return $this->hasManyThrough(
+            Leave::class,
+            CompanyBranch::class,
+            'company_id', // Foreign key on company_branches table
+            'employee_id', // Foreign key on leaves table
+            'id', // Local key on companies table
+            'id' // Local key on company_branches table (to be used with employees.company_branch_id)
+        )->join('employees', 'leaves.employee_id', '=', 'employees.id')
+            ->where('employees.company_branch_id', '=', \DB::raw('company_branches.id'));
     }
 }

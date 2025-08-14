@@ -9,27 +9,71 @@ use App\Helpers\Transformers\AttendanceTransformer;
 use App\Models\HRM\AttendanceBreak;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Models\HRM\Company;
 
 class AttendanceController extends Controller
 {
+    private Company $company;
+
     public function __construct()
     {
-        $this->middleware('role:employee');
+        $this->middleware('role:employee|admin');
+
+        $this->middleware(function ($request, $next) {
+            $this->company = auth()->user()->employee->company;
+            if (is_null($this->company)) {
+                return response()->json(['message' => 'User is not associated with a company.'], 403);
+            }
+            return $next($request);
+        });
     }
 
     public function index(Request $request)
     {
-        $query = Attendance::with(['employee.companyBranch.company', 'approver'])
-            ->where('employee_id', auth()->user()->employee->id)
-            ->when($request->from && $request->to, fn($q) => $q->whereBetween('date', [$request->from, $request->to]))
-            ->orderByDesc('date')
-            ->paginate(20);
+        if (auth()->user()->hasRole('employee')) {
+            $title = 'My Attendances';
+            $query = Attendance::with(['employee.companyBranch.company', 'approver'])
+                ->where('employee_id', auth()->user()->employee->id)
+                ->when($request->from && $request->to, fn($q) => $q->whereBetween('date', [$request->from, $request->to]))
+                ->orderByDesc('date')
+                ->paginate(20);
+        }
+
+        if (auth()->user()->hasRole('admin')) {
+            $title = 'Attendances';
+            $query = Attendance::with(['employee.companyBranch.company', 'approver'])
+                ->whereHas('employee.companyBranch.company', fn($q) => $q->where('company_id', $this->company->id))
+                ->when($request->from && $request->to, fn($q) => $q->whereBetween('date', [$request->from, $request->to]))
+                ->orderByDesc('date')
+                ->paginate(20);
+        }
 
         $transformed = $query->through(function ($attendance) {
             return AttendanceTransformer::attendance($attendance);
         });
 
-        return response()->json($transformed);
+        return response()->json([
+            'title' => $title,
+            'data' => $transformed
+        ]);
+    }
+
+    public function show(Attendance $attendance)
+    {
+        if (auth()->user()->hasRole('employee') && $attendance->employee_id != auth()->user()->employee->id) {
+            return response()->json(['message' => 'This operation is not allowed'], 403);
+        }
+
+        if (auth()->user()->hasRole('admin') && $attendance->employee->companyBranch->company_id != $this->company->id) {
+            return response()->json(['message' => 'This operation is not allowed'], 403);
+        }
+
+        return response()->json([
+            'attendance' => AttendanceTransformer::attendance($attendance),
+            'breaks' => $attendance->breaks->transform(function ($break) {
+                return AttendanceTransformer::attendanceBreak($break);
+            })
+        ]);
     }
 
     public function clockIn(Request $request)

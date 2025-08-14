@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamp('clock_in_at')->nullable();
             $table->timestamp('clock_out_at')->nullable();
 
-            $table->enum('clock_in_method', ['web','mobile','biometric','kiosk','manual'])->default('manual');
+            $table->enum('clock_in_method', ['web','mobile','biometric','kiosk','manual'])->nullable();
             $table->enum('clock_out_method', ['web','mobile','biometric','kiosk','manual'])->nullable();
 
             // store lat/lng or use POINT if using MySQL spatial types

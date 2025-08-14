@@ -4,12 +4,9 @@ namespace App\Models\HRM;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Attendance extends Model
 {
-    use SoftDeletes;
-
     protected $fillable = [
         'employee_id','date','shift_id',
         'clock_in_at','clock_out_at',

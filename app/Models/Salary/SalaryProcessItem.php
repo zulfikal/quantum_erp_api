@@ -2,15 +2,24 @@
 
 namespace App\Models\Salary;
 
+use App\Models\HRM\Employee;
 use Illuminate\Database\Eloquent\Model;
 
 class SalaryProcessItem extends Model
 {
     protected $fillable = [
-        'salary_process_id',
         'employee_id',
-        'salary_type_id',
-        'amount',
+        'salary_process_id',
+        'date',
+        'basic_amount',
+        'allowance_amount',
+        'deduction_amount',
+        'company_contribution_amount',
+        'total_amount',
+    ];
+
+    protected $casts = [
+        'date' => 'datetime',
     ];
     
     public function salaryProcess()
@@ -23,8 +32,8 @@ class SalaryProcessItem extends Model
         return $this->belongsTo(Employee::class, 'employee_id', 'id');
     }
 
-    public function salaryType()
+    public function salaryProcessItemDetails()
     {
-        return $this->belongsTo(SalaryType::class, 'salary_type_id', 'id');
+        return $this->hasMany(SalaryProcessItemDetail::class);
     }
 }

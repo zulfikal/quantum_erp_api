@@ -2,6 +2,7 @@
 
 namespace App\Models\HRM;
 
+use App\Models\Salary\SalaryProcess;
 use Illuminate\Database\Eloquent\Model;
 
 class CompanyBranch extends Model

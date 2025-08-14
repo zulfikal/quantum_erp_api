@@ -14,9 +14,13 @@ return new class extends Migration
         Schema::create('salary_process_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('salary_process_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('employee_id')->constrained()->cascadeOnDelete();            
-            $table->foreignId('salary_type_id')->constrained()->cascadeOnDelete();
-            $table->double('amount');
+            $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
+            $table->timestamp('date');
+            $table->double('basic_amount')->default(0);
+            $table->double('allowance_amount')->default(0);
+            $table->double('deduction_amount')->default(0);
+            $table->double('company_contribution_amount')->default(0);
+            $table->double('total_amount')->default(0);
             $table->timestamps();
         });
     }

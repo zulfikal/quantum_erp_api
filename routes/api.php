@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\CompanyController;
@@ -10,15 +9,23 @@ use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\SalaryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\BankController;
 use App\Http\Controllers\User\AttendanceController as UserAttendanceController;
 use App\Http\Controllers\User\BranchController;
 use App\Http\Controllers\User\DepartmentController;
 use App\Http\Controllers\User\DesignationController as UserDesignationController;
 use App\Http\Controllers\User\EmployeeController as UserEmployeeController;
+use App\Http\Controllers\User\LeaveRequestApprovalController;
+use App\Http\Controllers\User\LeaveRequestController;
+use App\Http\Controllers\User\LeaveTypeController;
+use App\Http\Controllers\User\PayrollController;
+use App\Http\Controllers\User\SalaryController as UserSalaryController;
+use App\Http\Controllers\User\SalaryProcessController;
+use App\Http\Controllers\User\SalaryTypeController;
 
 Route::get('/welcome', function () {
     return response()->json([
-        'message' => 'Welcome to Quantum HRM API',
+        'message' => 'Welcome to Quantum ERP API',
     ], 200);
 });
 
@@ -89,6 +96,10 @@ Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
 });
 
 Route::prefix('application')->middleware('auth:sanctum')->group(function () {
+    Route::prefix('banks')->middleware('auth:sanctum')->group(function () {
+        Route::get('/', [BankController::class, 'index']);
+    });
+
     Route::prefix('branches')->group(function () {
         Route::get('/', [BranchController::class, 'index']);
         Route::post('/', [BranchController::class, 'store']);
@@ -119,9 +130,62 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
 
     Route::prefix('attendances')->group(function () {
         Route::get('/', [UserAttendanceController::class, 'index']);
+        Route::get('/{attendance}', [UserAttendanceController::class, 'show']);
         Route::post('/clock-in', [UserAttendanceController::class, 'clockIn']);
         Route::post('/clock-out/{attendance}', [UserAttendanceController::class, 'clockOut']);
         Route::post('/break-start/{attendance}', [UserAttendanceController::class, 'breakStart']);
         Route::post('/break-end/{attendanceBreak}', [UserAttendanceController::class, 'breakEnd']);
+    });
+
+    Route::prefix('salaries')->group(function () {
+        Route::get('/types', [SalaryTypeController::class, 'index']);
+
+        Route::get('/show/{employee}', [UserSalaryController::class, 'salaryShow']);
+
+        Route::prefix('items')->group(function () {
+            Route::get('/', [UserSalaryController::class, 'salaryItemIndex']);
+            Route::post('/{employee}', [UserSalaryController::class, 'salaryItemStore']);
+            Route::post('/update/{salaryItem}', [UserSalaryController::class, 'salaryItemUpdate']);
+        });
+
+        Route::prefix('processes')->group(function () {
+            Route::get('/', [SalaryProcessController::class, 'index']);
+            Route::post('/{companyBranch}', [SalaryProcessController::class, 'store']);
+        });
+    });
+
+    Route::prefix('payrolls')->group(function () {
+        Route::get('/', [PayrollController::class, 'index']);
+        Route::get('/{salaryProcessItem}', [PayrollController::class, 'show']);
+    });
+
+    Route::prefix('leaves')->group(function () {
+        Route::prefix('types')->group(function () {
+            Route::get('/', [LeaveTypeController::class, 'index']);
+            Route::post('/', [LeaveTypeController::class, 'store']);
+            Route::get('/{leaveType}', [LeaveTypeController::class, 'show']);
+            Route::post('/update/{leaveType}', [LeaveTypeController::class, 'update']);
+        });
+
+        Route::prefix('requests')->group(function () {
+            Route::get('/', [LeaveRequestController::class, 'index']);
+            Route::post('/', [LeaveRequestController::class, 'store']);
+            Route::get('/{leave}', [LeaveRequestController::class, 'show']);
+            Route::post('/update/{leave}', [LeaveRequestController::class, 'updateLeave']);
+            Route::post('/delete/{leave}', [LeaveRequestController::class, 'deleteLeave']);
+
+            Route::prefix('dates')->group(function () {
+                Route::post('/{leave}', [LeaveRequestController::class, 'storeLeaveDate']);
+                Route::post('/update/{leaveDate}', [LeaveRequestController::class, 'updateLeaveDate']);
+                Route::post('/delete/{leaveDate}', [LeaveRequestController::class, 'deleteLeaveDate']);
+            });
+        });
+
+        Route::prefix('approval')->group(function () {
+            Route::get('/', [LeaveRequestApprovalController::class, 'index']);
+            Route::get('/{leave}', [LeaveRequestApprovalController::class, 'show']);
+            Route::post('/{leave}', [LeaveRequestApprovalController::class, 'approval']);
+            Route::post('/cancel/{leave}', [LeaveRequestApprovalController::class, 'cancel']);
+        });
     });
 });

@@ -56,6 +56,7 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'leave.create', 'display_name' => 'Leave Create', 'guard_name' => 'web'],
             ['name' => 'leave.edit', 'display_name' => 'Leave Edit', 'guard_name' => 'web'],
             ['name' => 'leave.destroy', 'display_name' => 'Leave Destroy', 'guard_name' => 'web'],
+            ['name' => 'leave.approval', 'display_name' => 'Leave Approval', 'guard_name' => 'web'],
             ['name' => 'salary.index', 'display_name' => 'Salary Index', 'guard_name' => 'web'],
             ['name' => 'salary.show', 'display_name' => 'Salary Show', 'guard_name' => 'web'],
             ['name' => 'salary.create', 'display_name' => 'Salary Create', 'guard_name' => 'web'],
@@ -86,6 +87,16 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'salary_process.create', 'display_name' => 'Salary Process Create', 'guard_name' => 'web'],
             ['name' => 'salary_process.edit', 'display_name' => 'Salary Process Edit', 'guard_name' => 'web'],
             ['name' => 'salary_process.destroy', 'display_name' => 'Salary Process Destroy', 'guard_name' => 'web'],
+            ['name' => 'salary_view.index', 'display_name' => 'Salary View Index', 'guard_name' => 'web'],
+            ['name' => 'salary_view.show', 'display_name' => 'Salary View Show', 'guard_name' => 'web'],
+            ['name' => 'claim.index', 'display_name' => 'Claim Index', 'guard_name' => 'web'],
+            ['name' => 'claim.show', 'display_name' => 'Claim Show', 'guard_name' => 'web'],
+            ['name' => 'claim.create', 'display_name' => 'Claim Create', 'guard_name' => 'web'],
+            ['name' => 'claim.edit', 'display_name' => 'Claim Edit', 'guard_name' => 'web'],
+            ['name' => 'claim.destroy', 'display_name' => 'Claim Destroy', 'guard_name' => 'web'],
+            ['name' => 'claim_approval.index', 'display_name' => 'Claim Approval Index', 'guard_name' => 'web'],
+            ['name' => 'claim_approval.show', 'display_name' => 'Claim Approval Show', 'guard_name' => 'web'],
+            ['name' => 'claim_approval.approval', 'display_name' => 'Claim Approval Action', 'guard_name' => 'web'],
         ];
 
         Permission::insert($permissions);
@@ -95,11 +106,18 @@ class RolePermissionSeeder extends Seeder
         $super_admin_role->syncPermissions($all_permissions);
 
         // Grant permissions to admin
-        $admin_permissions = Permission::where('guard_name', 'web')->whereNotIn('id', [1,2,3,4,5])->get();
+        $admin_permissions = Permission::whereNotIn('id', [1, 2, 3, 4, 5])->get();
         $admin_role->syncPermissions($admin_permissions);
 
         // Grant permissions to employee
-        $employee_permissions = Permission::where('guard_name', 'web')->whereIn('id', [2,6,7])->get();
+        $employee_permissions = Permission::whereIn('name', [
+            'company.show', 'company_branch.show', 
+            'employee.show', 'salary_view.index', 
+            'salary_view.show','leave.index', 
+            'leave.show', 'leave.create', 
+            'leave.edit', 'leave.destroy',
+            'claim.index', 'claim.show', 'claim.create', 'claim.edit', 'claim.destroy',
+        ])->get();
         $employee_role->syncPermissions($employee_permissions);
     }
 }

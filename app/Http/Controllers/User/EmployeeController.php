@@ -77,6 +77,12 @@ class EmployeeController extends Controller
             ], 403);
         }
 
+        if(auth()->user()->hasRole('employee') && $employee->id !== auth()->user()->employee->id) {
+            return response()->json([
+                'message' => 'This operation is not authorized',
+            ], 403);
+        }
+
         return response()->json([
             'employee' => EmployeeTransformer::transform($employee),
         ], 200);

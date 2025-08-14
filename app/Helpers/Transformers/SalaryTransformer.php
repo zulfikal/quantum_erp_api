@@ -4,6 +4,8 @@ namespace App\Helpers\Transformers;
 
 use App\Models\Salary\SalaryType;
 use App\Models\Salary\SalaryItem;
+use App\Models\Salary\SalaryProcess;
+use App\Helpers\Transformers\CompanyTransformer;
 
 class SalaryTransformer
 {
@@ -23,6 +25,17 @@ class SalaryTransformer
             'amount' => $salaryItem->amount,
             'status' => $salaryItem->status,
             'salary_type' => self::salaryType($salaryItem->salaryType),
+        ];
+    }
+
+    public static function salaryProcess(SalaryProcess $salaryProcess)
+    {
+        return [
+            'id' => $salaryProcess->id,
+            'company_branch' => CompanyTransformer::branch($salaryProcess->companyBranch),
+            'year' => $salaryProcess->year,
+            'month' => $salaryProcess->month,
+            'status' => $salaryProcess->status,
         ];
     }
 }
