@@ -30,7 +30,7 @@ class EmployeeController extends Controller
 
     public function index()
     {
-        $employees = $this->company->employees;
+        $employees = $this->company->employees()->with('designation', 'companyBranch', 'company', 'department', 'bankAccount.bank')->get();
 
         $employees = $employees->transform(fn($q) => EmployeeTransformer::transform($q));
 
