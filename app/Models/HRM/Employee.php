@@ -155,6 +155,11 @@ class Employee extends Model
         return $this->hasMany(Leave::class, 'employee_id', 'id');
     }
 
+    public function claims()
+    {
+        return $this->hasMany(Claim::class, 'employee_id', 'id');
+    }
+
     public function getFullNameAttribute()
     {
         return $this->first_name . ' ' . $this->last_name;

@@ -12,6 +12,9 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\User\AttendanceController as UserAttendanceController;
 use App\Http\Controllers\User\BranchController;
+use App\Http\Controllers\User\ClaimApprovalController;
+use App\Http\Controllers\User\ClaimController;
+use App\Http\Controllers\User\ClaimTypeController;
 use App\Http\Controllers\User\DepartmentController;
 use App\Http\Controllers\User\DesignationController as UserDesignationController;
 use App\Http\Controllers\User\EmployeeController as UserEmployeeController;
@@ -186,6 +189,26 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
             Route::get('/{leave}', [LeaveRequestApprovalController::class, 'show']);
             Route::post('/{leave}', [LeaveRequestApprovalController::class, 'approval']);
             Route::post('/cancel/{leave}', [LeaveRequestApprovalController::class, 'cancel']);
+        });
+    });
+
+    Route::prefix('claims')->group(function () {
+        Route::prefix('types')->group(function () {
+            Route::get('/', [ClaimTypeController::class, 'index']);
+        });
+
+        Route::prefix('requests')->group(function () {
+            Route::get('/', [ClaimController::class, 'index']);
+            Route::post('/', [ClaimController::class, 'store']);
+            Route::get('/{claim}', [ClaimController::class, 'show']);
+            Route::post('/update/{claim}', [ClaimController::class, 'update']);
+            Route::post('/delete/{claim}', [ClaimController::class, 'destroy']);
+        });
+
+        Route::prefix('approval')->group(function () {
+            Route::get('/', [ClaimApprovalController::class, 'index']);
+            Route::get('/{claim}', [ClaimApprovalController::class, 'show']);
+            Route::post('/{claim}', [ClaimApprovalController::class, 'approval']);
         });
     });
 });

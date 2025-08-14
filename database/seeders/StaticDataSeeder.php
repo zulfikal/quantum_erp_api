@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\HRM\Bank;
+use App\Models\HRM\ClaimType;
 use App\Models\HRM\LeaveType;
 use App\Models\Salary\SalaryType;
 use Illuminate\Database\Seeder;
@@ -123,6 +124,18 @@ class StaticDataSeeder extends Seeder
             ["name" => "Deduction", "type" => "deduction"],
             ["name" => "Overtime", "type" => "allowance"],
             ["name" => "Company Contribution", "type" => "company_contribution"],
+        ]);
+
+        //Create claim types
+        ClaimType::insert([
+            ["name" => "Travel Expenses"],
+            ["name" => "Office Supplies"],
+            ["name" => "Equipment"],
+            ["name" => "Training"],
+            ["name" => "Medical"],
+            ["name" => "Entertainment"],
+            ["name" => "Software"],
+            ["name" => "Others"],
         ]);
     }
 }
