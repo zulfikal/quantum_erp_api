@@ -75,9 +75,27 @@ class ClaimController extends Controller
 
     public function store(StoreClaimRequest $request)
     {
+        if (auth()->user()->hasRole('admin')) {
+            if ($request->employee_id) {
+                if ($request->employee_id->companyBranch->company_id !== $this->company->id) {
+                    return response()->json([
+                        'message' => 'You are not authorized to create this claim',
+                    ], 401);
+                }
+            }
+        }
+
+        if(auth()->user()->hasRole('employee')) {
+            if($request->employee_id && $request->employee_id !== auth()->user()->employee->id) {
+                return response()->json([
+                    'message' => 'You are not authorized to create this claim',
+                ], 401);
+            }
+        }
+
         $claim = Claim::create([
             'claim_type_id' => $request->claim_type_id,
-            'employee_id' => $request->employee_id,
+            'employee_id' => $request->employee_id ?? auth()->user()->employee->id,
             'amount' => $request->amount,
             'request_date' => now(),
             'description' => $request->description,
@@ -98,7 +116,7 @@ class ClaimController extends Controller
             ], 401);
         }
 
-        if($this->company->id !== $claim->employee->companyBranch->company_id) {
+        if ($this->company->id !== $claim->employee->companyBranch->company_id) {
             return response()->json([
                 'message' => 'You are not authorized to update this claim',
             ], 401);
@@ -120,7 +138,7 @@ class ClaimController extends Controller
             ], 401);
         }
 
-        if($this->company->id !== $claim->employee->companyBranch->company_id) {
+        if ($this->company->id !== $claim->employee->companyBranch->company_id) {
             return response()->json([
                 'message' => 'You are not authorized to delete this claim',
             ], 401);

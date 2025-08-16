@@ -5,6 +5,7 @@ namespace App\Helpers\Transformers;
 use App\Models\Salary\SalaryType;
 use App\Models\Salary\SalaryItem;
 use App\Models\Salary\SalaryProcess;
+use App\Models\HRM\Employee;
 use App\Helpers\Transformers\CompanyTransformer;
 
 class SalaryTransformer
@@ -15,6 +16,18 @@ class SalaryTransformer
             'id' => $salaryType->id,
             'name' => $salaryType->name,
             'type' => $salaryType->type,
+        ];
+    }
+
+    public static function employee(Employee $employee)
+    {
+        return [
+            'id' => $employee->id,
+            'full_name' => $employee->full_name,
+            'company_branch' => CompanyTransformer::branch($employee->companyBranch),
+            'designation' => $employee->designation->name,
+            'department' => $employee->department->name,
+            'basic_salary' => $employee->basic_salary,
         ];
     }
 

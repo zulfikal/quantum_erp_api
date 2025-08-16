@@ -23,7 +23,7 @@ class StoreClaimRequest extends FormRequest
     {
         return [
             'claim_type_id' => 'required|exists:claim_types,id',
-            'employee_id' => 'required|exists:employees,id',
+            'employee_id' => 'nullable|exists:employees,id',
             'amount' => 'required|numeric',
             'description' => 'nullable|string',
             'attachment' => 'nullable|file|mimes:pdf,png,jpg,jpeg|max:2048',

@@ -50,7 +50,7 @@ class AuthController extends Controller
             'plainTextToken' => $token->plainTextToken,
             'info' => [
                 'user_id' => (string)$user->id,
-                // 'employee_id' => $user->employee->id,
+                'employee_id' => $user->employee->id,
                 'user_name' => strtoupper($user->name),
                 'device' => $request->device_name
             ],

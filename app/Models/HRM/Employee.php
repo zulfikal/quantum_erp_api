@@ -4,6 +4,7 @@ namespace App\Models\HRM;
 
 use App\Models\Salary\SalaryItem;
 use App\Models\Salary\SalaryProcessItem;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -30,6 +31,7 @@ class Employee extends Model
         'country',
         'register_number',
         'department_id',
+        'basic_salary',
     ];
 
     public function user()
