@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('company_branch_id')->constrained()->cascadeOnDelete();
             $table->string('year');
             $table->string('month');
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'paid', 'rejected'])->default('pending');
             $table->timestamps();
         });
     }

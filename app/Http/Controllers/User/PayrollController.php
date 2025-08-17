@@ -13,6 +13,9 @@ class PayrollController extends Controller
     {
         $salaryProcessItems = auth()->user()->employee
             ->salaryProcessItems()
+            ->whereHas('salaryProcess', function ($query) {
+                $query->where('status', 'paid');
+            })
             ->with('salaryProcess', 'employee.companyBranch.company')
             ->paginate(25);
 

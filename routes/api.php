@@ -154,6 +154,7 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
         Route::prefix('processes')->group(function () {
             Route::get('/', [SalaryProcessController::class, 'index']);
             Route::post('/{companyBranch}', [SalaryProcessController::class, 'store']);
+            Route::post('/update/{salaryProcess}', [SalaryProcessController::class, 'update']);
         });
     });
 

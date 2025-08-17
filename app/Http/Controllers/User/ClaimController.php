@@ -35,14 +35,14 @@ class ClaimController extends Controller
     {
         if (auth()->user()->hasRole('admin')) {
             $claims = $this->company->claims()
-                ->with('claimType', 'employee.companyBranch', 'employee.designation', 'employee.department')
+                ->with('claimType', 'employee.companyBranch', 'employee.designation', 'employee.department', 'user')
                 ->latest()
                 ->paginate(25);
         }
 
         if (auth()->user()->hasRole('employee')) {
             $claims = auth()->user()->employee->claims()
-                ->with('claimType', 'employee.companyBranch', 'employee.designation', 'employee.department')
+                ->with('claimType', 'employee.companyBranch', 'employee.designation', 'employee.department', 'user')
                 ->latest()
                 ->paginate(25);
         }
@@ -121,6 +121,7 @@ class ClaimController extends Controller
                 'message' => 'You are not authorized to update this claim',
             ], 401);
         }
+        
 
         $claim->update($request->validated());
 

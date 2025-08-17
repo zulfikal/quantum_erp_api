@@ -17,6 +17,9 @@ class SalaryProcessController extends Controller
 
     public function __construct()
     {
+        $this->middleware('can:salary_process.index')->only('index');
+        $this->middleware('can:salary_process.store')->only('store');
+
         $this->middleware(function ($request, $next) {
             $this->company = auth()->user()->employee->company;
             if (is_null($this->company)) {
@@ -85,5 +88,21 @@ class SalaryProcessController extends Controller
         return response()->json([
             'salaryProcess' => SalaryTransformer::salaryProcess($salaryProcess),
         ], 201);
+    }
+
+    public function update(Request $request, SalaryProcess $salaryProcess)
+    {
+        $request->validate([
+            'status' => 'required',
+        ]);
+
+        $salaryProcess->update([
+            'status' => $request->status,
+        ]);
+
+        return response()->json([
+            'message' => 'Salary process updated successfully',
+            'salaryProcess' => SalaryTransformer::salaryProcess($salaryProcess),
+        ], 200);
     }
 }

@@ -16,7 +16,7 @@ class ClaimApprovalController extends Controller
     {
         $this->middleware('can:claim_approval.index')->only(['index']);
         $this->middleware('can:claim_approval.show')->only(['show']);
-        $this->middleware('can:claim_approval.approval')->only(['approve']);
+        $this->middleware('can:claim_approval.approval')->only(['approval']);
 
         $this->middleware(function ($request, $next) {
             $this->company = auth()->user()->employee->company;
@@ -56,11 +56,19 @@ class ClaimApprovalController extends Controller
             'approved_amount' => 'required_if:status,approved|numeric',
             'responded_note' => 'nullable|string',
         ]);
+
         if ($claim->employee->companyBranch->company_id !== $this->company->id) {
             return response()->json([
                 'message' => 'You are not authorized to respond to this claim',
             ], 401);
         }
+
+        if($claim->status == 'approved' && $request->status == 'approved') {
+            return response()->json([
+                'message' => 'Claim is already approved',
+            ], 400);
+        }
+
         $claim->update([
             'status' => $request->status,
             'approved_amount' => $request->approved_amount,

@@ -25,16 +25,57 @@ class DatabaseSeeder extends Seeder
         ]);
 
         //Create admin department
-        $adminDepartment = $company->departments()->create([
-            "name" => "Admin",
+        $department = $company->departments()->insert([
+            [
+                "company_id" => $company->id,
+                "name" => "Admin"
+            ],
+            [
+                "company_id" => $company->id,
+                "name" => "IT"
+            ],
+            [
+                "company_id" => $company->id,
+                "name" => "Marketing"
+            ],
+            [
+                "company_id" => $company->id,
+                "name" => "Sales"
+            ],
+            [
+                "company_id" => $company->id,
+                "name" => "Finance"
+            ],
+            [
+                "company_id" => $company->id,
+                "name" => "Operations"
+            ],
+            [
+                "company_id" => $company->id,
+                "name" => "Logistics"
+            ],
+            [
+                "company_id" => $company->id,
+                "name" => "Marketing"
+            ],
+            [
+                "company_id" => $company->id,
+                "name" => "Support"
+            ],
         ]);
 
         //Create designations
-        $name = "System Admin";
-        $code = str_replace(" ", "_", strtolower($name));
-        $designation = $company->designations()->create([
-            "name" => $name,
-            "code" => $code
+        $designation = $company->designations()->insert([
+            [
+                "company_id" => $company->id,
+                "name" => "System Admin",
+                "code" => "system_admin"
+            ],
+            [
+                "company_id" => $company->id,
+                "name" => "Employee",
+                "code" => "employee"
+            ],
         ]);
 
         //Create company branches
@@ -52,8 +93,8 @@ class DatabaseSeeder extends Seeder
         //Create admin employees
         $companyAdmin = $companyBranch->employees()->create([
             "user_id" => null,
-            "designation_id" => $designation->id,
-            "department_id" => $adminDepartment->id,
+            "designation_id" => 1,
+            "department_id" => 1,
             "nric_number" => "000000000000",
             "first_name" => "System",
             "last_name" => "Admin",
@@ -75,8 +116,8 @@ class DatabaseSeeder extends Seeder
         //Create employees
         $companyEmployee = $companyBranch->employees()->create([
             "user_id" => null,
-            "designation_id" => $designation->id,
-            "department_id" => $adminDepartment->id,
+            "designation_id" => 2,
+            "department_id" => 2,
             "nric_number" => "000000000000",
             "first_name" => "Employee",
             "last_name" => "One",
