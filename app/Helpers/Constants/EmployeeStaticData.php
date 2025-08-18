@@ -10,27 +10,27 @@ class EmployeeStaticData
     public static function gender(): array
     {
         return [
-            'male' => 'Male',
-            'female' => 'Female',
-            'other' => 'Other',
+            ['code' => 'male', 'name' => 'Male'],
+            ['code' => 'female', 'name' => 'Female'],
+            ['code' => 'other', 'name' => 'Other'],
         ];
     }
 
     public static function maritalStatus(): array
     {
         return [
-            'single' => 'Single',
-            'married' => 'Married',
-            'divorced' => 'Divorced',
-            'widowed' => 'Widowed',
+            ['code' => 'single', 'name' => 'Single'],
+            ['code' => 'married', 'name' => 'Married'],
+            ['code' => 'divorced', 'name' => 'Divorced'],
+            ['code' => 'widowed', 'name' => 'Widowed'],
         ];
     }
 
     public static function status(): array
     {
         return [
-            'active' => 'Active',
-            'inactive' => 'Inactive',
+            ['code' => 'active', 'name' => 'Active'],
+            ['code' => 'inactive', 'name' => 'Inactive'],
         ];
     }
 

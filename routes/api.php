@@ -151,10 +151,12 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
             Route::get('/', [UserSalaryController::class, 'salaryItemIndex']);
             Route::post('/{employee}', [UserSalaryController::class, 'salaryItemStore']);
             Route::post('/update/{salaryItem}', [UserSalaryController::class, 'salaryItemUpdate']);
+            Route::post('/delete/{salaryItem}', [UserSalaryController::class, 'salaryItemDestroy']);
         });
 
         Route::prefix('processes')->group(function () {
             Route::get('/', [SalaryProcessController::class, 'index']);
+            Route::get('/{salaryProcess}', [SalaryProcessController::class, 'show']);
             Route::post('/{companyBranch}', [SalaryProcessController::class, 'store']);
             Route::post('/update/{salaryProcess}', [SalaryProcessController::class, 'update']);
         });

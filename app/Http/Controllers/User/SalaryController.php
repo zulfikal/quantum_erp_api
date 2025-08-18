@@ -19,6 +19,7 @@ class SalaryController extends Controller
         $this->middleware('can:salary_item.index')->only('salaryItemIndex');
         $this->middleware('can:salary_item.create')->only('salaryItemStore');
         $this->middleware('can:salary_item.edit')->only('salaryItemUpdate');
+        $this->middleware('can:salary_item.destroy')->only('salaryItemDestroy');
 
         $this->middleware(function ($request, $next) {
             $this->company = auth()->user()->employee->company;
@@ -31,22 +32,6 @@ class SalaryController extends Controller
 
     public function salaryItemIndex()
     {
-        // if (auth()->user()->hasRole('employee')) {
-        //     $employee = auth()->user()->employee;
-        //     $salaryItems = $employee->salaryItems()->with('salaryType')->get();
-        // }
-
-        // if (auth()->user()->hasRole('admin')) {
-        //     $employee = Employee::find($request->employee_id);
-        //     $salaryItems = $employee->salaryItems()->with('salaryType')->get();
-        // }
-
-        // if (!$employee) {
-        //     return response()->json([
-        //         'message' => 'Employee not found',
-        //     ], 404);
-        // }
-
         $salaryItems = $this->company->employees()->whereHas('user', function ($query) {
             $query->withoutRole('admin');
         })->with('companyBranch.company', 'designation', 'department')->paginate(25);
@@ -85,6 +70,15 @@ class SalaryController extends Controller
 
         return response()->json([
             'salaryItem' => SalaryTransformer::salaryItem($salaryItem->fresh()),
+        ], 200);
+    }
+
+    public function salaryItemDestroy(SalaryItem $salaryItem)
+    {
+        $salaryItem->delete();
+
+        return response()->json([
+            'message' => 'Salary item deleted successfully.',
         ], 200);
     }
 

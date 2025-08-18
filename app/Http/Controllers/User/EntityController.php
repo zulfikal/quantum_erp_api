@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Helpers\Constants\EntityStaticData;
 use App\Helpers\Transformers\EntityTransformer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEntityRequest;
@@ -38,6 +39,11 @@ class EntityController extends Controller
     {
         $search = $request->input('search');
 
+        $entity_types = EntityStaticData::types();
+        $entity_status = EntityStaticData::status();
+        $entity_address_types = EntityStaticData::addressTypes();
+        $entity_contact_types = EntityStaticData::contactTypes();
+
         $entities = Entity::where('company_id', $this->company->id)
             ->when($search, fn($query) => $query->where('name', 'like', "%{$search}%"))
             ->with('contacts', 'addresses', 'createdBy', 'company')
@@ -45,7 +51,15 @@ class EntityController extends Controller
 
         $entities->through(fn($entity) => EntityTransformer::entities($entity));
 
-        return response()->json($entities);
+        return response()->json([
+            'constants' => [
+                'types' => $entity_types,
+                'status' => $entity_status,
+                'address_types' => $entity_address_types,
+                'contact_types' => $entity_contact_types,
+            ],
+            'entities' => $entities,
+        ]);
     }
 
     public function store(StoreEntityRequest $request)

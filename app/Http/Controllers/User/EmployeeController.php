@@ -44,8 +44,8 @@ class EmployeeController extends Controller
         $branches = EmployeeStaticData::branch($this->company);
         $departments = EmployeeStaticData::department($this->company);
         $genders = EmployeeStaticData::gender();
-        $maritalStatus = EmployeeStaticData::maritalStatus();
-        $status = EmployeeStaticData::status();
+        $marital_statuses = EmployeeStaticData::maritalStatus();
+        $statuses = EmployeeStaticData::status();
 
         $employees = $this->company->employees()
             ->when(
@@ -102,8 +102,8 @@ class EmployeeController extends Controller
                 'branches' => $branches,
                 'departments' => $departments,
                 'genders' => $genders,
-                'marital_status' => $marital_status,
-                'employee_status' => $employee_status,
+                'marital_statuses' => $marital_statuses,
+                'employee_statuses' => $statuses,
             ],
             'employees' => $employees,
         ], 200);

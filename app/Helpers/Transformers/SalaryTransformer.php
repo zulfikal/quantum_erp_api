@@ -7,6 +7,7 @@ use App\Models\Salary\SalaryItem;
 use App\Models\Salary\SalaryProcess;
 use App\Models\HRM\Employee;
 use App\Helpers\Transformers\CompanyTransformer;
+use App\Models\Salary\SalaryProcessItem;
 
 class SalaryTransformer
 {
@@ -49,6 +50,20 @@ class SalaryTransformer
             'year' => $salaryProcess->year,
             'month' => $salaryProcess->month,
             'status' => $salaryProcess->status,
+        ];
+    }
+
+    public static function salaryProcessItem(SalaryProcessItem $salaryProcessItem)
+    {
+        return [
+            'id' => $salaryProcessItem->id,
+            'employee' => $salaryProcessItem->employee->full_name,
+            'date' => $salaryProcessItem->date->format('Y-m-d'),
+            'basic_amount' => number_format($salaryProcessItem->basic_amount, 2),
+            'allowance_amount' => number_format($salaryProcessItem->allowance_amount, 2),
+            'deduction_amount' => number_format($salaryProcessItem->deduction_amount, 2),
+            'company_contribution_amount' => number_format($salaryProcessItem->company_contribution_amount, 2),
+            'total_amount' => number_format($salaryProcessItem->total_amount, 2),
         ];
     }
 }

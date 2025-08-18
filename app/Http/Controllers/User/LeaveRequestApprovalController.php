@@ -7,6 +7,7 @@ use App\Helpers\Transformers\LeaveTransformer;
 use App\Models\HRM\Attendance;
 use App\Models\HRM\Company;
 use App\Models\HRM\Leave;
+use App\Models\HRM\LeaveType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -31,6 +32,9 @@ class LeaveRequestApprovalController extends Controller
 
     public function index()
     {
+        $types = LeaveType::all();
+        $types->transform(fn($type) => LeaveTransformer::leaveType($type));
+
         $leaves = $this->company->leaves()
             ->with(
                 'leaveDates',
@@ -47,7 +51,14 @@ class LeaveRequestApprovalController extends Controller
         $leaves->through(fn($leaveRequest) => LeaveTransformer::leaveRequest($leaveRequest));
 
         return response()->json([
-            'data' => $leaves,
+            'types' => $types,
+            'statistics' => [
+                'total' => $this->company->leaves()->count(),
+                'pending' => $this->company->leaves()->where('leaves.status', 'pending')->count(),
+                'approved' => $this->company->leaves()->where('leaves.status', 'approved')->count(),
+                'rejected' => $this->company->leaves()->where('leaves.status', 'rejected')->count(),
+            ],
+            'requests' => $leaves,
         ], 200);
     }
 

@@ -18,7 +18,7 @@ class SalaryProcessController extends Controller
     public function __construct()
     {
         $this->middleware('can:salary_process.index')->only('index');
-        $this->middleware('can:salary_process.store')->only('store');
+        $this->middleware('can:salary_process.create')->only('store');
 
         $this->middleware(function ($request, $next) {
             $this->company = auth()->user()->employee->company;
@@ -44,7 +44,7 @@ class SalaryProcessController extends Controller
         });
 
         return response()->json([
-            'salaryProcesses' => $salaryProcesses,
+            'salary_processes' => $salaryProcesses,
         ], 200);
     }
 
@@ -86,8 +86,32 @@ class SalaryProcessController extends Controller
         }
 
         return response()->json([
-            'salaryProcess' => SalaryTransformer::salaryProcess($salaryProcess),
+            'data' => SalaryTransformer::salaryProcess($salaryProcess),
         ], 201);
+    }
+
+    public function show(SalaryProcess $salaryProcess)
+    {
+        if ($salaryProcess->companyBranch->company_id != $this->company->id) {
+            return response()->json([
+                'message' => 'This salary process is not associated with your company.',
+            ], 403);
+        }
+
+        $items = $salaryProcess->salaryProcessItems()->with('salaryProcessItemDetails', 'employee')->paginate(25);
+        $items->through(fn($item) => SalaryTransformer::salaryProcessItem($item));
+
+        return response()->json([
+            'date' => Carbon::create($salaryProcess->year, $salaryProcess->month, 1)->format('F, Y'),
+            'statistics' => [
+                'total' => number_format($salaryProcess->salaryProcessItems()->sum('total_amount'), 2),
+                'allowance' => number_format($salaryProcess->salaryProcessItems()->sum('allowance_amount'), 2),
+                'deduction' => number_format($salaryProcess->salaryProcessItems()->sum('deduction_amount'), 2),
+                'company_contribution' => number_format($salaryProcess->salaryProcessItems()->sum('company_contribution_amount'), 2),
+                'basic' => number_format($salaryProcess->salaryProcessItems()->sum('basic_amount'), 2),
+            ],
+            'items' => $items,
+        ], 200);
     }
 
     public function update(Request $request, SalaryProcess $salaryProcess)

@@ -8,6 +8,7 @@ use App\Http\Requests\StoreLeaveRequest;
 use App\Http\Requests\UpdateLeaveRequest;
 use App\Models\HRM\Leave;
 use App\Models\HRM\LeaveDate;
+use App\Models\HRM\LeaveType;
 use Illuminate\Http\Request;
 
 class LeaveRequestController extends Controller
@@ -29,8 +30,18 @@ class LeaveRequestController extends Controller
 
         $leaveRequests->through(fn($leaveRequest) => LeaveTransformer::leaveRequest($leaveRequest));
 
+        $types = LeaveType::all();
+        $types->transform(fn($type) => LeaveTransformer::leaveType($type));
+
         return response()->json([
-            'data' => $leaveRequests,
+            'types' => $types,
+            'statistics' => [
+                'total' => auth()->user()->employee->leaves()->count(),
+                'pending' => auth()->user()->employee->leaves()->where('status', 'pending')->count(),
+                'approved' => auth()->user()->employee->leaves()->where('status', 'approved')->count(),
+                'rejected' => auth()->user()->employee->leaves()->where('status', 'rejected')->count(),
+            ],
+            'requests' => $leaveRequests,
         ], 200);
     }
 

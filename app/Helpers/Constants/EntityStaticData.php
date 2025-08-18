@@ -7,36 +7,36 @@ class EntityStaticData
     public static function types(): array
     {
         return [
-            'customer' => 'Customer',
-            'supplier' => 'Supplier',
+            ['code' => 'customer', 'name' => 'Customer'],
+            ['code' => 'supplier', 'name' => 'Supplier'],
         ];
     }
 
     public static function addressTypes(): array
     {
         return [
-            'billing' => 'Billing',
-            'shipping' => 'Shipping',
-            'billing_and_shipping' => 'Billing and Shipping',
+            ['code' => 'billing', 'name' => 'Billing'],
+            ['code' => 'shipping', 'name' => 'Shipping'],
+            ['code' => 'billing_and_shipping', 'name' => 'Billing and Shipping'],
         ];
     }
 
     public static function contactTypes(): array
     {
         return [
-            'phone' => 'Phone',
-            'mobile' => 'Mobile',
-            'email' => 'Email',
-            'fax' => 'Fax',
-            'other' => 'Other',
+            ['code' => 'phone', 'name' => 'Phone'],
+            ['code' => 'mobile', 'name' => 'Mobile'],
+            ['code' => 'email', 'name' => 'Email'],
+            ['code' => 'fax', 'name' => 'Fax'],
+            ['code' => 'other', 'name' => 'Other'],
         ];
     }
 
     public static function status(): array
     {
         return [
-            'active' => 'Active',
-            'inactive' => 'Inactive',
+            ['code' => 'active', 'name' => 'Active'],
+            ['code' => 'inactive', 'name' => 'Inactive'],
         ];
     }
 }
