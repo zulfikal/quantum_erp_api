@@ -20,7 +20,7 @@ class LeaveTransformer
     {
         return [
             'id' => $leaveDate->id,
-            'date' => $leaveDate->date->format('l d, F Y'),
+            'date' => $leaveDate->date->format('Y-m-d'),
         ];
     }
 
