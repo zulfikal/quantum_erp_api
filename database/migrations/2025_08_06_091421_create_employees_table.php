@@ -33,6 +33,7 @@ return new class extends Migration
             $table->string('zip_code');
             $table->string('country');
             $table->string('register_number')->nullable();
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });
     }

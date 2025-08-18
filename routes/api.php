@@ -18,6 +18,8 @@ use App\Http\Controllers\User\ClaimTypeController;
 use App\Http\Controllers\User\DepartmentController;
 use App\Http\Controllers\User\DesignationController as UserDesignationController;
 use App\Http\Controllers\User\EmployeeController as UserEmployeeController;
+use App\Http\Controllers\User\EntityAddressController;
+use App\Http\Controllers\User\EntityController;
 use App\Http\Controllers\User\LeaveRequestApprovalController;
 use App\Http\Controllers\User\LeaveRequestController;
 use App\Http\Controllers\User\LeaveTypeController;
@@ -210,6 +212,22 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
             Route::get('/', [ClaimApprovalController::class, 'index']);
             Route::get('/{claim}', [ClaimApprovalController::class, 'show']);
             Route::post('/{claim}', [ClaimApprovalController::class, 'approval']);
+        });
+    });
+
+    Route::prefix('entities')->group(function () {
+        Route::get('/', [EntityController::class, 'index']);
+        Route::post('/', [EntityController::class, 'store']);
+        Route::get('/{entity}', [EntityController::class, 'show']);
+        Route::post('/update/{entity}', [EntityController::class, 'update']);
+        Route::post('/delete/{entity}', [EntityController::class, 'destroy']);
+
+        Route::prefix('addresses')->group(function () {
+            Route::get('/{entity}', [EntityAddressController::class, 'index']);
+            Route::post('/{entity}', [EntityAddressController::class, 'store']);
+            Route::get('/show/{address}', [EntityAddressController::class, 'show']);
+            Route::post('/update/{address}', [EntityAddressController::class, 'update']);
+            Route::post('/delete/{address}', [EntityAddressController::class, 'destroy']);
         });
     });
 });

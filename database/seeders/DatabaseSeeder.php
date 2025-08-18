@@ -111,6 +111,7 @@ class DatabaseSeeder extends Seeder
             "zip_code" => "00000",
             "country" => "Malaysia",
             "register_number" => "0000000000",
+            "status" => "active",
         ]);
 
         //Create employees
@@ -134,6 +135,7 @@ class DatabaseSeeder extends Seeder
             "zip_code" => "00000",
             "country" => "Malaysia",
             "register_number" => "0000000000",
+            "status" => "active",
         ]);
 
         //Create employee bank account

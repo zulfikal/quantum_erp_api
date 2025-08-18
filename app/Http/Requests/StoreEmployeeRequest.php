@@ -42,6 +42,7 @@ class StoreEmployeeRequest extends FormRequest
             'employee.zip_code' => 'required',
             'employee.country' => 'required',
             'employee.register_number' => 'nullable',
+            'employee.status' => 'required|in:active,inactive',
             'bank.bank_id' => 'nullable|exists:banks,id',
             'bank.account_number' => 'required_with:bank.bank_id',
             'bank.holder_name' => 'required_with:bank.bank_id',

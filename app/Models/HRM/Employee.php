@@ -2,6 +2,7 @@
 
 namespace App\Models\HRM;
 
+use App\Models\BusinessPartner\Entity;
 use App\Models\Salary\SalaryItem;
 use App\Models\Salary\SalaryProcessItem;
 use App\Models\User;
@@ -32,6 +33,7 @@ class Employee extends Model
         'register_number',
         'department_id',
         'basic_salary',
+        'status',
     ];
 
     public function user()
@@ -165,5 +167,10 @@ class Employee extends Model
     public function getFullNameAttribute()
     {
         return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function entities()
+    {
+        return $this->hasMany(Entity::class, 'created_by', 'id');
     }
 }

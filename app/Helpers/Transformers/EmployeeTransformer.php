@@ -17,6 +17,7 @@ class EmployeeTransformer
             'department' => CompanyTransformer::department($employee->department),
             'first_name' => $employee->first_name,
             'last_name' => $employee->last_name,
+            'nric_number' => $employee->nric_number,
             'email' => $employee->email,
             'phone' => $employee->phone,
             'basic_salary' => $employee->basic_salary,
@@ -30,6 +31,7 @@ class EmployeeTransformer
             'zip_code' => $employee->zip_code,
             'country' => $employee->country,
             'register_number' => $employee->register_number,
+            'status' => $employee->status,
             'bank_account' => [
                 'bank' => [
                     'bank_id' => $employee->bankAccount->bank->id,
