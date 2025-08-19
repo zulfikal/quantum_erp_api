@@ -11,10 +11,12 @@ class AttendanceTransformer
     {
         return [
             'id' => $attendance->id,
+            'employee_id' => $attendance->employee_id,
             'name' => $attendance->employee->first_name . ' ' . $attendance->employee->last_name,
-            'designation' => $attendance->employee->designation->name,
-            'companyBranch' => $attendance->employee->companyBranch->name,
             'company' => $attendance->employee->company->name,
+            'branch' => $attendance->employee->companyBranch->name,
+            'department' => $attendance->employee->department->name,
+            'designation' => $attendance->employee->designation->name,
             'date' => $attendance->date->format('Y-m-d'),
             'clock_in_at' => $attendance->clock_in_at ? $attendance->clock_in_at->format('Y-m-d H:i:s') : null,
             'clock_out_at' => $attendance->clock_out_at ? $attendance->clock_out_at->format('Y-m-d H:i:s') : null,

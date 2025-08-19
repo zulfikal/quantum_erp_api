@@ -37,7 +37,9 @@ class EntityController extends Controller
 
     public function index(Request $request)
     {
-        $search = $request->input('search');
+        $name = $request->input('name');
+        $type = $request->input('type');
+        $status = $request->input('status');
 
         $entity_types = EntityStaticData::types();
         $entity_status = EntityStaticData::status();
@@ -45,7 +47,9 @@ class EntityController extends Controller
         $entity_contact_types = EntityStaticData::contactTypes();
 
         $entities = Entity::where('company_id', $this->company->id)
-            ->when($search, fn($query) => $query->where('name', 'like', "%{$search}%"))
+            ->when($name, fn($query) => $query->where('name', 'like', "%{$name}%"))
+            ->when($type, fn($query) => $query->where('type', $type))
+            ->when($status, fn($query) => $query->where('status', $status))
             ->with('contacts', 'addresses', 'createdBy', 'company')
             ->paginate(25);
 

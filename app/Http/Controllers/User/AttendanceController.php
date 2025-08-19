@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Helpers\Constants\AttendanceStaticData;
+use App\Helpers\Constants\CompanyStaticData;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\HRM\Attendance;
@@ -30,31 +32,47 @@ class AttendanceController extends Controller
 
     public function index(Request $request)
     {
+        $type = $request->type;
+        $branch = $request->branch_id;
+        $department = $request->department_id;
+        $employee = $request->employee;
+        $from = $request->from;
+        $to = $request->to;
+
         if (auth()->user()->hasRole('employee')) {
-            $title = 'My Attendances';
             $query = Attendance::with(['employee.companyBranch.company', 'approver'])
                 ->where('employee_id', auth()->user()->employee->id)
-                ->when($request->from && $request->to, fn($q) => $q->whereBetween('date', [$request->from, $request->to]))
+                ->when($from && $to, fn($q) => $q->whereDate('date', '>=', $from)->whereDate('date', '<=', $to))
+                ->when($from && $to == null, fn($q) => $q->whereDate('date', '>=', $from))
+                ->when($from == null && $to, fn($q) => $q->whereDate('date', '<=', $to))
+                ->when($type, fn($q) => $q->where('status', $type))
                 ->orderByDesc('date')
                 ->paginate(20);
         }
 
         if (auth()->user()->hasRole('admin')) {
-            $title = 'Attendances';
             $query = Attendance::with(['employee.companyBranch.company', 'approver'])
                 ->whereHas('employee.companyBranch.company', fn($q) => $q->where('company_id', $this->company->id))
-                ->when($request->from && $request->to, fn($q) => $q->whereBetween('date', [$request->from, $request->to]))
+                ->when($from && $to, fn($q) => $q->whereDate('date', '>=', $from)->whereDate('date', '<=', $to))
+                ->when($from && $to == null, fn($q) => $q->whereDate('date', '>=', $from))
+                ->when($from == null && $to, fn($q) => $q->whereDate('date', '<=', $to))
+                ->when($type, fn($q) => $q->where('status', $type))
+                ->when($branch, fn($q) => $q->whereHas('employee.companyBranch', fn($q) => $q->where('company_branch_id', $branch)))
+                ->when($department, fn($q) => $q->whereHas('employee.department', fn($q) => $q->where('department_id', $department)))
+                ->when($employee, fn($q) => $q->whereHas('employee', fn($q) => $q->where('first_name', 'like', '%' . $employee . '%')->orWhere('last_name', 'like', '%' . $employee . '%')))
                 ->orderByDesc('date')
                 ->paginate(20);
         }
 
-        $transformed = $query->through(function ($attendance) {
-            return AttendanceTransformer::attendance($attendance);
-        });
+        $transformed = $query->through(fn($attendance) => AttendanceTransformer::attendance($attendance));
 
         return response()->json([
-            'title' => $title,
-            'data' => $transformed
+            'constants' => [
+                'types' => AttendanceStaticData::types(),
+                'departments' => $this->company->departments->transform(fn($q) => CompanyStaticData::department($q)),
+                'branches' => $this->company->branches->transform(fn($q) => CompanyStaticData::branchList($q)),
+            ],
+            'attendances' => $transformed
         ]);
     }
 
@@ -70,9 +88,7 @@ class AttendanceController extends Controller
 
         return response()->json([
             'attendance' => AttendanceTransformer::attendance($attendance),
-            'breaks' => $attendance->breaks->transform(function ($break) {
-                return AttendanceTransformer::attendanceBreak($break);
-            })
+            'breaks' => $attendance->breaks->transform(fn($break) => AttendanceTransformer::attendanceBreak($break))
         ]);
     }
 

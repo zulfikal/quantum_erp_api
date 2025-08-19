@@ -6,15 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Helpers\Transformers\LeaveTransformer;
 use App\Http\Requests\StoreLeaveRequest;
 use App\Http\Requests\UpdateLeaveRequest;
+use App\Helpers\Constants\LeaveStaticData;
 use App\Models\HRM\Leave;
 use App\Models\HRM\LeaveDate;
-use App\Models\HRM\LeaveType;
 use Illuminate\Http\Request;
 
 class LeaveRequestController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $status = $request->input('status');
+        $type = $request->input('type');
+
         $leaveRequests = auth()->user()->employee
             ->leaves()
             ->with(
@@ -26,20 +29,31 @@ class LeaveRequestController extends Controller
                 'employee.department',
                 'responder'
             )
+            ->when(
+                $status,
+                fn($query) =>
+                $query->where('status', $status)
+            )
+            ->when(
+                $type,
+                fn($query) =>
+                $query->whereHas('leaveType', fn($query) => $query->where('id', $type))
+            )
             ->paginate(25);
 
         $leaveRequests->through(fn($leaveRequest) => LeaveTransformer::leaveRequest($leaveRequest));
 
-        $types = LeaveType::all();
-        $types->transform(fn($type) => LeaveTransformer::leaveType($type));
-
         return response()->json([
-            'types' => $types,
+            'constants' => [
+                'statuses' => LeaveStaticData::status(),
+                'types' => LeaveStaticData::types(),
+            ],
             'statistics' => [
                 'total' => auth()->user()->employee->leaves()->count(),
                 'pending' => auth()->user()->employee->leaves()->where('status', 'pending')->count(),
                 'approved' => auth()->user()->employee->leaves()->where('status', 'approved')->count(),
                 'rejected' => auth()->user()->employee->leaves()->where('status', 'rejected')->count(),
+                'cancelled' => auth()->user()->employee->leaves()->where('status', 'cancelled')->count(),
             ],
             'requests' => $leaveRequests,
         ], 200);

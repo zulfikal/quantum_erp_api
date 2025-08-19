@@ -33,9 +33,9 @@ class EmployeeController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $department = $request->input('department');
-        $designation = $request->input('designation');
-        $branch = $request->input('branch');
+        $department = $request->input('department_id');
+        $designation = $request->input('designation_id');
+        $branch = $request->input('branch_id');
         $gender = $request->input('gender');
         $marital_status = $request->input('marital_status');
         $employee_status = $request->input('status');
@@ -53,9 +53,9 @@ class EmployeeController extends Controller
                 fn($query) =>
                 $query->where('employees.first_name', 'like', "%{$search}%")
                     ->orWhere('employees.last_name', 'like', "%{$search}%")
-                    ->orWhere('employees.nric_number', 'like', "%{$search}%")
-                    ->orWhere('employees.email', 'like', "%{$search}%")
-                    ->orWhere('employees.phone', 'like', "%{$search}%")
+                    ->orWhere('employees.nric_number', "{$search}")
+                    ->orWhere('employees.email', "{$search}")
+                    ->orWhere('employees.phone', "{$search}")
             )
             ->when(
                 $department,
