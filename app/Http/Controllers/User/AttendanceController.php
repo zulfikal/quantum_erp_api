@@ -40,7 +40,7 @@ class AttendanceController extends Controller
         $to = $request->to;
 
         if (auth()->user()->hasRole('employee')) {
-            $query = Attendance::with(['employee.companyBranch.company', 'approver'])
+            $query = Attendance::with(['employee.companyBranch.company', 'employee.department', 'employee.designation', 'approver'])
                 ->where('employee_id', auth()->user()->employee->id)
                 ->when($from && $to, fn($q) => $q->whereDate('date', '>=', $from)->whereDate('date', '<=', $to))
                 ->when($from && $to == null, fn($q) => $q->whereDate('date', '>=', $from))
@@ -51,7 +51,7 @@ class AttendanceController extends Controller
         }
 
         if (auth()->user()->hasRole('admin')) {
-            $query = Attendance::with(['employee.companyBranch.company', 'approver'])
+            $query = Attendance::with(['employee.companyBranch.company', 'employee.department', 'employee.designation', 'approver'])
                 ->whereHas('employee.companyBranch.company', fn($q) => $q->where('company_id', $this->company->id))
                 ->when($from && $to, fn($q) => $q->whereDate('date', '>=', $from)->whereDate('date', '<=', $to))
                 ->when($from && $to == null, fn($q) => $q->whereDate('date', '>=', $from))
