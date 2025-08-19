@@ -122,6 +122,16 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'product_category.create', 'display_name' => 'Product Category Create', 'guard_name' => 'web'],
             ['name' => 'product_category.edit', 'display_name' => 'Product Category Edit', 'guard_name' => 'web'],
             ['name' => 'product_category.destroy', 'display_name' => 'Product Category Destroy', 'guard_name' => 'web'],
+            ['name' => 'customer_reference.index', 'display_name' => 'Customer Reference Index', 'guard_name' => 'web'],
+            ['name' => 'customer_reference.show', 'display_name' => 'Customer Reference Show', 'guard_name' => 'web'],
+            ['name' => 'customer_reference.create', 'display_name' => 'Customer Reference Create', 'guard_name' => 'web'],
+            ['name' => 'customer_reference.edit', 'display_name' => 'Customer Reference Edit', 'guard_name' => 'web'],
+            ['name' => 'customer_reference.destroy', 'display_name' => 'Customer Reference Destroy', 'guard_name' => 'web'],
+            ['name' => 'quotation.index', 'display_name' => 'Quotation Index', 'guard_name' => 'web'],
+            ['name' => 'quotation.show', 'display_name' => 'Quotation Show', 'guard_name' => 'web'],
+            ['name' => 'quotation.create', 'display_name' => 'Quotation Create', 'guard_name' => 'web'],
+            ['name' => 'quotation.edit', 'display_name' => 'Quotation Edit', 'guard_name' => 'web'],
+            ['name' => 'quotation.destroy', 'display_name' => 'Quotation Destroy', 'guard_name' => 'web'],
         ];
 
         Permission::insert($permissions);
@@ -170,6 +180,11 @@ class RolePermissionSeeder extends Seeder
             'product.show',
             'product_category.index',
             'product_category.show',
+            'attendance.index',
+            'attendance.show',
+            'attendance.create',
+            'attendance.edit',
+            'attendance.destroy',
         ])->get();
         $employee_role->syncPermissions($employee_permissions);
     }
