@@ -8,6 +8,7 @@ use App\Models\HRM\Company;
 use App\Http\Requests\StoreClaimRequest;
 use App\Http\Requests\UpdateClaimRequest;
 use App\Models\HRM\Claim;
+use App\Models\HRM\ClaimType;
 
 class ClaimController extends Controller
 {
@@ -33,23 +34,56 @@ class ClaimController extends Controller
 
     public function index()
     {
-        if (auth()->user()->hasRole('admin')) {
-            $claims = $this->company->claims()
-                ->with('claimType', 'employee.companyBranch', 'employee.designation', 'employee.department', 'user')
-                ->latest()
-                ->paginate(25);
-        }
+        // Determine the base query builder depending on user role
+        $baseQuery = auth()->user()->hasRole('admin')
+            ? $this->company->claims()
+            : auth()->user()->employee->claims();
 
-        if (auth()->user()->hasRole('employee')) {
-            $claims = auth()->user()->employee->claims()
-                ->with('claimType', 'employee.companyBranch', 'employee.designation', 'employee.department', 'user')
-                ->latest()
-                ->paginate(25);
-        }
+        // Get paginated claims with relationships
+        $claims = (clone $baseQuery)
+            ->with([
+                'claimType',
+                'employee.companyBranch',
+                'employee.designation',
+                'employee.department',
+                'user'
+            ])
+            ->latest()
+            ->paginate(25);
 
+        // Transform claims
         $claims->through(fn($claim) => ClaimTransformer::claimList($claim));
 
-        return response()->json($claims, 200);
+        // Get statistics counts in separate queries but more efficiently
+        $allClaimsCount = (clone $baseQuery)->count();
+        
+        // Get all status counts in a single query
+        $statusCounts = (clone $baseQuery)
+            ->selectRaw('claims.status as status_key, COUNT(*) as count')
+            ->groupBy('claims.status')
+            ->pluck('count', 'status_key')
+            ->toArray();
+            
+        // Extract counts with defaults for missing statuses
+        $pendingClaimsCount = $statusCounts['pending'] ?? 0;
+        $approvedClaimsCount = $statusCounts['approved'] ?? 0;
+        $rejectedClaimsCount = $statusCounts['rejected'] ?? 0;
+
+        $claim_types = ClaimType::all();
+        $claim_types->transform(fn($claim_type) => ClaimTransformer::claimType($claim_type));
+
+        return response()->json([
+            'constants' => [
+                'claim_types' => $claim_types,
+            ],
+            'statistics' => [
+                'allClaimsCount' => $allClaimsCount,
+                'pendingClaimsCount' => $pendingClaimsCount,
+                'approvedClaimsCount' => $approvedClaimsCount,
+                'rejectedClaimsCount' => $rejectedClaimsCount,
+            ],
+            'claims' => $claims,
+        ], 200);
     }
 
     public function show(Claim $claim)
@@ -85,8 +119,8 @@ class ClaimController extends Controller
             }
         }
 
-        if(auth()->user()->hasRole('employee')) {
-            if($request->employee_id && $request->employee_id !== auth()->user()->employee->id) {
+        if (auth()->user()->hasRole('employee')) {
+            if ($request->employee_id && $request->employee_id !== auth()->user()->employee->id) {
                 return response()->json([
                     'message' => 'You are not authorized to create this claim',
                 ], 401);
@@ -121,7 +155,7 @@ class ClaimController extends Controller
                 'message' => 'You are not authorized to update this claim',
             ], 401);
         }
-        
+
 
         $claim->update($request->validated());
 

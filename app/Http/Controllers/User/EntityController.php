@@ -58,8 +58,16 @@ class EntityController extends Controller
                 'address_types' => $entity_address_types,
                 'contact_types' => $entity_contact_types,
             ],
+            'statistics' => array_map('intval', (array) DB::table('entities')
+                ->where('company_id', $this->company->id)
+                ->selectRaw('
+                    COALESCE(COUNT(*), 0) as total,
+                    COALESCE(SUM(CASE WHEN status = "active" THEN 1 ELSE 0 END), 0) as active,
+                    COALESCE(SUM(CASE WHEN status = "inactive" THEN 1 ELSE 0 END), 0) as inactive
+                ')
+                ->first()),
             'entities' => $entities,
-        ]);
+        ], 200);
     }
 
     public function store(StoreEntityRequest $request)
@@ -84,7 +92,7 @@ class EntityController extends Controller
         return response()->json([
             'message' => 'Business partner created successfully',
             'data' => EntityTransformer::entity($this->response)
-        ]);
+        ], 201);
     }
 
     public function show(Entity $entity)
@@ -94,7 +102,7 @@ class EntityController extends Controller
                 'message' => 'You are not authorized to view this business partner.',
             ], 403);
         }
-        return response()->json(EntityTransformer::entity($entity));
+        return response()->json(EntityTransformer::entity($entity), 200);
     }
 
     public function update(UpdateEntityRequest $request, Entity $entity)
@@ -105,7 +113,10 @@ class EntityController extends Controller
             ], 403);
         }
         $entity->update($request->validated());
-        return response()->json(EntityTransformer::entity($entity));
+        return response()->json([
+            'message' => 'Business partner updated successfully',
+            'data' => EntityTransformer::entity($entity->refresh())
+        ], 200);
     }
 
     public function destroy(Entity $entity)

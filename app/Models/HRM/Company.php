@@ -2,7 +2,11 @@
 
 namespace App\Models\HRM;
 
+use App\Models\BusinessPartner\Entity;
+use App\Models\Product\Product;
+use App\Models\Product\ProductCategory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Facades\DB;
 
@@ -14,27 +18,27 @@ class Company extends Model
         'tin_number',
     ];
 
-    public function branches()
+    public function branches() : HasMany
     {
         return $this->hasMany(CompanyBranch::class);
     }
 
-    public function designations()
+    public function designations() : HasMany
     {
         return $this->hasMany(Designation::class);
     }
 
-    public function departments()
+    public function departments() : HasMany
     {
         return $this->hasMany(Department::class);
     }
 
-    public function employees()
+    public function employees() : HasManyThrough
     {
         return $this->hasManyThrough(Employee::class, CompanyBranch::class, 'company_id', 'company_branch_id', 'id', 'id');
     }
 
-    public function leaves()
+    public function leaves() : HasManyThrough
     {
         return $this->hasManyThrough(
             Leave::class,
@@ -47,7 +51,7 @@ class Company extends Model
             ->where('employees.company_branch_id', '=', DB::raw('company_branches.id'));
     }
 
-    public function claims()
+    public function claims() : HasManyThrough
     {
         // Using hasManyThrough with a more direct approach
         // First, get all employees belonging to branches of this company
@@ -63,5 +67,20 @@ class Company extends Model
             'id' // Local key on employees table
         )->join('company_branches', 'employees.company_branch_id', '=', 'company_branches.id')
             ->where('company_branches.company_id', '=', $companyId);
+    }
+
+    public function entities() : HasMany
+    {
+        return $this->hasMany(Entity::class);
+    }
+
+    public function productCategories() : HasMany
+    {
+        return $this->hasMany(ProductCategory::class);
+    }
+
+    public function products() : HasMany
+    {
+        return $this->hasMany(Product::class);
     }
 }

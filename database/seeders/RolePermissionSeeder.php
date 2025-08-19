@@ -112,6 +112,16 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'entity_contact.create', 'display_name' => 'Business Partner Contact Create', 'guard_name' => 'web'],
             ['name' => 'entity_contact.edit', 'display_name' => 'Business Partner Contact Edit', 'guard_name' => 'web'],
             ['name' => 'entity_contact.destroy', 'display_name' => 'Business Partner Contact Destroy', 'guard_name' => 'web'],
+            ['name' => 'product.index', 'display_name' => 'Product Index', 'guard_name' => 'web'],
+            ['name' => 'product.show', 'display_name' => 'Product Show', 'guard_name' => 'web'],
+            ['name' => 'product.create', 'display_name' => 'Product Create', 'guard_name' => 'web'],
+            ['name' => 'product.edit', 'display_name' => 'Product Edit', 'guard_name' => 'web'],
+            ['name' => 'product.destroy', 'display_name' => 'Product Destroy', 'guard_name' => 'web'],
+            ['name' => 'product_category.index', 'display_name' => 'Product Category Index', 'guard_name' => 'web'],
+            ['name' => 'product_category.show', 'display_name' => 'Product Category Show', 'guard_name' => 'web'],
+            ['name' => 'product_category.create', 'display_name' => 'Product Category Create', 'guard_name' => 'web'],
+            ['name' => 'product_category.edit', 'display_name' => 'Product Category Edit', 'guard_name' => 'web'],
+            ['name' => 'product_category.destroy', 'display_name' => 'Product Category Destroy', 'guard_name' => 'web'],
         ];
 
         Permission::insert($permissions);
@@ -156,6 +166,10 @@ class RolePermissionSeeder extends Seeder
             'entity_contact.create',
             'entity_contact.edit',
             'entity_contact.destroy',
+            'product.index',
+            'product.show',
+            'product_category.index',
+            'product_category.show',
         ])->get();
         $employee_role->syncPermissions($employee_permissions);
     }

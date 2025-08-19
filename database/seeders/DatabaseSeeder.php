@@ -24,6 +24,18 @@ class DatabaseSeeder extends Seeder
             "status" => "active"
         ]);
 
+        $company->productCategories()->create([
+            "name" => "Electronics",
+            "company_id" => $company->id,
+            "description" => "Electronics products"
+        ]);
+
+        $company->productCategories()->create([
+            "name" => "System Development",
+            "company_id" => $company->id,
+            "description" => "System Development products"
+        ]);
+
         //Create admin department
         $department = $company->departments()->insert([
             [

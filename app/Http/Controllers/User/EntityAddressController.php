@@ -14,8 +14,6 @@ class EntityAddressController extends Controller
 {
     protected Company $company;
 
-    private $response;
-
     public function __construct()
     {
         $this->middleware('can:entity.index')->only(['index']);
@@ -43,7 +41,7 @@ class EntityAddressController extends Controller
 
         $addresses = $entity->addresses->transform(fn($address) => EntityTransformer::address($address));
 
-        return response()->json($addresses);
+        return response()->json($addresses, 200);
     }
 
     public function show(EntityAddress $address)
@@ -54,7 +52,7 @@ class EntityAddressController extends Controller
             ], 403);
         }
 
-        return response()->json(EntityTransformer::address($address));
+        return response()->json(EntityTransformer::address($address), 200);
     }
 
     public function store(Entity $entity, StoreEntityAddressRequest $request)
@@ -67,7 +65,10 @@ class EntityAddressController extends Controller
 
         $address = $entity->addresses()->create($request->validated());
 
-        return response()->json(EntityTransformer::address($address));
+        return response()->json([
+            'message' => 'Address created successfully',
+            'address' => EntityTransformer::address($address),
+        ], 201);
     }
 
     public function update(EntityAddress $address, StoreEntityAddressRequest $request)
@@ -80,7 +81,10 @@ class EntityAddressController extends Controller
 
         $address->update($request->validated());
 
-        return response()->json(EntityTransformer::address($address->refresh()));
+        return response()->json([
+            'message' => 'Address updated successfully',
+            'address' => EntityTransformer::address($address->refresh()),
+        ], 200);
     }
 
     public function destroy(EntityAddress $address)
@@ -95,6 +99,6 @@ class EntityAddressController extends Controller
 
         return response()->json([
             'message' => 'Address deleted successfully.',
-        ]);
+        ], 200);
     }
 }

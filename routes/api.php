@@ -19,11 +19,14 @@ use App\Http\Controllers\User\DepartmentController;
 use App\Http\Controllers\User\DesignationController as UserDesignationController;
 use App\Http\Controllers\User\EmployeeController as UserEmployeeController;
 use App\Http\Controllers\User\EntityAddressController;
+use App\Http\Controllers\User\EntityContactController;
 use App\Http\Controllers\User\EntityController;
 use App\Http\Controllers\User\LeaveRequestApprovalController;
 use App\Http\Controllers\User\LeaveRequestController;
 use App\Http\Controllers\User\LeaveTypeController;
 use App\Http\Controllers\User\PayrollController;
+use App\Http\Controllers\User\ProductCategoryController;
+use App\Http\Controllers\User\ProductController;
 use App\Http\Controllers\User\SalaryController as UserSalaryController;
 use App\Http\Controllers\User\SalaryProcessController;
 use App\Http\Controllers\User\SalaryTypeController;
@@ -230,6 +233,32 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
             Route::get('/show/{address}', [EntityAddressController::class, 'show']);
             Route::post('/update/{address}', [EntityAddressController::class, 'update']);
             Route::post('/delete/{address}', [EntityAddressController::class, 'destroy']);
+        });
+
+        Route::prefix('contacts')->group(function () {
+            Route::get('/{entity}', [EntityContactController::class, 'index']);
+            Route::post('/{entity}', [EntityContactController::class, 'store']);
+            Route::get('/show/{contact}', [EntityContactController::class, 'show']);
+            Route::post('/update/{contact}', [EntityContactController::class, 'update']);
+            Route::post('/delete/{contact}', [EntityContactController::class, 'destroy']);
+        });
+    });
+
+    Route::prefix('products')->group(function () {
+        Route::prefix('main')->group(function () {
+            Route::get('/', [ProductController::class, 'index']);
+            Route::post('/', [ProductController::class, 'store']);
+            Route::get('/{product}', [ProductController::class, 'show']);
+            Route::post('/update/{product}', [ProductController::class, 'update']);
+            Route::post('/toggle-is-active/{product}', [ProductController::class, 'toggleIsActive']);
+        });
+
+        Route::prefix('categories')->group(function () {
+            Route::get('/', [ProductCategoryController::class, 'index']);
+            Route::post('/', [ProductCategoryController::class, 'store']);
+            Route::get('/{category}', [ProductCategoryController::class, 'show']);
+            Route::post('/update/{category}', [ProductCategoryController::class, 'update']);
+            Route::post('/delete/{category}', [ProductCategoryController::class, 'destroy']);
         });
     });
 });
