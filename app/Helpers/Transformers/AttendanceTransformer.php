@@ -13,7 +13,7 @@ class AttendanceTransformer
             'id' => $attendance->id,
             'employee_id' => $attendance->employee_id,
             'name' => $attendance->employee->first_name . ' ' . $attendance->employee->last_name,
-            'company' => $attendance->employee->company->name,
+            'company' => $attendance->employee->companyBranch->company->name,
             'branch' => $attendance->employee->companyBranch->name,
             'department' => $attendance->employee->department->name,
             'designation' => $attendance->employee->designation->name,
