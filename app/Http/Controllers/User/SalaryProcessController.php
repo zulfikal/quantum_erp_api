@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Helpers\Transformers\CompanyTransformer;
 use App\Helpers\Transformers\SalaryTransformer;
 use App\Http\Controllers\Controller;
 use App\Models\HRM\Company;
@@ -44,6 +45,9 @@ class SalaryProcessController extends Controller
         });
 
         return response()->json([
+            'constants' => [
+                'branches' => $this->company->branches->transform(fn($branch) => CompanyTransformer::branch($branch)),
+            ],
             'salary_processes' => $salaryProcesses,
         ], 200);
     }
