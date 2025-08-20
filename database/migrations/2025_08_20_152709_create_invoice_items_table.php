@@ -13,6 +13,18 @@ return new class extends Migration
     {
         Schema::create('invoice_items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('invoice_id')->constrained('invoices')->cascadeOnDelete();
+            $table->foreignId('product_id')->nullable()->constrained('products');
+            $table->string('name');
+            $table->enum('type', ['goods', 'service'])->default('goods');
+            $table->string('sku')->nullable();
+            $table->text('description')->nullable();
+            $table->double('price')->default(0);
+            $table->double('discount')->default(0);
+            $table->double('tax_percentage')->default(0);
+            $table->double('tax_amount')->default(0);
+            $table->integer('quantity')->default(0);
+            $table->double('total')->default(0);
             $table->timestamps();
         });
     }

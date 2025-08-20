@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Helpers\Transformers\QuotationTransformer;
+use App\Helpers\Transformers\InvoiceTransformer;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreInvoiceItemRequest;
 use App\Models\HRM\Company;
-use App\Models\Sales\QuotationItem;
+use App\Models\Sales\Invoice;
+use App\Models\Sales\InvoiceItem;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\StoreQuotationItemRequest;
-use App\Models\Sales\Quotation;
 
-class QuotationItemController extends Controller
+class InvoiceItemController extends Controller
 {
     protected Company $company;
 
@@ -31,15 +32,15 @@ class QuotationItemController extends Controller
         });
     }
 
-    public function store(StoreQuotationItemRequest $request, Quotation $quotation)
+    public function store(StoreInvoiceItemRequest $request, Invoice $invoice)
     {
-        if ($quotation->company_id != $this->company->id) {
+        if ($invoice->company_id != $this->company->id) {
             return response()->json([
-                'message' => 'You are not authorized to create this quotation item.',
+                'message' => 'You are not authorized to create this invoice item.',
             ], 403);
         }
 
-        DB::transaction(function () use ($quotation, $request) {
+        DB::transaction(function () use ($invoice, $request) {
             $price = $request->price;
             $quantity = $request->quantity;
             $discount = $request->discount;
@@ -47,7 +48,7 @@ class QuotationItemController extends Controller
             $taxAmount = $price * $quantity * $taxPercentage / 100;
             $total = $price * $quantity - $discount + $taxAmount;
 
-            $quotation->items()->create([
+            $invoice->items()->create([
                 'name' => $request->name,
                 'type' => $request->type,
                 'sku' => $request->sku,
@@ -60,33 +61,33 @@ class QuotationItemController extends Controller
                 'total' => $total,
             ]);
 
-            $itemsTotal = $quotation->items()->sum('total') - $quotation->items()->sum('tax_amount');
-            $itemsDiscount = $quotation->items()->sum('discount');
-            $itemsTaxAmount = $quotation->items()->sum('tax_amount');
+            $itemsTotal = $invoice->items()->sum('total') - $invoice->items()->sum('tax_amount');
+            $itemsDiscount = $invoice->items()->sum('discount');
+            $itemsTaxAmount = $invoice->items()->sum('tax_amount');
 
-            $quotation->update([
+            $invoice->update([
                 'total_amount' => $itemsTotal + $itemsDiscount,
                 'discount_amount' => $itemsDiscount,
                 'tax_amount' => $itemsTaxAmount,
-                'grand_total' => $itemsTotal + $quotation->shipping_amount + $itemsTaxAmount,
+                'grand_total' => $itemsTotal + $invoice->shipping_amount + $itemsTaxAmount,
             ]);
         });
 
         return response()->json([
-            'message' => 'Quotation item created successfully',
-            'quotation' => QuotationTransformer::quotationWithItems($quotation),
+            'message' => 'Invoice item created successfully',
+            'invoice' => InvoiceTransformer::invoiceWithItems($invoice),
         ], 201);
     }
 
-    public function update(StoreQuotationItemRequest $request, QuotationItem $quotationItem)
+    public function update(StoreInvoiceItemRequest $request, InvoiceItem $invoiceItem)
     {
-        if ($quotationItem->quotation->company_id != $this->company->id) {
+        if ($invoiceItem->invoice->company_id != $this->company->id) {
             return response()->json([
-                'message' => 'You are not authorized to update this quotation item.',
+                'message' => 'You are not authorized to update this invoice item.',
             ], 403);
         }
 
-        DB::transaction(function () use ($quotationItem, $request) {
+        DB::transaction(function () use ($invoiceItem, $request) {
             $price = $request->price;
             $quantity = $request->quantity;
             $discount = $request->discount;
@@ -94,7 +95,7 @@ class QuotationItemController extends Controller
             $taxAmount = $price * $quantity * $taxPercentage / 100;
             $total = $price * $quantity - $discount + $taxAmount;
 
-            $quotationItem->update([
+            $invoiceItem->update([
                 'name' => $request->name,
                 'type' => $request->type,
                 'sku' => $request->sku,
@@ -107,46 +108,46 @@ class QuotationItemController extends Controller
                 'total' => $total,
             ]);
 
-            $quotation = $quotationItem->quotation;
-            $itemsTotal = $quotation->items()->sum('total') - $quotation->items()->sum('tax_amount');
-            $itemsDiscount = $quotation->items()->sum('discount');
-            $itemsTaxAmount = $quotation->items()->sum('tax_amount');
+            $invoice = $invoiceItem->invoice;
+            $itemsTotal = $invoice->items()->sum('total') - $invoice->items()->sum('tax_amount');
+            $itemsDiscount = $invoice->items()->sum('discount');
+            $itemsTaxAmount = $invoice->items()->sum('tax_amount');
 
-            $quotation->update([
+            $invoice->update([
                 'total_amount' => $itemsTotal + $itemsDiscount,
                 'discount_amount' => $itemsDiscount,
                 'tax_amount' => $itemsTaxAmount,
-                'grand_total' => $itemsTotal + $quotation->shipping_amount + $itemsTaxAmount,
+                'grand_total' => $itemsTotal + $invoice->shipping_amount + $itemsTaxAmount,
             ]);
         });
 
         return response()->json([
-            'message' => 'Quotation item updated successfully',
-            'quotation' => QuotationTransformer::quotationWithItems($quotationItem->quotation),
+            'message' => 'Invoice item updated successfully',
+            'invoice' => InvoiceTransformer::invoiceWithItems($invoiceItem->invoice),
         ], 200);
     }
 
-    public function destroy(QuotationItem $quotationItem)
+    public function destroy(InvoiceItem $invoiceItem)
     {
-        DB::transaction(function () use ($quotationItem) {
-            $quotationItem->delete();
+        DB::transaction(function () use ($invoiceItem) {
+            $invoiceItem->delete();
 
-            $quotation = $quotationItem->quotation;
-            $itemsTotal = $quotation->items()->sum('total') - $quotation->items()->sum('tax_amount');
-            $itemsDiscount = $quotation->items()->sum('discount');
-            $itemsTaxAmount = $quotation->items()->sum('tax_amount');
+            $invoice = $invoiceItem->invoice;
+            $itemsTotal = $invoice->items()->sum('total') - $invoice->items()->sum('tax_amount');
+            $itemsDiscount = $invoice->items()->sum('discount');
+            $itemsTaxAmount = $invoice->items()->sum('tax_amount');
 
-            $quotation->update([
+            $invoice->update([
                 'total_amount' => $itemsTotal + $itemsDiscount,
                 'discount_amount' => $itemsDiscount,
                 'tax_amount' => $itemsTaxAmount,
-                'grand_total' => $itemsTotal + $quotation->shipping_amount + $itemsTaxAmount,
+                'grand_total' => $itemsTotal + $invoice->shipping_amount + $itemsTaxAmount,
             ]);
         });
 
         return response()->json([
-            'message' => 'Quotation item deleted successfully',
-            'quotation' => QuotationTransformer::quotationWithItems($quotationItem->quotation),
+            'message' => 'Invoice item deleted successfully',
+            'invoice' => InvoiceTransformer::invoiceWithItems($invoiceItem->invoice),
         ], 200);
     }
 }

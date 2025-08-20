@@ -22,6 +22,7 @@ return new class extends Migration
             $table->double('discount_amount')->default(0);
             $table->double('tax_amount')->default(0);
             $table->double('grand_total')->default(0);
+            $table->double('shipping_amount')->default(0);
             $table->foreignId('sale_status_id')->constrained('sale_statuses');
             $table->timestamp('invoice_date');
             $table->timestamp('due_date')->nullable();

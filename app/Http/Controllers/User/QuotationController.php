@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateQuotationRequest;
 use App\Models\HRM\Company;
 use App\Models\Sales\Quotation;
 use App\Models\Sales\QuotationItem;
+use App\Models\Sales\SaleStatus;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -44,6 +45,7 @@ class QuotationController extends Controller
      */
     private function getQuotationStatusCounts(): array
     {
+        $statuses = SaleStatus::whereIn('type', ['quotation', 'quotation_invoice'])->pluck('name', 'id')->toArray();
         // Get counts for all statuses in a single query
         $statusCounts = Quotation::where('company_id', $this->company->id)
             ->selectRaw('sale_status_id, COUNT(*) as count')
@@ -54,16 +56,15 @@ class QuotationController extends Controller
         // Get total count
         $total = array_sum($statusCounts);
 
-        // Prepare the result with all possible statuses
+        // Initialize result with total count
         $result = [
-            'total' => $total,
-            'draft' => $statusCounts['1'] ?? 0,
-            'sent' => $statusCounts['2'] ?? 0,
-            'approved' => $statusCounts['3'] ?? 0,
-            'rejected' => $statusCounts['4'] ?? 0,
-            'completed' => $statusCounts['5'] ?? 0,
-            'cancelled' => $statusCounts['6'] ?? 0,
+            ['name' => 'Total', 'count' => $total]
         ];
+
+        // Dynamically add all status counts using names from the database
+        foreach ($statuses as $id => $name) {
+            $result[] = ['name' => $name, 'count' => $statusCounts[$id] ?? 0];
+        }
 
         return $result;
     }
@@ -136,7 +137,8 @@ class QuotationController extends Controller
                 'quotation_date' => $quotation['quotation_date'],
                 'employee_id' => auth()->user()->employee->id,
                 'quotation_number' => $quotationNumber,
-                'total_amount' => $quotationItems->sum('total_amount'),
+                'total_amount' => $quotationItems->sum('total_amount') - $quotationItems->sum('tax_amount'),
+                'tax_amount' => $quotationItems->sum('tax_amount'),
                 'discount_amount' => $quotationItems->sum('discount'),
                 'grand_total' => $quotationItems->sum('total_after_discount') + $quotation['shipping_amount'],
                 'shipping_amount' => $quotation['shipping_amount'],
@@ -173,6 +175,11 @@ class QuotationController extends Controller
 
     public function show(Quotation $quotation)
     {
+        if ($quotation->company_id != $this->company->id) {
+            return response()->json([
+                'message' => 'You are not authorized to view this quotation',
+            ], 403);
+        }
         return response()->json([
             'quotation' => QuotationTransformer::quotationWithItems($quotation),
         ], 200);
@@ -180,14 +187,19 @@ class QuotationController extends Controller
 
     public function update(UpdateQuotationRequest $request, Quotation $quotation)
     {
+        if ($quotation->company_id != $this->company->id) {
+            return response()->json([
+                'message' => 'You are not authorized to update this quotation',
+            ], 403);
+        }
         $quotation->customerReferences()->update($request->validated()['customer']);
 
-        $itemsTotal = $quotation->items()->sum('total');
+        $itemsTotal = $quotation->items()->sum('total') - $quotation->items()->sum('tax_amount');
         $itemsDiscount = $quotation->items()->sum('discount');
         $itemsTaxAmount = $quotation->items()->sum('tax_amount');
 
         $quotation->update([
-            'total_amount' => $itemsTotal + $itemsDiscount + $request->validated()['quotation']['shipping_amount'],
+            'total_amount' => $itemsTotal + $itemsDiscount,
             'shipping_amount' => $request->validated()['quotation']['shipping_amount'],
             'sale_status_id' => $request->validated()['quotation']['sale_status_id'],
             'quotation_date' => $request->validated()['quotation']['quotation_date'],
@@ -195,7 +207,7 @@ class QuotationController extends Controller
             'description' => $request->validated()['quotation']['description'],
             'discount_amount' => $itemsDiscount,
             'tax_amount' => $itemsTaxAmount,
-            'grand_total' => $itemsTotal +  $request->validated()['quotation']['shipping_amount'],
+            'grand_total' => $itemsTotal +  $request->validated()['quotation']['shipping_amount'] + $itemsTaxAmount,
         ]);
 
 
@@ -207,6 +219,12 @@ class QuotationController extends Controller
 
     public function destroy(Quotation $quotation)
     {
+        if ($quotation->company_id != $this->company->id) {
+            return response()->json([
+                'message' => 'You are not authorized to delete this quotation',
+            ], 403);
+        }
+
         DB::transaction(function () use ($quotation) {
             $quotation->delete();
             $quotation->customerReferences()->delete();

@@ -21,6 +21,8 @@ use App\Http\Controllers\User\EmployeeController as UserEmployeeController;
 use App\Http\Controllers\User\EntityAddressController;
 use App\Http\Controllers\User\EntityContactController;
 use App\Http\Controllers\User\EntityController;
+use App\Http\Controllers\User\InvoiceController;
+use App\Http\Controllers\User\InvoiceItemController;
 use App\Http\Controllers\User\LeaveRequestApprovalController;
 use App\Http\Controllers\User\LeaveRequestController;
 use App\Http\Controllers\User\LeaveTypeController;
@@ -285,6 +287,22 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
                 Route::post('/{quotation}', [QuotationItemController::class, 'store']);
                 Route::post('/update/{quotationItem}', [QuotationItemController::class, 'update']);
                 Route::post('/delete/{quotationItem}', [QuotationItemController::class, 'destroy']);
+            });
+        });
+
+        Route::prefix('invoices')->group(function () {
+            Route::prefix('main')->group(function () {
+                Route::get('/', [InvoiceController::class, 'index']);
+                Route::post('/', [InvoiceController::class, 'store']);
+                Route::get('/{invoice}', [InvoiceController::class, 'show']);
+                Route::post('/update/{invoice}', [InvoiceController::class, 'update']);
+                Route::post('/delete/{invoice}', [InvoiceController::class, 'destroy']);
+            });
+
+            Route::prefix('items')->group(function () {
+                Route::post('/{invoice}', [InvoiceItemController::class, 'store']);
+                Route::post('/update/{invoiceItem}', [InvoiceItemController::class, 'update']);
+                Route::post('/delete/{invoiceItem}', [InvoiceItemController::class, 'destroy']);
             });
         });
     });
