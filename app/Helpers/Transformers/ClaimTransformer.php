@@ -26,10 +26,10 @@ final class ClaimTransformer
             'department' => $claim->employee->department->name,
             'amount' => $claim->amount,
             'approved_amount' => $claim->approved_amount ?? 0,
-            'request_date' => $claim->request_date->format('l, d F Y'),
+            'request_date' => $claim->request_date->format('Y-m-d H:i:s'),
             'description' => $claim->description,
             'responded_by' => $claim->responded_by ? UserTransformer::transform($claim->user) : null,
-            'responded_at' => $claim->responded_at ? $claim->responded_at->format('l, d F Y') : null,
+            'responded_at' => $claim->responded_at ? $claim->responded_at->format('Y-m-d H:i:s') : null,
             'responded_note' => $claim->responded_note,
             'status' => $claim->status,
         ];

@@ -53,7 +53,7 @@ class ClaimApprovalController extends Controller
     public function index()
     {
         $claims = $this->company->claims()
-            ->with('claimType', 'employee.companyBranch', 'employee.designation', 'employee.department')
+            ->with('claimType', 'employee.companyBranch', 'employee.designation', 'employee.department', 'user')
             ->latest()
             ->paginate(25);
 
