@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('salary_types', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('company_id')->nullable()->constrained('companies')->cascadeOnDelete();
             $table->string('name');
             $table->enum('type', ['allowance', 'deduction', 'company_contribution'])->default('allowance');
             $table->timestamps();

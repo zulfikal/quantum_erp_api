@@ -132,6 +132,11 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'quotation.create', 'display_name' => 'Quotation Create', 'guard_name' => 'web'],
             ['name' => 'quotation.edit', 'display_name' => 'Quotation Edit', 'guard_name' => 'web'],
             ['name' => 'quotation.destroy', 'display_name' => 'Quotation Destroy', 'guard_name' => 'web'],
+            ['name' => 'quotation_item.index', 'display_name' => 'Quotation Item Index', 'guard_name' => 'web'],
+            ['name' => 'quotation_item.show', 'display_name' => 'Quotation Item Show', 'guard_name' => 'web'],
+            ['name' => 'quotation_item.create', 'display_name' => 'Quotation Item Create', 'guard_name' => 'web'],
+            ['name' => 'quotation_item.edit', 'display_name' => 'Quotation Item Edit', 'guard_name' => 'web'],
+            ['name' => 'quotation_item.destroy', 'display_name' => 'Quotation Item Destroy', 'guard_name' => 'web'],
         ];
 
         Permission::insert($permissions);
@@ -185,6 +190,16 @@ class RolePermissionSeeder extends Seeder
             'attendance.create',
             'attendance.edit',
             'attendance.destroy',
+            'quotation.index',
+            'quotation.show',
+            'quotation.create',
+            'quotation.edit',
+            'quotation.destroy',
+            'quotation_item.index',
+            'quotation_item.show',
+            'quotation_item.create',
+            'quotation_item.edit',
+            'quotation_item.destroy',
         ])->get();
         $employee_role->syncPermissions($employee_permissions);
     }

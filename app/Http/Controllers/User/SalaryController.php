@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Helpers\Constants\EmployeeStaticData;
+use App\Helpers\Constants\SalaryStaticData;
 use App\Helpers\Transformers\SalaryTransformer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSalaryItemRequest;
@@ -30,15 +32,52 @@ class SalaryController extends Controller
         });
     }
 
-    public function salaryItemIndex()
+    public function salaryItemIndex(Request $request)
     {
+        $search = $request->input('search');
+        $department = $request->input('department_id');
+        $branch = $request->input('branch_id');
+        $employee_status = $request->input('employee_status');
+
+        $branches = EmployeeStaticData::branch($this->company);
+        $departments = EmployeeStaticData::department($this->company);
+        $statuses = EmployeeStaticData::status();
+
         $salaryItems = $this->company->employees()->whereHas('user', function ($query) {
             $query->withoutRole('admin');
-        })->with('companyBranch.company', 'designation', 'department')->paginate(25);
+        })
+            ->when($search, function ($query) use ($search) {
+                $query->where('employees.first_name', 'like', "%{$search}%")
+                    ->orWhere('employees.last_name', 'like', "%{$search}%")
+                    ->orWhere('employees.nric_number', "{$search}")
+                    ->orWhere('employees.email', "{$search}")
+                    ->orWhere('employees.phone', "{$search}");
+            })
+            ->when($department, function ($query) use ($department) {
+                $query->whereHas('department', function ($query) use ($department) {
+                    $query->where('id', $department);
+                });
+            })
+            ->when($branch, function ($query) use ($branch) {
+                $query->whereHas('companyBranch', function ($query) use ($branch) {
+                    $query->where('id', $branch);
+                });
+            })
+            ->when($employee_status, function ($query) use ($employee_status) {
+                $query->where('status', $employee_status);
+            })
+            ->with('companyBranch.company', 'designation', 'department')->paginate(25);
 
         $salaryItems->through(fn($q) => SalaryTransformer::employee($q));
 
-        return response()->json($salaryItems, 200);
+        return response()->json([
+            'constants' => [
+                'employee_statuses' => $statuses,
+                'departments' => $departments,
+                'branches' => $branches,
+            ],
+            'employees' => $salaryItems,
+        ], 200);
     }
 
     public function salaryItemStore(StoreSalaryItemRequest $request, Employee $employee)

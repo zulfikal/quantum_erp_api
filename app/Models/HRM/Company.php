@@ -5,6 +5,7 @@ namespace App\Models\HRM;
 use App\Models\BusinessPartner\Entity;
 use App\Models\Product\Product;
 use App\Models\Product\ProductCategory;
+use App\Models\Salary\SalaryType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -81,5 +82,10 @@ class Company extends Model
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function salaryTypes(): HasMany
+    {
+        return $this->hasMany(SalaryType::class);
     }
 }

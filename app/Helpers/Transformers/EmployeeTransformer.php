@@ -43,4 +43,12 @@ class EmployeeTransformer
             ],
         ];
     }
+
+    public static function employee(Employee $employee)
+    {
+        return [
+            'id' => $employee->id,
+            'name' => $employee->full_name,
+        ];
+    }
 }

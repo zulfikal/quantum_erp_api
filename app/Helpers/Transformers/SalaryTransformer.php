@@ -25,6 +25,7 @@ class SalaryTransformer
         return [
             'id' => $employee->id,
             'full_name' => $employee->full_name,
+            'employee_status' => $employee->status,
             'company_branch' => CompanyTransformer::branch($employee->companyBranch),
             'designation' => $employee->designation->name,
             'department' => $employee->department->name,

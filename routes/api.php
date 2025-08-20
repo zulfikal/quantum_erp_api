@@ -27,6 +27,8 @@ use App\Http\Controllers\User\LeaveTypeController;
 use App\Http\Controllers\User\PayrollController;
 use App\Http\Controllers\User\ProductCategoryController;
 use App\Http\Controllers\User\ProductController;
+use App\Http\Controllers\User\QuotationController;
+use App\Http\Controllers\User\QuotationItemController;
 use App\Http\Controllers\User\SalaryController as UserSalaryController;
 use App\Http\Controllers\User\SalaryProcessController;
 use App\Http\Controllers\User\SalaryTypeController;
@@ -146,9 +148,16 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('salaries')->group(function () {
-        Route::get('/types', [SalaryTypeController::class, 'index']);
+
 
         Route::get('/show/{employee}', [UserSalaryController::class, 'salaryShow']);
+
+        Route::prefix('types')->group(function () {
+            Route::get('/', [SalaryTypeController::class, 'index']);
+            Route::post('/', [SalaryTypeController::class, 'store']);
+            Route::get('/{salaryType}', [SalaryTypeController::class, 'show']);
+            Route::post('/update/{salaryType}', [SalaryTypeController::class, 'update']);
+        });
 
         Route::prefix('items')->group(function () {
             Route::get('/', [UserSalaryController::class, 'salaryItemIndex']);
@@ -259,6 +268,24 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
             Route::get('/{category}', [ProductCategoryController::class, 'show']);
             Route::post('/update/{category}', [ProductCategoryController::class, 'update']);
             Route::post('/delete/{category}', [ProductCategoryController::class, 'destroy']);
+        });
+    });
+
+    Route::prefix('sales')->group(function () {
+        Route::prefix('quotations')->group(function () {
+            Route::prefix('main')->group(function () {
+                Route::get('/', [QuotationController::class, 'index']);
+                Route::post('/', [QuotationController::class, 'store']);
+                Route::get('/{quotation}', [QuotationController::class, 'show']);
+                Route::post('/update/{quotation}', [QuotationController::class, 'update']);
+                Route::post('/delete/{quotation}', [QuotationController::class, 'destroy']);
+            });
+
+            Route::prefix('items')->group(function () {
+                Route::post('/{quotation}', [QuotationItemController::class, 'store']);
+                Route::post('/update/{quotationItem}', [QuotationItemController::class, 'update']);
+                Route::post('/delete/{quotationItem}', [QuotationItemController::class, 'destroy']);
+            });
         });
     });
 });

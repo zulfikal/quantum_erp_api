@@ -20,37 +20,6 @@ class SalaryController extends Controller
         $this->middleware('role:super_admin');
     }
 
-    public function salaryTypeIndex()
-    {
-        $salaryTypes = SalaryType::all();
-
-        $salaryTypes->transform(fn($salaryType) => SalaryTransformer::salaryType($salaryType));
-
-        return response()->json([
-            'salaryTypes' => $salaryTypes,
-        ], 200);
-    }
-
-    public function salaryTypeStore(StoreSalaryTypeRequest $request)
-    {
-        $salaryType = SalaryType::create($request->validated());
-
-        return response()->json([
-            'message' => 'Salary type stored successfully',
-            'salaryType' => SalaryTransformer::salaryType($salaryType),
-        ], 201);
-    }
-
-    public function salaryTypeUpdate(StoreSalaryTypeRequest $request, SalaryType $salaryType)
-    {
-        $salaryType->update($request->validated());
-
-        return response()->json([
-            'message' => 'Salary type updated successfully',
-            'salaryType' => SalaryTransformer::salaryType($salaryType),
-        ], 200);
-    }
-
     public function salaryItemIndex(Employee $employee)
     {
         $salaryItems = $employee->salaryItems()->with('salaryType')->get();
