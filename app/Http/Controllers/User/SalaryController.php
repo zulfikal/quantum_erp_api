@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Helpers\Constants\EmployeeStaticData;
 use App\Helpers\Constants\SalaryStaticData;
+use App\Helpers\Transformers\EmployeeTransformer;
 use App\Helpers\Transformers\SalaryTransformer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSalaryItemRequest;
@@ -144,6 +145,7 @@ class SalaryController extends Controller
         };
 
         return response()->json([
+            'employee' => EmployeeTransformer::transform($employee),
             'basic_salary' => $employee->basic_salary ?? 0,
             'deductions' => [
                 'total' => $employee->salaryItemDeductions(),
