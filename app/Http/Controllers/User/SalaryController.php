@@ -42,6 +42,7 @@ class SalaryController extends Controller
         $branches = EmployeeStaticData::branch($this->company);
         $departments = EmployeeStaticData::department($this->company);
         $statuses = EmployeeStaticData::status();
+        $salaryTypes = SalaryStaticData::salaryType();
 
         $salaryItems = $this->company->employees()->whereHas('user', function ($query) {
             $query->withoutRole('admin');
@@ -75,6 +76,7 @@ class SalaryController extends Controller
                 'employee_statuses' => $statuses,
                 'departments' => $departments,
                 'branches' => $branches,
+                'salary_types' => $salaryTypes,
             ],
             'employees' => $salaryItems,
         ], 200);

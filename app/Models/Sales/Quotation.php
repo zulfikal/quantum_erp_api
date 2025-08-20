@@ -18,9 +18,10 @@ class Quotation extends Model
         'total_amount',
         'discount_amount',
         'grand_total',
-        'status',
+        'sale_status_id',
         'quotation_date',
         'tax_amount',
+        'shipping_amount',
         'description',
         'notes',
     ];
@@ -28,6 +29,11 @@ class Quotation extends Model
     protected $casts = [
         'quotation_date' => 'date',
     ];
+
+    public function saleStatus()
+    {
+        return $this->belongsTo(SaleStatus::class);
+    }
 
     public function company()
     {

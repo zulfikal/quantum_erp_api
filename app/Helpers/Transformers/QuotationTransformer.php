@@ -4,9 +4,18 @@ namespace App\Helpers\Transformers;
 
 use App\Models\Sales\Quotation;
 use App\Models\Sales\QuotationItem;
+use App\Models\Sales\SaleStatus;
 
 final class QuotationTransformer
 {
+    public static function saleStatus(SaleStatus $saleStatus)
+    {
+        return [
+            'id' => $saleStatus->id,
+            'name' => $saleStatus->name,
+        ];
+    }
+
     public static function quotation(Quotation $quotation)
     {
         return [
@@ -18,11 +27,11 @@ final class QuotationTransformer
             'quotation_number' => $quotation->quotation_number,
             'total_amount' => $quotation->total_amount,
             'discount_amount' => $quotation->discount_amount,
+            'shipping_amount' => $quotation->shipping_amount,
             'grand_total' => $quotation->grand_total,
-            'status' => $quotation->status,
+            'sale_status' => self::saleStatus($quotation->saleStatus),
             'customer' => CustomerReferenceTransformer::customerReference($quotation->customerReferences),
             'quotation_date' => $quotation->quotation_date->format('Y-m-d'),
-            'status' => $quotation->status,
             'notes' => $quotation->notes,
         ];
     }
@@ -55,11 +64,11 @@ final class QuotationTransformer
             'quotation_number' => $quotation->quotation_number,
             'total_amount' => $quotation->total_amount,
             'discount_amount' => $quotation->discount_amount,
+            'shipping_amount' => $quotation->shipping_amount,
             'grand_total' => $quotation->grand_total,
-            'status' => $quotation->status,
+            'sale_status' => self::saleStatus($quotation->saleStatus),
             'customer' => CustomerReferenceTransformer::customerReference($quotation->customerReferences),
             'quotation_date' => $quotation->quotation_date->format('Y-m-d'),
-            'status' => $quotation->status,
             'notes' => $quotation->notes,
             'items' => $quotation->items->transform(fn($item) => self::quotationItem($item)),
         ];

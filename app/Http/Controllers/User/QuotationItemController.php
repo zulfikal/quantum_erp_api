@@ -67,10 +67,10 @@ class QuotationItemController extends Controller
             $itemsTaxAmount = $quotation->items()->sum('tax_amount');
 
             $quotation->update([
-                'total_amount' => $itemsTotal + $itemsDiscount,
+                'total_amount' => $itemsTotal + $itemsDiscount + $quotation->shipping_amount,
                 'discount_amount' => $itemsDiscount,
                 'tax_amount' => $itemsTaxAmount,
-                'grand_total' => $itemsTotal,
+                'grand_total' => $itemsTotal + $quotation->shipping_amount,
             ]);
         });
 
@@ -118,10 +118,10 @@ class QuotationItemController extends Controller
             $itemsTaxAmount = $quotation->items()->sum('tax_amount');
 
             $quotation->update([
-                'total_amount' => $itemsTotal + $itemsDiscount,
+                'total_amount' => $itemsTotal + $itemsDiscount + $quotation->shipping_amount,
                 'discount_amount' => $itemsDiscount,
                 'tax_amount' => $itemsTaxAmount,
-                'grand_total' => $itemsTotal,
+                'grand_total' => $itemsTotal + $quotation->shipping_amount,
             ]);
         });
 
@@ -142,10 +142,10 @@ class QuotationItemController extends Controller
             $itemsTaxAmount = $quotation->items()->sum('tax_amount');
 
             $quotation->update([
-                'total_amount' => $itemsTotal + $itemsDiscount,
+                'total_amount' => $itemsTotal + $itemsDiscount + $quotation->shipping_amount,
                 'discount_amount' => $itemsDiscount,
                 'tax_amount' => $itemsTaxAmount,
-                'grand_total' => $itemsTotal,
+                'grand_total' => $itemsTotal + $quotation->shipping_amount,
             ]);
         });
 

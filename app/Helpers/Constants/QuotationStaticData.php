@@ -2,16 +2,15 @@
 
 namespace App\Helpers\Constants;
 
+use App\Helpers\Transformers\QuotationTransformer;
+use App\Models\Sales\SaleStatus;
+
 final class QuotationStaticData
 {
-    public static function statuses(): array
+    public static function statuses()
     {
-        return [
-            ['code' => 'draft', 'value' => 'Draft'],
-            ['code' => 'sent', 'value' => 'Sent'],
-            ['code' => 'approved', 'value' => 'Approved'],
-            ['code' => 'rejected', 'value' => 'Rejected'],
-            ['code' => 'completed', 'value' => 'Completed'],
-        ];
+        $statuses = SaleStatus::whereIn('type', ['quotation', 'quotation_invoice'])->get();
+
+        return $statuses->transform(fn($status) => QuotationTransformer::saleStatus($status));
     }
 }

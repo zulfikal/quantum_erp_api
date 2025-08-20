@@ -6,6 +6,7 @@ use App\Models\HRM\Bank;
 use App\Models\HRM\ClaimType;
 use App\Models\HRM\LeaveType;
 use App\Models\Salary\SalaryType;
+use App\Models\Sales\SaleStatus;
 use Illuminate\Database\Seeder;
 
 class StaticDataSeeder extends Seeder
@@ -136,6 +137,21 @@ class StaticDataSeeder extends Seeder
             ["name" => "Entertainment"],
             ["name" => "Software"],
             ["name" => "Others"],
+        ]);
+
+        //Create sale statuses
+        SaleStatus::insert([
+            ["type" => "quotation_invoice", "name" => "Draft"],
+            ["type" => "quotation", "name" => "Sent"],
+            ["type" => "quotation", "name" => "Approved"],
+            ["type" => "quotation", "name" => "Rejected"],
+            ["type" => "quotation", "name" => "Completed"],
+            ["type" => "quotation_invoice", "name" => "Cancelled"],
+            ["type" => "invoice", "name" => "Waiting for Payment"],
+            ["type" => "invoice", "name" => "Paid"],
+            ["type" => "invoice", "name" => "Overdue"],
+            ["type" => "invoice", "name" => "Partially Paid"],
+            ["type" => "invoice", "name" => "Unpaid"],
         ]);
     }
 }

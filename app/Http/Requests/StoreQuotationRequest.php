@@ -23,10 +23,11 @@ class StoreQuotationRequest extends FormRequest
     {
         return [
             'quotation.quotation_number' => 'nullable|string|max:255',
-            'quotation.status' => 'required|in:draft,sent,approved,rejected,completed',
+            'quotation.sale_status_id' => 'required|exists:sale_statuses,id',
             'quotation.quotation_date' => 'required|date',
             'quotation.notes' => 'nullable|string',
             'quotation.description' => 'required|string',
+            'quotation.shipping_amount' => 'required|numeric',
             'customer.customer_id' => 'nullable|exists:customers,id',
             'customer.name' => 'required|string|max:255',
             'customer.email' => 'nullable|email',

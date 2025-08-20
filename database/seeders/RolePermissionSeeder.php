@@ -137,6 +137,16 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'quotation_item.create', 'display_name' => 'Quotation Item Create', 'guard_name' => 'web'],
             ['name' => 'quotation_item.edit', 'display_name' => 'Quotation Item Edit', 'guard_name' => 'web'],
             ['name' => 'quotation_item.destroy', 'display_name' => 'Quotation Item Destroy', 'guard_name' => 'web'],
+            ['name' => 'invoice.index', 'display_name' => 'Invoice Index', 'guard_name' => 'web'],
+            ['name' => 'invoice.show', 'display_name' => 'Invoice Show', 'guard_name' => 'web'],
+            ['name' => 'invoice.create', 'display_name' => 'Invoice Create', 'guard_name' => 'web'],
+            ['name' => 'invoice.edit', 'display_name' => 'Invoice Edit', 'guard_name' => 'web'],
+            ['name' => 'invoice.destroy', 'display_name' => 'Invoice Destroy', 'guard_name' => 'web'],
+            ['name' => 'invoice_item.index', 'display_name' => 'Invoice Item Index', 'guard_name' => 'web'],
+            ['name' => 'invoice_item.show', 'display_name' => 'Invoice Item Show', 'guard_name' => 'web'],
+            ['name' => 'invoice_item.create', 'display_name' => 'Invoice Item Create', 'guard_name' => 'web'],
+            ['name' => 'invoice_item.edit', 'display_name' => 'Invoice Item Edit', 'guard_name' => 'web'],
+            ['name' => 'invoice_item.destroy', 'display_name' => 'Invoice Item Destroy', 'guard_name' => 'web'],
         ];
 
         Permission::insert($permissions);

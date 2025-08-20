@@ -11,20 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('quotations', function (Blueprint $table) {
+        Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
             $table->foreignId('branch_id')->constrained('company_branches')->cascadeOnDelete();
             $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
             $table->text('description');
-            $table->string('quotation_number');
+            $table->string('invoice_number');
             $table->double('total_amount')->default(0);
             $table->double('discount_amount')->default(0);
             $table->double('tax_amount')->default(0);
-            $table->double('shipping_amount')->default(0);
             $table->double('grand_total')->default(0);
-            $table->timestamp('quotation_date');
-            $table->foreignId('sale_status_id')->constrained('sale_statuses')->default(1);
+            $table->foreignId('sale_status_id')->constrained('sale_statuses');
+            $table->timestamp('invoice_date');
+            $table->timestamp('due_date')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('quotations');
+        Schema::dropIfExists('invoices');
     }
 };

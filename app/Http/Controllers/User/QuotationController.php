@@ -46,9 +46,9 @@ class QuotationController extends Controller
     {
         // Get counts for all statuses in a single query
         $statusCounts = Quotation::where('company_id', $this->company->id)
-            ->selectRaw('status, COUNT(*) as count')
-            ->groupBy('status')
-            ->pluck('count', 'status')
+            ->selectRaw('sale_status_id, COUNT(*) as count')
+            ->groupBy('sale_status_id')
+            ->pluck('count', 'sale_status_id')
             ->toArray();
 
         // Get total count
@@ -57,11 +57,12 @@ class QuotationController extends Controller
         // Prepare the result with all possible statuses
         $result = [
             'total' => $total,
-            'draft' => $statusCounts['draft'] ?? 0,
-            'sent' => $statusCounts['sent'] ?? 0,
-            'approved' => $statusCounts['approved'] ?? 0,
-            'rejected' => $statusCounts['rejected'] ?? 0,
-            'completed' => $statusCounts['completed'] ?? 0,
+            'draft' => $statusCounts['1'] ?? 0,
+            'sent' => $statusCounts['2'] ?? 0,
+            'approved' => $statusCounts['3'] ?? 0,
+            'rejected' => $statusCounts['4'] ?? 0,
+            'completed' => $statusCounts['5'] ?? 0,
+            'cancelled' => $statusCounts['6'] ?? 0,
         ];
 
         return $result;
@@ -77,7 +78,7 @@ class QuotationController extends Controller
                 ->orWhereHas('customerReferences', function ($query) use ($search) {
                     $query->where('name', 'like', "%{$search}%");
                 }))
-            ->when($status, fn($query) => $query->where('status', $status))
+            ->when($status, fn($query) => $query->where('sale_status_id', $status))
             ->with('customerReferences', 'items.product')->paginate(25);
 
         $quotations->through(fn($q) => QuotationTransformer::quotation($q));
@@ -137,8 +138,9 @@ class QuotationController extends Controller
                 'quotation_number' => $quotationNumber,
                 'total_amount' => $quotationItems->sum('total_amount'),
                 'discount_amount' => $quotationItems->sum('discount'),
-                'grand_total' => $quotationItems->sum('total_after_discount'),
-                'status' => $quotation['status'],
+                'grand_total' => $quotationItems->sum('total_after_discount') + $quotation['shipping_amount'],
+                'shipping_amount' => $quotation['shipping_amount'],
+                'sale_status_id' => $quotation['sale_status_id'],
                 'notes' => $quotation['notes'],
                 'description' => $quotation['description'],
             ]);
@@ -178,8 +180,24 @@ class QuotationController extends Controller
 
     public function update(UpdateQuotationRequest $request, Quotation $quotation)
     {
-        $quotation->update($request->validated()['quotation']);
         $quotation->customerReferences()->update($request->validated()['customer']);
+
+        $itemsTotal = $quotation->items()->sum('total');
+        $itemsDiscount = $quotation->items()->sum('discount');
+        $itemsTaxAmount = $quotation->items()->sum('tax_amount');
+
+        $quotation->update([
+            'total_amount' => $itemsTotal + $itemsDiscount + $request->validated()['quotation']['shipping_amount'],
+            'shipping_amount' => $request->validated()['quotation']['shipping_amount'],
+            'sale_status_id' => $request->validated()['quotation']['sale_status_id'],
+            'quotation_date' => $request->validated()['quotation']['quotation_date'],
+            'notes' => $request->validated()['quotation']['notes'],
+            'description' => $request->validated()['quotation']['description'],
+            'discount_amount' => $itemsDiscount,
+            'tax_amount' => $itemsTaxAmount,
+            'grand_total' => $itemsTotal +  $request->validated()['quotation']['shipping_amount'],
+        ]);
+
 
         return response()->json([
             'message' => 'Quotation updated successfully',
