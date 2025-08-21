@@ -80,7 +80,7 @@ class QuotationController extends Controller
                     $query->where('name', 'like', "%{$search}%");
                 }))
             ->when($status, fn($query) => $query->where('sale_status_id', $status))
-            ->with('customerReferences', 'items.product')->paginate(25);
+            ->with('customerReferences', 'items.product', 'company', 'branch', 'employee', 'saleStatus')->paginate(25);
 
         $quotations->through(fn($q) => QuotationTransformer::quotation($q));
 
