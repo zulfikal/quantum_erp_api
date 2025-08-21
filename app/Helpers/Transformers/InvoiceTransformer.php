@@ -33,7 +33,7 @@ final class InvoiceTransformer
             'sale_status' => self::saleStatus($invoice->saleStatus),
             'customer' => CustomerReferenceTransformer::invoiceCustomer($invoice->invoiceCustomer),
             'invoice_date' => $invoice->invoice_date->format('Y-m-d'),
-            'due_date' => $invoice->due_date->format('Y-m-d'),
+            'due_date' => $invoice->due_date ? $invoice->due_date->format('Y-m-d') : null,
             'notes' => $invoice->notes,
         ];
     }
@@ -72,7 +72,7 @@ final class InvoiceTransformer
             'sale_status' => self::saleStatus($invoice->saleStatus),
             'customer' => CustomerReferenceTransformer::invoiceCustomer($invoice->invoiceCustomer),
             'invoice_date' => $invoice->invoice_date->format('Y-m-d'),
-            'due_date' => $invoice->due_date->format('Y-m-d'),
+            'due_date' => $invoice->due_date ? $invoice->due_date->format('Y-m-d') : null,
             'notes' => $invoice->notes,
             'items' => $invoice->items->transform(fn($item) => self::invoiceItem($item)),
         ];

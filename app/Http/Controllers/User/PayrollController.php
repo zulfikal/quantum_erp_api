@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Helpers\Transformers\PayrollTransformer;
 use App\Models\Salary\SalaryProcessItem;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PayrollController extends Controller
 {
@@ -31,5 +32,14 @@ class PayrollController extends Controller
         return response()->json([
             'data' => PayrollTransformer::payrollDetail($salaryProcessItem),
         ], 200);
+    }
+
+    public function pdf(SalaryProcessItem $salaryProcessItem)
+    {
+        $pdf = PDF::loadView('pdf.payroll', [
+            'data' => PayrollTransformer::payrollDetail($salaryProcessItem),
+        ]);
+
+        return $pdf->stream();
     }
 }

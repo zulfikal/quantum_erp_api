@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Transformers\EmployeeTransformer;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,8 +50,8 @@ class AuthController extends Controller
         return response()->json([
             'plainTextToken' => $token->plainTextToken,
             'info' => [
-                'user_id' => (string)$user->id,
-                'employee_id' => $user->employee->id,
+                'user_id' => $user->id,
+                'employee' => EmployeeTransformer::transform($user->employee),
                 'user_name' => strtoupper($user->name),
                 'device' => $request->device_name
             ],

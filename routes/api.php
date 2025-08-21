@@ -179,6 +179,7 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
     Route::prefix('payrolls')->group(function () {
         Route::get('/', [PayrollController::class, 'index']);
         Route::get('/{salaryProcessItem}', [PayrollController::class, 'show']);
+        Route::get('/pdf/{salaryProcessItem}', [PayrollController::class, 'pdf']);
     });
 
     Route::prefix('leaves')->group(function () {
@@ -281,6 +282,7 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
                 Route::get('/{quotation}', [QuotationController::class, 'show']);
                 Route::post('/update/{quotation}', [QuotationController::class, 'update']);
                 Route::post('/delete/{quotation}', [QuotationController::class, 'destroy']);
+                Route::post('/convert/{quotation}', [QuotationController::class, 'convertToInvoice']);
             });
 
             Route::prefix('items')->group(function () {

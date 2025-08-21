@@ -5,6 +5,7 @@ namespace App\Models\Sales;
 use App\Models\HRM\Company;
 use App\Models\HRM\CompanyBranch;
 use App\Models\HRM\Employee;
+use App\Models\Sales\Quotation;
 use App\Models\Sales\SaleStatus;
 use App\Models\Sales\InvoiceItem;
 use App\Models\Sales\InvoiceCustomer;
@@ -19,6 +20,7 @@ class Invoice extends Model
         'company_id',
         'branch_id',
         'employee_id',
+        'quotation_id',
         'description',
         'invoice_number',
         'total_amount',
@@ -56,6 +58,11 @@ class Invoice extends Model
     public function employee() : BelongsTo
     {
         return $this->belongsTo(Employee::class);
+    }
+
+    public function quotation() : BelongsTo
+    {
+        return $this->belongsTo(Quotation::class);
     }
 
     public function items() : HasMany

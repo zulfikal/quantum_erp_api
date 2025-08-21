@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\User;
 
 use App\Helpers\Constants\QuotationStaticData;
+use App\Helpers\Transformers\InvoiceTransformer;
 use App\Helpers\Transformers\QuotationTransformer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreQuotationRequest;
 use App\Http\Requests\UpdateQuotationRequest;
 use App\Models\HRM\Company;
+use App\Models\Sales\Invoice;
 use App\Models\Sales\Quotation;
 use App\Models\Sales\QuotationItem;
 use App\Models\Sales\SaleStatus;
@@ -20,6 +22,7 @@ class QuotationController extends Controller
 {
     protected Company $company;
     protected Quotation $quotation;
+    protected Invoice $invoice;
 
     public function __construct()
     {
@@ -80,7 +83,9 @@ class QuotationController extends Controller
                     $query->where('name', 'like', "%{$search}%");
                 }))
             ->when($status, fn($query) => $query->where('sale_status_id', $status))
-            ->with('customerReferences', 'items.product', 'company', 'branch', 'employee', 'saleStatus')->paginate(25);
+            ->with('customerReferences', 'items.product', 'company', 'branch', 'employee', 'saleStatus')
+            ->latest()
+            ->paginate(25);
 
         $quotations->through(fn($q) => QuotationTransformer::quotation($q));
 
@@ -232,6 +237,84 @@ class QuotationController extends Controller
 
         return response()->json([
             'message' => 'Quotation deleted successfully',
+        ], 200);
+    }
+
+    public function convertToInvoice(Quotation $quotation, Request $request)
+    {
+        $validated = $request->validate([
+            'due_date' => 'nullable|date',
+        ]);
+
+        if ($quotation->company_id != $this->company->id) {
+            return response()->json([
+                'message' => 'You are not authorized to convert this quotation to invoice',
+            ], 403);
+        }
+
+        $existingInvoice = Invoice::where('quotation_id', $quotation->id)->first();
+
+        if ($existingInvoice) {
+            return response()->json([
+                'message' => 'This quotation has already been converted to an invoice',
+            ], 400);
+        }
+
+        DB::transaction(function () use ($quotation, $validated) {
+            $invoice = Invoice::create([
+                'company_id' => $quotation->company_id,
+                'quotation_id' => $quotation->id,
+                'branch_id' => $quotation->branch_id,
+                'employee_id' => $quotation->employee_id,
+                'invoice_number' => 'INV' . str_pad($this->company->id, 3, '0', STR_PAD_LEFT)  . str_pad(Invoice::where('company_id', $this->company->id)->count() + 1, 5, '0', STR_PAD_LEFT),
+                'total_amount' => $quotation->total_amount,
+                'discount_amount' => $quotation->discount_amount,
+                'grand_total' => $quotation->grand_total,
+                'sale_status_id' => $quotation->sale_status_id,
+                'invoice_date' => now(),
+                'tax_amount' => $quotation->tax_amount,
+                'shipping_amount' => $quotation->shipping_amount,
+                'description' => $quotation->description,
+                'notes' => $quotation->notes,
+                'due_date' => $validated['due_date'],
+            ]);
+
+            $invoice->items()->createMany($quotation->items->map(function ($item) {
+                return [
+                    'product_id' => $item->product_id,
+                    'name' => $item->name,
+                    'type' => $item->type,
+                    'sku' => $item->sku,
+                    'description' => $item->description,
+                    'price' => $item->price,
+                    'discount' => $item->discount,
+                    'tax_percentage' => $item->tax_percentage,
+                    'tax_amount' => $item->tax_amount,
+                    'quantity' => $item->quantity,
+                    'total' => $item->total,
+                ];
+            }));
+
+            $invoice->invoiceCustomer()->create([
+                'invoice_id' => $invoice->id,
+                'name' => $quotation->customerReferences->name,
+                'email' => $quotation->customerReferences->email,
+                'phone' => $quotation->customerReferences->phone,
+                'address_1' => $quotation->customerReferences->address_1,
+                'address_2' => $quotation->customerReferences->address_2,
+                'city' => $quotation->customerReferences->city,
+                'state' => $quotation->customerReferences->state,
+                'zip_code' => $quotation->customerReferences->zip_code,
+                'country' => $quotation->customerReferences->country,
+            ]);
+
+            $this->invoice = $invoice;
+        });
+
+
+        return response()->json([
+            'message' => 'Quotation converted to invoice successfully',
+            'invoice' => InvoiceTransformer::invoiceWithItems($this->invoice->fresh()),
         ], 200);
     }
 }
