@@ -51,6 +51,7 @@ class EntityController extends Controller
             ->when($type, fn($query) => $query->where('type', $type))
             ->when($status, fn($query) => $query->where('status', $status))
             ->with('contacts', 'addresses', 'createdBy', 'company')
+            ->latest()
             ->paginate(25);
 
         $entities->through(fn($entity) => EntityTransformer::entities($entity));
@@ -64,6 +65,7 @@ class EntityController extends Controller
             ],
             'statistics' => array_map('intval', (array) DB::table('entities')
                 ->where('company_id', $this->company->id)
+                ->when($type, fn($query) => $query->where('type', $type))
                 ->selectRaw('
                     COALESCE(COUNT(*), 0) as total,
                     COALESCE(SUM(CASE WHEN status = "active" THEN 1 ELSE 0 END), 0) as active,
