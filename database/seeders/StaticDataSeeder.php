@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Accounting\TransactionMethod;
 use App\Models\HRM\Bank;
 use App\Models\HRM\ClaimType;
 use App\Models\HRM\LeaveType;
@@ -152,6 +153,18 @@ class StaticDataSeeder extends Seeder
             ["type" => "invoice", "name" => "Overdue"],
             ["type" => "invoice", "name" => "Partially Paid"],
             ["type" => "invoice", "name" => "Unpaid"],
+        ]);
+
+        //Create transaction methods
+        TransactionMethod::insert([
+            ["name" => "Cash"],
+            ["name" => "Bank Transfer"],
+            ["name" => "Online Payment / FPX"],
+            ["name" => "Direct Debit"],
+            ["name" => "Cheque"],
+            ["name" => "Credit Card"],
+            ["name" => "Debit Card"],
+            ["name" => "E-Wallet"],
         ]);
     }
 }

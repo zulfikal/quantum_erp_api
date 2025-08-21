@@ -15,6 +15,7 @@ use App\Http\Controllers\User\BranchController;
 use App\Http\Controllers\User\ClaimApprovalController;
 use App\Http\Controllers\User\ClaimController;
 use App\Http\Controllers\User\ClaimTypeController;
+use App\Http\Controllers\User\CompanyBankController;
 use App\Http\Controllers\User\DepartmentController;
 use App\Http\Controllers\User\DesignationController as UserDesignationController;
 use App\Http\Controllers\User\EmployeeController as UserEmployeeController;
@@ -34,6 +35,7 @@ use App\Http\Controllers\User\QuotationItemController;
 use App\Http\Controllers\User\SalaryController as UserSalaryController;
 use App\Http\Controllers\User\SalaryProcessController;
 use App\Http\Controllers\User\SalaryTypeController;
+use App\Http\Controllers\User\TransactionController;
 
 Route::get('/welcome', function () {
     return response()->json([
@@ -117,6 +119,18 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
         Route::post('/', [BranchController::class, 'store']);
         Route::get('/{companyBranch}', [BranchController::class, 'show']);
         Route::post('/update/{companyBranch}', [BranchController::class, 'update']);
+    });
+
+    Route::prefix('company-banks')->group(function () {
+        Route::get('/', [CompanyBankController::class, 'index']);
+        Route::post('/', [CompanyBankController::class, 'store']);
+        Route::get('/{companyBank}', [CompanyBankController::class, 'show']);
+        Route::post('/update/{companyBank}', [CompanyBankController::class, 'update']);
+    });
+
+    Route::prefix('transactions')->group(function () {
+        Route::get('/', [TransactionController::class, 'index']);
+        Route::post('/', [TransactionController::class, 'store']);
     });
 
     Route::prefix('departments')->group(function () {

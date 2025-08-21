@@ -48,4 +48,20 @@ final class CompanyStaticData
             'name' => $department->name,
         ];
     }
+
+    public static function bankType(): array
+    {
+        return [
+            ['code' => 'current', 'name' => 'Current Account'],
+            ['code' => 'saving', 'name' => 'Saving Account'],
+        ];
+    }
+
+    public static function bankStatus(): array
+    {
+        return [
+            ['code' => 'active', 'name' => 'Active'],
+            ['code' => 'inactive', 'name' => 'Inactive'],
+        ];
+    }
 }

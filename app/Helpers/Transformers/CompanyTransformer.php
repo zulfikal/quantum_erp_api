@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Transformers;
 
+use App\Models\Accounting\CompanyBank;
 use App\Models\HRM\Company;
 use App\Models\HRM\CompanyBranch;
 use App\Models\HRM\Department;
@@ -50,6 +51,18 @@ class CompanyTransformer
             'id' => $department->id,
             'company_id' => $department->company_id,
             'name' => $department->name,
+        ];
+    }
+
+    public static function bank(CompanyBank $companyBank)
+    {
+        return [
+            'id' => $companyBank->id,
+            'bank' => BankTransformer::bank($companyBank->bank),
+            'account_number' => $companyBank->account_number,
+            'holder_name' => $companyBank->holder_name,
+            'type' => $companyBank->type,
+            'status' => $companyBank->status,
         ];
     }
 }

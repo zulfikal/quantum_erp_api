@@ -147,7 +147,17 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'invoice_item.create', 'display_name' => 'Invoice Item Create', 'guard_name' => 'web'],
             ['name' => 'invoice_item.edit', 'display_name' => 'Invoice Item Edit', 'guard_name' => 'web'],
             ['name' => 'invoice_item.destroy', 'display_name' => 'Invoice Item Destroy', 'guard_name' => 'web'],
-        ];
+            ['name' => 'company_bank.index', 'display_name' => 'Company Bank Index', 'guard_name' => 'web'],
+            ['name' => 'company_bank.show', 'display_name' => 'Company Bank Show', 'guard_name' => 'web'],
+            ['name' => 'company_bank.create', 'display_name' => 'Company Bank Create', 'guard_name' => 'web'],
+            ['name' => 'company_bank.edit', 'display_name' => 'Company Bank Edit', 'guard_name' => 'web'],
+            ['name' => 'company_bank.destroy', 'display_name' => 'Company Bank Destroy', 'guard_name' => 'web'],
+            ['name' => 'transaction.index', 'display_name' => 'Transaction Index', 'guard_name' => 'web'],
+            ['name' => 'transaction.show', 'display_name' => 'Transaction Show', 'guard_name' => 'web'],
+            ['name' => 'transaction.create', 'display_name' => 'Transaction Create', 'guard_name' => 'web'],
+            ['name' => 'transaction.edit', 'display_name' => 'Transaction Edit', 'guard_name' => 'web'],
+            ['name' => 'transaction.destroy', 'display_name' => 'Transaction Destroy', 'guard_name' => 'web'],
+    ];
 
         Permission::insert($permissions);
 

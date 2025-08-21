@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('bank_id')->constrained('banks')->cascadeOnDelete();
             $table->string('account_number');
             $table->string('holder_name');
+            $table->enum('type', ['saving', 'current', 'wallet'])->default('saving');
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });
     }

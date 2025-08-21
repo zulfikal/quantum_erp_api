@@ -4,7 +4,7 @@ namespace App\Models\Accounting;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TransactionType extends Model
+class TransactionMethod extends Model
 {
     protected $fillable = [
         'name',

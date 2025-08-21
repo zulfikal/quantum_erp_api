@@ -2,6 +2,8 @@
 
 namespace App\Models\HRM;
 
+use App\Models\Accounting\CompanyBank;
+use App\Models\Accounting\Transaction;
 use App\Models\BusinessPartner\Entity;
 use App\Models\Product\Product;
 use App\Models\Product\ProductCategory;
@@ -87,5 +89,15 @@ class Company extends Model
     public function salaryTypes(): HasMany
     {
         return $this->hasMany(SalaryType::class);
+    }
+
+    public function companyBanks(): HasMany
+    {
+        return $this->hasMany(CompanyBank::class);
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
     }
 }
