@@ -12,13 +12,24 @@ class PayrollController extends Controller
 {
     public function index(Request $request)
     {
-        $salaryProcessItems = auth()->user()->employee
-            ->salaryProcessItems()
-            ->whereHas('salaryProcess', function ($query) {
-                $query->where('status', 'paid');
+        if (auth()->user()->hasRole('admin')) {
+            $salaryProcessItems = SalaryProcessItem::whereHas('companyBranch.company', function ($query) {
+                $query->where('id', auth()->user()->employee->companyBranch->company->id);
             })
-            ->with('salaryProcess', 'employee.companyBranch.company')
-            ->paginate(25);
+                ->whereHas('salaryProcess', function ($query) {
+                    $query->where('status', 'paid');
+                })
+                ->with('salaryProcess', 'employee.companyBranch.company')
+                ->paginate(25);
+        } else {
+            $salaryProcessItems = auth()->user()->employee
+                ->salaryProcessItems()
+                ->whereHas('salaryProcess', function ($query) {
+                    $query->where('status', 'paid');
+                })
+                ->with('salaryProcess', 'employee.companyBranch.company')
+                ->paginate(25);
+        }
 
         $salaryProcessItems->through(fn($salaryProcessItem) => PayrollTransformer::payrollList($salaryProcessItem));
 
