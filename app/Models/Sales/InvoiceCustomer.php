@@ -2,14 +2,14 @@
 
 namespace App\Models\Sales;
 
-use App\Models\HRM\Customer;
+use App\Models\HRM\Entity;
 use Illuminate\Database\Eloquent\Model;
 
 class InvoiceCustomer extends Model
 {
     protected $fillable = [
         'invoice_id',
-        'customer_id',
+        'entity_id',
         'name',
         'email',
         'phone',
@@ -28,6 +28,6 @@ class InvoiceCustomer extends Model
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Entity::class, 'entity_id', 'id');
     }
 }
