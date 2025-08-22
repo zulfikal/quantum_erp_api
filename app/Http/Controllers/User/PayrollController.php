@@ -27,7 +27,7 @@ class PayrollController extends Controller
                 ->whereHas('salaryProcess', function ($query) {
                     $query->where('status', 'paid');
                 })
-                ->with('salaryProcess', 'employee.companyBranch.company')
+                ->with('salaryProcess', 'employee.companyBranch.company', 'employee.company')
                 ->paginate(25);
         }
 
