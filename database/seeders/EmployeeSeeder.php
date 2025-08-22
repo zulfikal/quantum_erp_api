@@ -18,7 +18,7 @@ class EmployeeSeeder extends Seeder
     {
         for ($i = 1; $i <= 50; $i++) {
             $employee = Employee::create([
-                'staff_id' => '0010100' . ($i + 1),
+                'staff_id' => '00101' . str_pad($i + 1, 3, '0', STR_PAD_LEFT),
                 "department_id" => Factory::create()->numberBetween(2, 9),
                 "designation_id" => Factory::create()->numberBetween(2, 10),
                 "company_branch_id" => 1,
