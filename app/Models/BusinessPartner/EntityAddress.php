@@ -45,4 +45,9 @@ class EntityAddress extends Model
         // Then set this address to default
         $this->update(['is_default' => true]);
     }
+
+    public function getIsDefaultLabelAttribute() : bool
+    {
+        return $this->is_default;
+    }
 }

@@ -21,6 +21,7 @@ class EntityTransformer
             'notes' => $address->notes,
             'type' => $address->type,
             'label' => $address->type_label,
+            'is_default' => $address->isDefaultLabel,
         ];
     }
 
