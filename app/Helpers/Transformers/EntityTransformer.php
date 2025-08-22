@@ -59,8 +59,11 @@ class EntityTransformer
 
     public static function entities(Entity $entity)
     {
+        // Fetch all contacts at once and organize by type
+        $contacts = $entity->contacts->groupBy('type');
+        
         return [
-            'id' => $entity->id,
+            // 'id' => $entity->id,
             'name' => $entity->name,
             'type' => $entity->type,
             'label' => $entity->type_label,
@@ -70,6 +73,14 @@ class EntityTransformer
             'website' => $entity->website,
             'notes' => $entity->notes,
             'created_by' => $entity->createdBy->full_name,
+            'address' => self::address($entity->addresses()->where('is_default', true)->first()),
+            'contact' => [
+                'phone' => isset($contacts['phone']) ? self::contact($contacts['phone']->first()) : null,
+                'email' => isset($contacts['email']) ? self::contact($contacts['email']->first()) : null,
+                'mobile' => isset($contacts['mobile']) ? self::contact($contacts['mobile']->first()) : null,
+                'fax' => isset($contacts['fax']) ? self::contact($contacts['fax']->first()) : null,
+                'other' => isset($contacts['other']) ? self::contact($contacts['other']->first()) : null,
+            ]
         ];
     }
 }

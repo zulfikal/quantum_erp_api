@@ -30,6 +30,7 @@ class StoreEntityAddressRequest extends FormRequest
             'country' => 'required|string|max:255',
             'type' => 'nullable|in:billing,shipping,billing_and_shipping',
             'notes' => 'nullable|string',
+            'is_default' => 'required|boolean',
         ];
     }
 }

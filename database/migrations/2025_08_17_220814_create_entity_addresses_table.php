@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('country')->nullable();
             $table->text('notes')->nullable();
             $table->enum('type', ['billing', 'shipping', 'billing_and_shipping'])->default('billing_and_shipping');
+            $table->boolean('is_default')->default(true);
             $table->timestamps();
         });
     }

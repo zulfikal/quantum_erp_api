@@ -65,6 +65,10 @@ class EntityAddressController extends Controller
 
         $address = $entity->addresses()->create($request->validated());
 
+        if ($request->is_default) {
+            $address->setDefault();
+        }
+
         return response()->json([
             'message' => 'Address created successfully',
             'address' => EntityTransformer::address($address),
@@ -80,6 +84,10 @@ class EntityAddressController extends Controller
         }
 
         $address->update($request->validated());
+
+        if ($request->is_default) {
+            $address->setDefault();
+        }
 
         return response()->json([
             'message' => 'Address updated successfully',

@@ -41,6 +41,7 @@ final class QuotationTransformer
     {
         return [
             'id' => $quotationItem->id,
+            'product_id' => $quotationItem->product_id,
             'name' => $quotationItem->name,
             'type' => $quotationItem->type,
             'sku' => $quotationItem->sku,

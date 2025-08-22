@@ -42,6 +42,7 @@ final class InvoiceTransformer
     {
         return [
             'id' => $invoiceItem->id,
+            'product_id' => $invoiceItem->product_id,
             'name' => $invoiceItem->name,
             'type' => $invoiceItem->type,
             'sku' => $invoiceItem->sku,

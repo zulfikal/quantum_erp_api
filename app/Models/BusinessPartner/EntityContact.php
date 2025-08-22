@@ -10,7 +10,7 @@ class EntityContact extends Model
         'entity_id',
         'type',
         'value',
-        'notes',
+        'notes'
     ];
 
     public function entity()

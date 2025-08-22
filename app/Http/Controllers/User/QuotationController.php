@@ -308,6 +308,10 @@ class QuotationController extends Controller
                 'country' => $quotation->customerReferences->country,
             ]);
 
+            $quotation->update([
+                'sale_status_id' => 5,
+            ]);
+
             $this->invoice = $invoice;
         });
 

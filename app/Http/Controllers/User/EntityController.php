@@ -89,7 +89,40 @@ class EntityController extends Controller
                     )
                 );
 
-            $entity->addresses()->createMany($request['address']);
+            // Process addresses with default flag handling
+            $addresses = $request['address'];
+            $hasDefaultAddress = false;
+            $firstAddressId = null;
+
+            // Create addresses and track if any is set as default
+            foreach ($addresses as $index => $addressData) {
+                $address = $entity->addresses()->create($addressData);
+
+                // Store the first address ID in case we need to set it as default
+                if ($index === 0) {
+                    $firstAddressId = $address->id;
+                }
+
+                // Check if this address is marked as default
+                if (isset($addressData['is_default']) && $addressData['is_default']) {
+                    // If we already found a default address, set this one to false
+                    if ($hasDefaultAddress) {
+                        $address->update(['is_default' => false]);
+                    } else {
+                        $hasDefaultAddress = true;
+                        // Ensure all other addresses are not default
+                        $entity->addresses()
+                            ->where('id', '!=', $address->id)
+                            ->update(['is_default' => false]);
+                    }
+                }
+            }
+
+            // If no address was set as default, set the first one as default
+            if (!$hasDefaultAddress && $firstAddressId) {
+                $entity->addresses()->where('id', $firstAddressId)->update(['is_default' => true]);
+            }
+
             $entity->contacts()->createMany($request['contacts']);
 
             $this->response = $entity;

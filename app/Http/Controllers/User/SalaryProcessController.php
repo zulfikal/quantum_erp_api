@@ -107,6 +107,7 @@ class SalaryProcessController extends Controller
 
         return response()->json([
             'date' => Carbon::create($salaryProcess->year, $salaryProcess->month, 1)->format('F, Y'),
+            'status' => $salaryProcess->status,
             'statistics' => [
                 'total' => number_format($salaryProcess->salaryProcessItems()->sum('total_amount'), 2),
                 'allowance' => number_format($salaryProcess->salaryProcessItems()->sum('allowance_amount'), 2),

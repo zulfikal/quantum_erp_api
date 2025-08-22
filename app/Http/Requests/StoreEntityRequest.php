@@ -38,6 +38,7 @@ class StoreEntityRequest extends FormRequest
             'address.*.country' => 'required|string|max:255',
             'address.*.notes' => 'nullable|string',
             'address.*.type' => 'nullable|in:billing,shipping,billing_and_shipping',
+            'address.*.is_default' => 'nullable|boolean',
             'contacts' => 'required|array',
             'contacts.*.type' => 'required|in:phone,mobile,email,fax,other',
             'contacts.*.value' => 'required|string|max:255',

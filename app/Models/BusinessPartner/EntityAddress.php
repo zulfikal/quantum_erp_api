@@ -18,6 +18,7 @@ class EntityAddress extends Model
         'email',
         'notes',
         'type',
+        'is_default',
     ];
 
     public function entity()
@@ -32,5 +33,16 @@ class EntityAddress extends Model
             'shipping' => 'Shipping',
             'billing_and_shipping' => 'Billing & Shipping',
         };
+    }
+
+    public function setDefault()
+    {
+        // First set all other addresses to non-default
+        $this->entity->addresses()
+            ->where('id', '!=', $this->id)
+            ->update(['is_default' => false]);
+
+        // Then set this address to default
+        $this->update(['is_default' => true]);
     }
 }
