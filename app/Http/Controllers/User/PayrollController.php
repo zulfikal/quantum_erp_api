@@ -13,7 +13,7 @@ class PayrollController extends Controller
     public function index(Request $request)
     {
         if (auth()->user()->hasRole('admin')) {
-            $salaryProcessItems = SalaryProcessItem::whereHas('companyBranch.company', function ($query) {
+            $salaryProcessItems = SalaryProcessItem::whereHas('employee.companyBranch.company', function ($query) {
                 $query->where('id', auth()->user()->employee->companyBranch->company->id);
             })
                 ->whereHas('salaryProcess', function ($query) {
