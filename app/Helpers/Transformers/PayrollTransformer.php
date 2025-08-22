@@ -14,7 +14,7 @@ final class PayrollTransformer
         return [
             'id' => $salaryProcessItem->id,
             'employee' => $salaryProcessItem->employee->full_name,
-            'company' => $salaryProcessItem->employee->company->name,
+            'company' => $salaryProcessItem->employee->companyBranch->company->name,
             'branch' => $salaryProcessItem->employee->companyBranch->name,
             'date' => $salaryProcessItem->date->format('Y-m-d'),
             'basic_amount' => $salaryProcessItem->basic_amount,
