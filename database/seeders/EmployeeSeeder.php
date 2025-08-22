@@ -20,7 +20,7 @@ class EmployeeSeeder extends Seeder
             $employee = Employee::create([
                 'staff_id' => '0010100' . ($i + 1),
                 "department_id" => Factory::create()->numberBetween(2, 9),
-                "designation_id" => 1,
+                "designation_id" => Factory::create()->numberBetween(2, 10),
                 "company_branch_id" => 1,
                 'nric_number' => Factory::create()->numerify('############'),
                 'first_name' => Factory::create()->firstName,

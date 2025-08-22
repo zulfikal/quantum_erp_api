@@ -85,8 +85,48 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 "company_id" => $company->id,
-                "name" => "Employee",
-                "code" => "employee"
+                "name" => "Human Resource Officer",
+                "code" => "hr_officer"
+            ],
+            [
+                "company_id" => $company->id,
+                "name" => "Finance Officer / Accounts Officer",
+                "code" => "finance_officer"
+            ],
+            [
+                "company_id" => $company->id,
+                "name" => "IT Officer / System Administrator",
+                "code" => "it_officer"
+            ],
+            [
+                "company_id" => $company->id,
+                "name" => "Marketing Officer",
+                "code" => "marketing_officer"
+            ],
+            [
+                "company_id" => $company->id,
+                "name" => "Procurement Officer",
+                "code" => "procurement_officer"
+            ],
+            [
+                "company_id" => $company->id,
+                "name" => "Customer Service Officer",
+                "code" => "customer_service_officer"
+            ],
+            [
+                "company_id" => $company->id,
+                "name" => "Sales Officer",
+                "code" => "sales_officer"
+            ],
+            [
+                "company_id" => $company->id,
+                "name" => "Research Officer",
+                "code" => "research_officer"
+            ],
+            [
+                "company_id" => $company->id,
+                "name" => "Compliance Officer",
+                "code" => "compliance_officer"
             ],
         ]);
 
