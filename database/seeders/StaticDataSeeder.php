@@ -144,7 +144,7 @@ class StaticDataSeeder extends Seeder
         SaleStatus::insert([
             ["type" => "quotation_invoice", "name" => "Draft"],
             ["type" => "quotation", "name" => "Sent"],
-            ["type" => "quotation", "name" => "Approved"],
+            ["type" => "quotation_invoice", "name" => "Approved"],
             ["type" => "quotation", "name" => "Rejected"],
             ["type" => "quotation", "name" => "Completed"],
             ["type" => "quotation_invoice", "name" => "Cancelled"],

@@ -63,6 +63,7 @@ final class InvoiceTransformer
             'company' => CompanyTransformer::company($invoice->company),
             'branch' => CompanyTransformer::branch($invoice->branch),
             'created_by' => EmployeeTransformer::employee($invoice->employee),
+            'company_bank' => CompanyTransformer::bank($invoice->companyBank),
             'description' => $invoice->description,
             'invoice_number' => $invoice->invoice_number,
             'total_amount' => $invoice->total_amount,
