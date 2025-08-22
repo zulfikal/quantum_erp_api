@@ -64,7 +64,7 @@ class EntityTransformer
         $contacts = $entity->contacts->groupBy('type');
         
         return [
-            // 'id' => $entity->id,
+            'id' => $entity->id,
             'name' => $entity->name,
             'type' => $entity->type,
             'label' => $entity->type_label,
