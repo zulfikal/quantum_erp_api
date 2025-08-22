@@ -15,6 +15,7 @@ class CompanyBank extends Model
         'holder_name',
         'type',
         'status',
+        'is_default',
     ];
 
     public function company()
@@ -30,5 +31,21 @@ class CompanyBank extends Model
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function setDefault()
+    {
+        // First set all other addresses to non-default
+        $this->company->companyBanks()
+            ->where('id', '!=', $this->id)
+            ->update(['is_default' => false]);
+
+        // Then set this address to default
+        $this->update(['is_default' => true]);
+    }
+
+    public function getIsDefaultLabelAttribute(): bool
+    {
+        return $this->is_default;
     }
 }

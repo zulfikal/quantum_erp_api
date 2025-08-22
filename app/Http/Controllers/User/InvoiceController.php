@@ -119,9 +119,19 @@ class InvoiceController extends Controller
             $invoiceItems->push($tempItem);
         }
 
+        if (is_null($invoice['company_bank_id'])) {
+            if ($this->company->companyBanks()->where('is_default', true)->count() == 0) {
+                return response()->json([
+                    'message' => 'Default company bank is not set',
+                ], 400);
+            }
+        }
+
 
         DB::transaction(function () use ($invoice, $customer, $invoiceItems) {
             $invoiceNumber = $invoice['invoice_number'];
+
+            $companyBankId = $invoice['company_bank_id'] ?? $this->company->companyBanks()->where('is_default', true)->first()->id;
 
             if (is_null($invoiceNumber)) {
                 $invoiceNumber = 'INV' . str_pad($this->company->id, 3, '0', STR_PAD_LEFT)  . str_pad(Invoice::where('company_id', $this->company->id)->count() + 1, 5, '0', STR_PAD_LEFT);
@@ -142,7 +152,9 @@ class InvoiceController extends Controller
                 'sale_status_id' => $invoice['sale_status_id'],
                 'notes' => $invoice['notes'],
                 'description' => $invoice['description'],
+                'company_bank_id' => $companyBankId,
             ]);
+            
             $create_invoice->invoiceCustomer()->create($customer);
 
             foreach ($invoiceItems as $item) {

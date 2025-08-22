@@ -2,6 +2,7 @@
 
 namespace App\Models\Sales;
 
+use App\Models\Accounting\CompanyBank;
 use App\Models\HRM\Company;
 use App\Models\HRM\CompanyBranch;
 use App\Models\HRM\Employee;
@@ -21,6 +22,7 @@ class Invoice extends Model
         'branch_id',
         'employee_id',
         'quotation_id',
+        'company_bank_id',
         'description',
         'invoice_number',
         'total_amount',
@@ -73,5 +75,10 @@ class Invoice extends Model
     public function invoiceCustomer() : HasOne
     {
         return $this->hasOne(InvoiceCustomer::class);
+    }
+
+    public function companyBank() : BelongsTo
+    {
+        return $this->belongsTo(CompanyBank::class);
     }
 }

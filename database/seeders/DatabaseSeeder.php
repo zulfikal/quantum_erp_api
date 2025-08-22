@@ -106,6 +106,7 @@ class DatabaseSeeder extends Seeder
         //Create admin employees
         $companyAdmin = $companyBranch->employees()->create([
             "user_id" => null,
+            "staff_id" => "00101001",
             "designation_id" => 1,
             "department_id" => 1,
             "nric_number" => "000000000000",
@@ -130,6 +131,7 @@ class DatabaseSeeder extends Seeder
         //Create employees
         $companyEmployee = $companyBranch->employees()->create([
             "user_id" => null,
+            "staff_id" => "00101002",
             "designation_id" => 2,
             "department_id" => 2,
             "nric_number" => "000000000000",

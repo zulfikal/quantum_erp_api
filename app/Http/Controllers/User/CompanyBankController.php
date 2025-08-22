@@ -47,6 +47,10 @@ class CompanyBankController extends Controller
     public function store(StoreCompanyBankRequest $request)
     {
         $companyBank = $this->company->companyBanks()->create($request->validated());
+        
+        if ($request->validated()['is_default']) {
+            $companyBank->setDefault();
+        }
 
         return response()->json([
             'message' => 'Bank created successfully',
@@ -85,6 +89,10 @@ class CompanyBankController extends Controller
         }
 
         $companyBank->update($request->validated());
+
+        if ($request->validated()['is_default']) {
+            $companyBank->setDefault();
+        }
 
         return response()->json([
             'message' => 'Bank updated successfully',

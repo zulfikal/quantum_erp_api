@@ -44,6 +44,8 @@ Route::get('/welcome', function () {
 });
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/check', [AuthController::class, 'check']);
+Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::prefix('attendances')->middleware('auth:sanctum')->group(function () {

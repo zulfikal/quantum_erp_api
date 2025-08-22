@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('holder_name');
             $table->enum('type', ['saving', 'current', 'wallet'])->default('saving');
             $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->boolean('is_default')->default(false);
             $table->timestamps();
         });
     }

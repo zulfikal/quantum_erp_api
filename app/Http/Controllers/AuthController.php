@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Transformers\EmployeeTransformer;
+use App\Models\HRM\Employee;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -67,5 +69,64 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Logged out successfully',
         ], 200);
+    }
+
+    public function check(Request $request)
+    {
+        $request->validate([
+            'staff_id' => 'required',
+            'nric_number' => 'required',
+        ], [
+            'staff_id.required' => 'Staff ID is required',
+            'nric_number.required' => 'NRIC Number is required',
+        ]);
+
+        $employee = Employee::where('staff_id', $request->staff_id)->where('nric_number', $request->nric_number)->first();
+
+        if (!$employee) {
+            return response()->json([
+                'message' => 'Employee not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Employee found',
+            'employee' => EmployeeTransformer::transform($employee),
+        ], 200);
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'staff_id' => 'required',
+            'nric_number' => 'required',
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|confirmed',
+        ]);
+
+        $employee = Employee::where('staff_id', $request->staff_id)->where('nric_number', $request->nric_number)->first();
+
+        if (!$employee) {
+            return response()->json([
+                'message' => 'Employee not found',
+            ], 404);
+        }
+
+        DB::transaction(function () use ($request, $employee) {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+
+            $user->assignRole('employee');
+
+            $user->employee()->save($employee);
+        });
+
+        return response()->json([
+            'message' => 'User registered successfully',
+        ], 201);
     }
 }

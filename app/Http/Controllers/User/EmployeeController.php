@@ -111,7 +111,9 @@ class EmployeeController extends Controller
 
     public function store(StoreEmployeeRequest $request)
     {
-        $employee = Employee::create($request->validated()['employee']);
+        $staff_id = str_pad($this->company->id, 3, '0', STR_PAD_LEFT) . str_pad($request->validated()['employee']['company_branch_id'], 2, '0', STR_PAD_LEFT) . str_pad(Employee::whereHas('companyBranch', fn($query) => $query->where('company_id', $this->company->id))->count() + 1, 3, '0', STR_PAD_LEFT);
+
+        $employee = Employee::create(array_merge($request->validated()['employee'], ['staff_id' => $staff_id]));
 
         $employee->bankAccount()->create($request->validated()['bank']);
 

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
-            // $table->string('employee_id')->unique();
+            $table->string('staff_id')->unique();
             $table->foreignId('user_id')->nullable()->references('id')->on('users');
             $table->foreignId('company_branch_id')->references('id')->on('company_branches')->cascadeOnDelete();
             $table->foreignId('designation_id')->references('id')->on('designations')->cascadeOnDelete();

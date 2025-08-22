@@ -64,6 +64,7 @@ class CompanyTransformer
             'holder_name' => $companyBank->holder_name,
             'type' => $companyBank->type,
             'status' => $companyBank->status,
+            'is_default' => $companyBank->isDefaultLabel,
         ];
     }
 }

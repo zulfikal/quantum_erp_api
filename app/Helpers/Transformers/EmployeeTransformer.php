@@ -15,6 +15,7 @@ class EmployeeTransformer
             'company' => CompanyTransformer::company($employee->company),
             'branch' => CompanyTransformer::branch($employee->companyBranch),
             'department' => CompanyTransformer::department($employee->department),
+            'staff_id' => $employee->staff_id,
             'first_name' => $employee->first_name,
             'last_name' => $employee->last_name,
             'nric_number' => $employee->nric_number,
@@ -49,6 +50,7 @@ class EmployeeTransformer
         return [
             'id' => $employee->id,
             'name' => $employee->full_name,
+            'staff_id' => $employee->staff_id,
         ];
     }
 }

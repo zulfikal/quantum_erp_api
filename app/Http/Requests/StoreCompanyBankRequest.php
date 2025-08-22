@@ -27,6 +27,7 @@ class StoreCompanyBankRequest extends FormRequest
             'holder_name' => 'required',
             'type' => 'required|in:saving,current,wallet',
             'status' => 'required|in:active,inactive',
+            'is_default' => 'required|boolean',
         ];
     }
 }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('branch_id')->constrained('company_branches')->cascadeOnDelete();
             $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
             $table->foreignId('quotation_id')->nullable()->constrained('quotations')->cascadeOnDelete();
+            $table->foreignId('company_bank_id')->constrained('company_banks')->cascadeOnDelete();
             $table->text('description');
             $table->string('invoice_number');
             $table->double('total_amount')->default(0);

@@ -245,6 +245,7 @@ class QuotationController extends Controller
     {
         $validated = $request->validate([
             'due_date' => 'nullable|date',
+            'company_bank_id' => 'nullable|exists:company_banks,id',
         ]);
 
         if ($quotation->company_id != $this->company->id) {
@@ -261,7 +262,18 @@ class QuotationController extends Controller
             ], 400);
         }
 
+        if (is_null($validated['company_bank_id'])) {
+            if ($this->company->companyBanks()->where('is_default', true)->count() == 0) {
+                return response()->json([
+                    'message' => 'Default company bank is not set',
+                ], 400);
+            }
+        }
+
         DB::transaction(function () use ($quotation, $validated) {
+
+            $companyBankId = $validated['company_bank_id'] ?? $this->company->companyBanks()->where('is_default', true)->first()->id;
+
             $invoice = Invoice::create([
                 'company_id' => $quotation->company_id,
                 'quotation_id' => $quotation->id,
@@ -278,6 +290,7 @@ class QuotationController extends Controller
                 'description' => $quotation->description,
                 'notes' => $quotation->notes,
                 'due_date' => $validated['due_date'],
+                'company_bank_id' => $companyBankId,
             ]);
 
             $invoice->items()->createMany($quotation->items->map(function ($item) {
