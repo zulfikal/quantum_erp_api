@@ -29,7 +29,7 @@ class StoreInvoiceRequest extends FormRequest
             'invoice.description' => 'required|string',
             'invoice.shipping_amount' => 'required|numeric',
             'invoice.due_date' => 'nullable|date',
-            'customer.customer_id' => 'nullable|exists:customers,id',
+            'customer.entity_id' => 'nullable|exists:entities,id',
             'customer.name' => 'required|string|max:255',
             'customer.email' => 'nullable|email',
             'customer.phone' => 'nullable|string|max:255',
