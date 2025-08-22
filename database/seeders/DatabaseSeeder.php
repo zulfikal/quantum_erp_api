@@ -128,42 +128,11 @@ class DatabaseSeeder extends Seeder
             "status" => "active",
         ]);
 
-        //Create employees
-        $companyEmployee = $companyBranch->employees()->create([
-            "user_id" => null,
-            "staff_id" => "00101002",
-            "designation_id" => 2,
-            "department_id" => 2,
-            "nric_number" => "000000000000",
-            "first_name" => "Employee",
-            "last_name" => "One",
-            "email" => "employee@example.com",
-            "phone" => "000000000000",
-            "basic_salary" => 1500,
-            "gender" => "male",
-            "marital_status" => "single",
-            "nationality" => "Malaysia",
-            "religion" => "Other",
-            "address_1" => "Address",
-            "city" => "Kuala Lumpur",
-            "state" => "Selangor",
-            "zip_code" => "00000",
-            "country" => "Malaysia",
-            "register_number" => "0000000000",
-            "status" => "active",
-        ]);
-
         //Create employee bank account
         $companyAdmin->bankAccount()->create([
             "bank_id" => 21,
             "account_number" => "000000000000",
             "holder_name" => $companyAdmin->first_name . " " . $companyAdmin->last_name
-        ]);
-
-        $companyEmployee->bankAccount()->create([
-            "bank_id" => 21,
-            "account_number" => "000000000000",
-            "holder_name" => $companyEmployee->first_name . " " . $companyEmployee->last_name
         ]);
 
         $this->call(RolePermissionSeeder::class);
@@ -187,31 +156,6 @@ class DatabaseSeeder extends Seeder
             'user_id' => $admin->id,
         ]);
 
-        $employee_role = Role::where('name', 'employee')->first();
-        $employee = User::create([
-            'name' => 'Employee',
-            'email' => 'employee@company.com',
-            'password' => bcrypt('password'),
-        ]);
-        $employee->assignRole($employee_role);
-        $companyEmployee->update([
-            'user_id' => $employee->id,
-        ]);
-        $companyEmployee->salaryItems()->create([
-            'salary_type_id' => 1,
-            'amount' => 500,
-        ]);
-        $companyEmployee->salaryItems()->create([
-            'salary_type_id' => 2,
-            'amount' => 50,
-        ]);
-        $companyEmployee->salaryItems()->create([
-            'salary_type_id' => 3,
-            'amount' => 150,
-        ]);
-        $companyEmployee->salaryItems()->create([
-            'salary_type_id' => 4,
-            'amount' => 100,
-        ]);
+        $this->call(EmployeeSeeder::class);
     }
 }
