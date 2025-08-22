@@ -32,6 +32,7 @@ class CompanyTransformer
             'zip_code' => $companyBranch->zip_code,
             'country' => $companyBranch->country,
             'phone' => $companyBranch->phone,
+            'email' => $companyBranch->email,
         ];
     }
 

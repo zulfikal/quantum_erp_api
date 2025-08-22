@@ -99,7 +99,8 @@ class DatabaseSeeder extends Seeder
             "state" => "Selangor",
             "zip_code" => "00000",
             "country" => "Malaysia",
-            "phone" => "+60123456789"
+            "phone" => "+60123456789",
+            "email" => "info@quantum.com"
         ]);
 
         //Create admin employees

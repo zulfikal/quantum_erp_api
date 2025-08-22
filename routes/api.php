@@ -294,6 +294,7 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
                 Route::get('/', [QuotationController::class, 'index']);
                 Route::post('/', [QuotationController::class, 'store']);
                 Route::get('/{quotation}', [QuotationController::class, 'show']);
+                Route::get('/pdf/{quotation}', [QuotationController::class, 'pdf']);
                 Route::post('/update/{quotation}', [QuotationController::class, 'update']);
                 Route::post('/delete/{quotation}', [QuotationController::class, 'destroy']);
                 Route::post('/convert/{quotation}', [QuotationController::class, 'convertToInvoice']);

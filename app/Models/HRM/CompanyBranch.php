@@ -16,6 +16,7 @@ class CompanyBranch extends Model
         'zip_code',
         'country',
         'phone',
+        'email',
     ];
 
     public function company()

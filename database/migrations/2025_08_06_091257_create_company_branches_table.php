@@ -21,8 +21,7 @@ return new class extends Migration
             $table->string('zip_code');
             $table->string('country');
             $table->string('phone');
-            $table->string('register_number')->nullable();
-            $table->string('tin_number')->nullable();
+            $table->string('email');
             $table->timestamps();
         });
     }

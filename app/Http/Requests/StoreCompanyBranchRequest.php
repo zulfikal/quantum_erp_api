@@ -29,6 +29,7 @@ class StoreCompanyBranchRequest extends FormRequest
             'zip_code' => 'required',
             'country' => 'required',
             'phone' => 'required',
+            'email' => 'required',
         ];
     }
 }

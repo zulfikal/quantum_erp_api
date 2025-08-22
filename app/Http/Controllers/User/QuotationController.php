@@ -13,6 +13,7 @@ use App\Models\Sales\Invoice;
 use App\Models\Sales\Quotation;
 use App\Models\Sales\QuotationItem;
 use App\Models\Sales\SaleStatus;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -320,5 +321,20 @@ class QuotationController extends Controller
             'message' => 'Quotation converted to invoice successfully',
             'invoice' => InvoiceTransformer::invoiceWithItems($this->invoice->fresh()),
         ], 200);
+    }
+
+    public function pdf(Quotation $quotation)
+    {
+        if ($quotation->company_id != $this->company->id) {
+            return response()->json([
+                'message' => 'You are not authorized to view this quotation',
+            ], 403);
+        }
+
+        $pdf = PDF::loadView('pdf.quotation', [
+            'data' => QuotationTransformer::quotationWithItems($quotation),
+        ]);
+
+        return $pdf->stream();
     }
 }
