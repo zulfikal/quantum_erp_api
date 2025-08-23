@@ -33,7 +33,7 @@ class CompanyBankController extends Controller
 
     public function index()
     {
-        $companyBanks = $this->company->companyBanks()->get();
+        $companyBanks = $this->company->companyBanks()->with('bank')->get();
         $companyBanks->transform(fn($bank) => CompanyTransformer::bank($bank));
         return response()->json([
             'constants' => [
