@@ -157,7 +157,13 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'transaction.create', 'display_name' => 'Transaction Create', 'guard_name' => 'web'],
             ['name' => 'transaction.edit', 'display_name' => 'Transaction Edit', 'guard_name' => 'web'],
             ['name' => 'transaction.destroy', 'display_name' => 'Transaction Destroy', 'guard_name' => 'web'],
-    ];
+            ['name' => 'project.index', 'display_name' => 'Project Index', 'guard_name' => 'web'],
+            ['name' => 'project.show', 'display_name' => 'Project Show', 'guard_name' => 'web'],
+            ['name' => 'project.create', 'display_name' => 'Project Create', 'guard_name' => 'web'],
+            ['name' => 'project.edit', 'display_name' => 'Project Edit', 'guard_name' => 'web'],
+            ['name' => 'project.destroy', 'display_name' => 'Project Destroy', 'guard_name' => 'web'],
+
+        ];
 
         Permission::insert($permissions);
 
@@ -220,6 +226,21 @@ class RolePermissionSeeder extends Seeder
             'quotation_item.create',
             'quotation_item.edit',
             'quotation_item.destroy',
+            'invoice.index',
+            'invoice.show',
+            'invoice.create',
+            'invoice.edit',
+            'invoice.destroy',
+            'invoice_item.index',
+            'invoice_item.show',
+            'invoice_item.create',
+            'invoice_item.edit',
+            'invoice_item.destroy',
+            'project.index',
+            'project.show',
+            'project.create',
+            'project.edit',
+            'project.destroy',
         ])->get();
         $employee_role->syncPermissions($employee_permissions);
     }
