@@ -71,10 +71,10 @@ class AttendanceController extends Controller
         return response()->json([
             'today' => [
                 'is_exists' => $today ? true : false,
-                'clock_in_at' => $today->clock_in_at ? $today->clock_in_at->format('h:i A') : null,
-                'clock_out_at' => $today->clock_out_at ? $today->clock_out_at->format('h:i A') : null,
-                'worked_hours' => $today ? $today->worked_hours : null,
-                'break_hours' => $today ? $today->break_hours : null,
+                'clock_in_at' => $today && $today->clock_in_at ? $today->clock_in_at->format('h:i A') : null,
+                'clock_out_at' => $today && $today->clock_out_at ? $today->clock_out_at->format('h:i A') : null,
+                'worked_hours' => $today ? $today->worked_hours : '0 hr',
+                'break_hours' => $today ? $today->break_hours : '0 hr',
                 'breaks' => $today ? $today->breaks->transform(fn($break) => AttendanceTransformer::attendanceBreak($break)) : [],
             ],
             'constants' => [
