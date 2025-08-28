@@ -12,6 +12,7 @@ use App\Models\Sales\SaleStatus;
 use App\Models\HRM\Company;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use stdClass;
 
@@ -154,7 +155,7 @@ class InvoiceController extends Controller
                 'description' => $invoice['description'],
                 'company_bank_id' => $companyBankId,
             ]);
-            
+
             $create_invoice->invoiceCustomer()->create($customer);
 
             foreach ($invoiceItems as $item) {
@@ -243,5 +244,20 @@ class InvoiceController extends Controller
         return response()->json([
             'message' => 'Invoice deleted successfully',
         ], 200);
+    }
+
+    public function pdf(Invoice $invoice)
+    {
+        if ($invoice->company_id != $this->company->id) {
+            return response()->json([
+                'message' => 'You are not authorized to view this invoice',
+            ], 403);
+        }
+
+        $pdf = PDF::loadView('pdf.invoice', [
+            'data' => InvoiceTransformer::invoiceWithItems($invoice),
+        ]);
+
+        return $pdf->stream();
     }
 }

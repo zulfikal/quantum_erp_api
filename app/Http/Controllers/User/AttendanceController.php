@@ -66,7 +66,17 @@ class AttendanceController extends Controller
 
         $transformed = $query->through(fn($attendance) => AttendanceTransformer::attendance($attendance));
 
+        $today = auth()->user()->employee->attendances()->whereDate('date', now()->toDateString())->first();
+
         return response()->json([
+            'today' => [
+                'is_exists' => $today ? true : false,
+                'clock_in_at' => $today->clock_in_at ? $today->clock_in_at->format('h:i A') : null,
+                'clock_out_at' => $today->clock_out_at ? $today->clock_out_at->format('h:i A') : null,
+                'worked_hours' => $today ? $today->worked_hours : null,
+                'break_hours' => $today ? $today->break_hours : null,
+                'breaks' => $today ? $today->breaks->transform(fn($break) => AttendanceTransformer::attendanceBreak($break)) : [],
+            ],
             'constants' => [
                 'types' => AttendanceStaticData::types(),
                 'departments' => $this->company->departments->transform(fn($q) => CompanyStaticData::department($q)),

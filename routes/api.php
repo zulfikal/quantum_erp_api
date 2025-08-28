@@ -314,6 +314,7 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
                 Route::get('/', [InvoiceController::class, 'index']);
                 Route::post('/', [InvoiceController::class, 'store']);
                 Route::get('/{invoice}', [InvoiceController::class, 'show']);
+                Route::get('/pdf/{invoice}', [InvoiceController::class, 'pdf']);
                 Route::post('/update/{invoice}', [InvoiceController::class, 'update']);
                 Route::post('/delete/{invoice}', [InvoiceController::class, 'destroy']);
             });
