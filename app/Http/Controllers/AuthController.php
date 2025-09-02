@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Transformers\EmployeeTransformer;
+use App\Helpers\Transformers\PermissionTransformer;
 use App\Models\HRM\Employee;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -47,7 +48,7 @@ class AuthController extends Controller
 
         $user->load('roles');
 
-        $permissions = $user->getAllPermissions()->transform(fn($q) => ['name' => $q->name, 'display_name' => $q->display_name]);
+        $permissions = $user->getAllPermissions()->transform(fn($q) => PermissionTransformer::permission($q, true));
 
         return response()->json([
             'plainTextToken' => $token->plainTextToken,

@@ -10,6 +10,7 @@ class PermissionTransformer
     {
         return [
             'id' => $permission->id,
+            'name' => $permission->name,
             'display_name' => $permission->display_name,
             'description' => $permission->description,
             'is_assigned' => $isAssigned,
