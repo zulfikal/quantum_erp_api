@@ -882,6 +882,11 @@ class RolePermissionSeeder extends Seeder
 
         // Grant permissions to employee
         $employee_permissions = Permission::whereIn('name', [
+            'attendance.index',
+            'attendance.show',
+            'attendance.create',
+            'attendance.edit',
+            'attendance.destroy',
             'company.show',
             'company_branch.show',
             'employee.show',
