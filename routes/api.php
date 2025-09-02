@@ -120,7 +120,7 @@ Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
 
 Route::prefix('application')->middleware('auth:sanctum')->group(function () {
     Route::prefix('permissions')->group(function () {
-        Route::get('/', [PermissionController::class, 'index']);
+        Route::get('/{employee}', [PermissionController::class, 'index']);
         Route::post('/manage', [PermissionController::class, 'manage']);
     });
 

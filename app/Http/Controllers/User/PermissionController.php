@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Helpers\Transformers\PermissionTransformer;
 use App\Http\Controllers\Controller;
 use App\Models\HRM\Company;
+use App\Models\HRM\Employee;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
@@ -26,11 +27,28 @@ class PermissionController extends Controller
         });
     }
 
-    public function index()
+    public function index(Employee $employee)
     {
         $permissions = Permission::whereNotIn('id', [1, 3, 4, 5])->get();
+
+        $employee->load('user.permissions');
+
+        if (!$employee->user) {
+            return response()->json([
+                'message' => 'Employee does not have an associated user account',
+                'permissions' => $permissions->transform(fn($permission) => PermissionTransformer::permission($permission, false)),
+            ], 200);
+        }
+        
         return response()->json([
-            'permissions' => $permissions->transform(fn($permission) => PermissionTransformer::permission($permission)),
+            'permissions' => $permissions->transform(function($permission) use ($employee) {
+                try {
+                    $isAssigned = $employee->user->hasPermissionTo($permission);
+                } catch (\Exception $e) {
+                    $isAssigned = false;
+                }
+                return PermissionTransformer::permission($permission, $isAssigned);
+            }),
         ], 200);
     }
 
@@ -38,8 +56,7 @@ class PermissionController extends Controller
     {
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
-            'permission_ids' => 'required|exists:permissions,id',
-            'action' => 'required|in:granted,revoked',
+            'permission_ids' => 'nullable|exists:permissions,id',
         ]);
 
         $user = User::findOrFail($validated['user_id']);
@@ -52,21 +69,10 @@ class PermissionController extends Controller
 
         $permissions = Permission::whereIn('id', $validated['permission_ids'])->get();
 
-        if ($validated['action'] === 'granted') {
-            $exists = $user->permissions()->whereIn('permission_id', $permissions->pluck('id'))->get();
-            if ($exists->isNotEmpty()) {
-                return response()->json([
-                    'message' => 'The permission has already been granted to the user.',
-                    'exists' => $exists->transform(fn($q) => PermissionTransformer::permission($q)),
-                ], 400);
-            }
-            $user->permissions()->attach($permissions);
-        } else {
-            $user->permissions()->detach($permissions);
-        }
+        $user->syncPermissions($permissions);
 
         return response()->json([
-            'message' => 'The permission has been ' . $validated['action'] . ' to the user successfully.',
+            'message' => 'The permission has been updated successfully.',
         ], 200);
     }
 }
