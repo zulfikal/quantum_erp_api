@@ -17,7 +17,8 @@ class PermissionController extends Controller
 
     public function __construct()
     {
-        $this->middleware('role:admin');
+        $this->middleware('can:permission.index')->only('index');
+        $this->middleware('can:permission.manage')->only('manage');
 
         $this->middleware(function ($request, $next) {
             $this->company = auth()->user()->employee->company;
@@ -40,10 +41,10 @@ class PermissionController extends Controller
                 'permissions' => $permissions->transform(fn($permission) => PermissionTransformer::permission($permission, false)),
             ], 200);
         }
-        
+
         return response()->json([
             'employee' => EmployeeTransformer::transform($employee),
-            'permissions' => $permissions->transform(function($permission) use ($employee) {
+            'permissions' => $permissions->transform(function ($permission) use ($employee) {
                 try {
                     $isAssigned = $employee->user->hasPermissionTo($permission);
                 } catch (\Exception $e) {

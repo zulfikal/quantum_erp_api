@@ -172,6 +172,18 @@ class RolePermissionSeeder extends Seeder
                 'guard_name' => 'web',
             ],
             [
+                'name' => 'permission.index',
+                'display_name' => 'Showing Permission List',
+                'description' => 'This permission allows a user to view the list of employee specific permissions',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'permission.manage',
+                'display_name' => 'Managing Permission',
+                'description' => 'This permission allows a user to manage employee specific permissions',
+                'guard_name' => 'web',
+            ],
+            [
                 'name' => 'attendance.index',
                 'display_name' => 'Showing Attendance List',
                 'description' => 'This permission allows a user to view the list of attendances',
