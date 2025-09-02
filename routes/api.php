@@ -32,7 +32,10 @@ use App\Http\Controllers\User\PayrollController;
 use App\Http\Controllers\User\PermissionController;
 use App\Http\Controllers\User\ProductCategoryController;
 use App\Http\Controllers\User\ProductController;
+use App\Http\Controllers\User\ProjectAssigneeController;
 use App\Http\Controllers\User\ProjectController;
+use App\Http\Controllers\User\ProjectTaskAssigneeController;
+use App\Http\Controllers\User\ProjectTaskCommentController;
 use App\Http\Controllers\User\QuotationController;
 use App\Http\Controllers\User\QuotationItemController;
 use App\Http\Controllers\User\SalaryController as UserSalaryController;
@@ -342,6 +345,11 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
             Route::post('/', [ProjectController::class, 'store']);
             Route::get('/{project}', [ProjectController::class, 'show']);
             Route::post('/update/{project}', [ProjectController::class, 'update']);
+
+            Route::prefix('assignees')->group(function () {
+                Route::post('/{project}', [ProjectAssigneeController::class, 'store']);
+                Route::post('/delete/{projectAssignee}', [ProjectAssigneeController::class, 'destroy']);
+            });
         });
 
         Route::prefix('boards')->group(function () {
@@ -353,10 +361,21 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
         });
 
         Route::prefix('tasks')->group(function () {
+            Route::get('/{task}', [TaskController::class, 'show']);
             Route::post('/{projectBoard}', [TaskController::class, 'store']);
             Route::post('/update/{task}', [TaskController::class, 'update']);
             Route::post('/delete/{task}', [TaskController::class, 'destroy']);
             Route::post('/reorder-tasks/{fromBoard}/{toBoard}', [TaskController::class, 'reorderTasks']);
+
+            Route::prefix('assignees')->group(function () {
+                Route::post('/{task}', [ProjectTaskAssigneeController::class, 'store']);
+                Route::post('/delete/{taskAssignee}', [ProjectTaskAssigneeController::class, 'destroy']);
+            });
+
+            Route::prefix('comments')->group(function () {
+                Route::post('/{task}', [ProjectTaskCommentController::class, 'store']);
+                Route::post('/delete/{taskComment}', [ProjectTaskCommentController::class, 'destroy']);
+            });
         });
     });
 });

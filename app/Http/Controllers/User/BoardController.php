@@ -8,6 +8,7 @@ use App\Models\HRM\Project;
 use App\Models\HRM\ProjectBoard;
 use App\Helpers\Transformers\ProjectTransformer;
 use App\Models\HRM\Company;
+use App\Models\HRM\ProjectAssignee;
 use Illuminate\Http\Request;
 
 class BoardController extends Controller
@@ -40,8 +41,10 @@ class BoardController extends Controller
         }
 
         $boards = $project->boards()->with('tasks.priority', 'tasks.assignees.projectAssignee.employee', 'tasks.comments.employee')->get();
+        $assignees = $project->assignees()->with('employee')->get();
 
         return response()->json([
+            'assignees' => $assignees->transform(fn(ProjectAssignee $assignee) => ProjectTransformer::assignees($assignee)),
             'boards' => $boards->transform(fn(ProjectBoard $board) => ProjectTransformer::boards($board)),
         ]);
     }

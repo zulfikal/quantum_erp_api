@@ -68,9 +68,9 @@ final class ProjectTransformer
             'is_completed' => $projectTask->is_completed ? true : false,
             'start_date' => $projectTask->start_date ? $projectTask->start_date->format('Y-m-d') : null,
             'end_date' => $projectTask->end_date ? $projectTask->end_date->format('Y-m-d') : null,
-            'comments' => $projectTask->comments ? json_decode($projectTask->comments, true) : [],
-            'order' => $projectTask->order,
             'assignees' => $projectTask->assignees->transform(fn(TaskAssignee $taskAssignee) => self::taskAssignees($taskAssignee)),
+            'comments' => $projectTask->comments->transform(fn(TaskComment $taskComment) => self::comments($taskComment)),
+            'order' => $projectTask->order,
         ];
     }
 
@@ -85,9 +85,9 @@ final class ProjectTransformer
             'start_date' => $projectTask->start_date ? $projectTask->start_date->format('Y-m-d') : null,
             'end_date' => $projectTask->end_date ? $projectTask->end_date->format('Y-m-d') : null,
             'comment_count' => $projectTask->comments()->count(),
-            'order' => $projectTask->order,
             'assignees_count' => $projectTask->assignees()->count(),
             'is_your_task' => $projectTask->isYourTask(),
+            'order' => $projectTask->order,
         ];
     }
 

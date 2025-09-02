@@ -102,4 +102,13 @@ class TaskController extends Controller
             'boards' => $boards->transform(fn(ProjectBoard $board) => ProjectTransformer::boards($board)),
         ], 200);
     }
+
+    public function show(ProjectTask $task)
+    {
+        $task->load('priority', 'assignees.projectAssignee.employee', 'comments.employee');
+
+        return response()->json([
+            'task' => ProjectTransformer::tasks($task),
+        ], 200);
+    }
 }
