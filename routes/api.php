@@ -11,6 +11,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\User\AttendanceController as UserAttendanceController;
+use App\Http\Controllers\User\BoardController;
 use App\Http\Controllers\User\BranchController;
 use App\Http\Controllers\User\ClaimApprovalController;
 use App\Http\Controllers\User\ClaimController;
@@ -28,13 +29,16 @@ use App\Http\Controllers\User\LeaveRequestApprovalController;
 use App\Http\Controllers\User\LeaveRequestController;
 use App\Http\Controllers\User\LeaveTypeController;
 use App\Http\Controllers\User\PayrollController;
+use App\Http\Controllers\User\PermissionController;
 use App\Http\Controllers\User\ProductCategoryController;
 use App\Http\Controllers\User\ProductController;
+use App\Http\Controllers\User\ProjectController;
 use App\Http\Controllers\User\QuotationController;
 use App\Http\Controllers\User\QuotationItemController;
 use App\Http\Controllers\User\SalaryController as UserSalaryController;
 use App\Http\Controllers\User\SalaryProcessController;
 use App\Http\Controllers\User\SalaryTypeController;
+use App\Http\Controllers\User\TaskController;
 use App\Http\Controllers\User\TransactionController;
 
 Route::get('/welcome', function () {
@@ -112,6 +116,11 @@ Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
 });
 
 Route::prefix('application')->middleware('auth:sanctum')->group(function () {
+    Route::prefix('permissions')->group(function () {
+        Route::get('/', [PermissionController::class, 'index']);
+        Route::post('/manage', [PermissionController::class, 'manage']);
+    });
+
     Route::prefix('banks')->middleware('auth:sanctum')->group(function () {
         Route::get('/', [BankController::class, 'index']);
     });
@@ -324,6 +333,30 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
                 Route::post('/update/{invoiceItem}', [InvoiceItemController::class, 'update']);
                 Route::post('/delete/{invoiceItem}', [InvoiceItemController::class, 'destroy']);
             });
+        });
+    });
+
+    Route::prefix('projects')->group(function () {
+        Route::prefix('main')->group(function () {
+            Route::get('/', [ProjectController::class, 'index']);
+            Route::post('/', [ProjectController::class, 'store']);
+            Route::get('/{project}', [ProjectController::class, 'show']);
+            Route::post('/update/{project}', [ProjectController::class, 'update']);
+        });
+
+        Route::prefix('boards')->group(function () {
+            Route::get('/{project}', [BoardController::class, 'index']);
+            Route::post('/{project}', [BoardController::class, 'store']);
+            Route::post('/update/{board}', [BoardController::class, 'update']);
+            Route::post('/delete/{board}', [BoardController::class, 'destroy']);
+            Route::post('/reorder-boards/{project}', [BoardController::class, 'reorderBoards']);
+        });
+
+        Route::prefix('tasks')->group(function () {
+            Route::post('/{projectBoard}', [TaskController::class, 'store']);
+            Route::post('/update/{task}', [TaskController::class, 'update']);
+            Route::post('/delete/{task}', [TaskController::class, 'destroy']);
+            Route::post('/reorder-tasks/{fromBoard}/{toBoard}', [TaskController::class, 'reorderTasks']);
         });
     });
 });

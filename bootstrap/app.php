@@ -21,16 +21,23 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        
+
+        $exceptions->render(function (\Spatie\Permission\Exceptions\UnauthorizedException $e, $request) {
+            return response()->json([
+                'message' => 'You do not have permission to perform this action.',
+            ], 403);
+        });
+
         $exceptions->renderable(function (NotFoundHttpException $e, $request) {
+
             if ($e->getPrevious() instanceof ModelNotFoundException) {
                 return response()->json([
-                    'message' => 'Data not found',
+                    'message' => 'The requested data could not be found.',
                 ], 404);
             }
 
             return response()->json([
-                'message' => 'The path '.$request->path(). ' is not found',
+                'message' => 'The path ' . $request->path() . ' is not found',
             ], 404);
         });
     })->create();

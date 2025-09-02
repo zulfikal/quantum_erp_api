@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -25,6 +26,14 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
+        // Custom handler for Spatie permission exceptions
+        $this->renderable(function (UnauthorizedException $e, $request) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You do not have the necessary permissions to access this resource.',
+            ], 403);
+        });
+        
         $this->renderable(function (NotFoundHttpException $e, $request) {
             if ($request->json()) {
                 return response()->json([
@@ -34,6 +43,7 @@ class Handler extends ExceptionHandler
 
             throw $e;
         });
+        
         $this->reportable(function (Throwable $e) {
             //
         });

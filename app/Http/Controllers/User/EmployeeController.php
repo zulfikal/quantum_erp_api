@@ -157,6 +157,7 @@ class EmployeeController extends Controller
 
         return response()->json([
             'employee' => EmployeeTransformer::transform($employee),
+            'permissions' => $employee->user->getDirectPermissions()->transform(fn($role) => EmployeeTransformer::employeeRoles($role)),
         ], 200);
     }
 }

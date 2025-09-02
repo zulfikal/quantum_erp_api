@@ -4,6 +4,7 @@ namespace App\Helpers\Transformers;
 
 use App\Models\HRM\Employee;
 use App\Helpers\Transformers\CompanyTransformer;
+use Spatie\Permission\Models\Permission;
 
 class EmployeeTransformer
 {
@@ -11,6 +12,7 @@ class EmployeeTransformer
     {
         return [
             'id' => $employee->id,
+            'user_id' => $employee->user_id,
             'designation' => CompanyTransformer::designation($employee->designation),
             'company' => CompanyTransformer::company($employee->company),
             'branch' => CompanyTransformer::branch($employee->companyBranch),
@@ -50,7 +52,16 @@ class EmployeeTransformer
         return [
             'id' => $employee->id,
             'name' => $employee->full_name,
-            'staff_id' => $employee->staff_id,
+            'staff_id' => $employee->staff_id
+        ];
+    }
+
+    public static function employeeRoles(Permission $permission)
+    {
+        return [
+            'id' => $permission->id,
+            'name' => $permission->name,
+            'display_name' => $permission->display_name,
         ];
     }
 }

@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\HRM\Company;
+use App\Models\HRM\ProjectPriority;
+use App\Models\HRM\ProjectStatus;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
@@ -194,6 +196,36 @@ class DatabaseSeeder extends Seeder
         $admin->assignRole($admin_role);
         $companyAdmin->update([
             'user_id' => $admin->id,
+        ]);
+
+        ProjectPriority::insert([
+            [
+                'name' => 'High',
+            ],
+            [
+                'name' => 'Medium',
+            ],
+            [
+                'name' => 'Low',
+            ],
+        ]);
+
+        ProjectStatus::insert([
+            [
+                'name' => 'Pending',
+            ],
+            [
+                'name' => 'On Hold',
+            ],
+            [
+                'name' => 'Ongoing',
+            ],
+            [
+                'name' => 'Completed',
+            ],
+            [
+                'name' => 'Cancelled',
+            ],
         ]);
 
         $this->call(EmployeeSeeder::class);
