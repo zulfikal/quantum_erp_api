@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Helpers\Transformers\EmployeeTransformer;
 use App\Helpers\Transformers\PermissionTransformer;
 use App\Http\Controllers\Controller;
 use App\Models\HRM\Company;
@@ -41,6 +42,7 @@ class PermissionController extends Controller
         }
         
         return response()->json([
+            'employee' => EmployeeTransformer::transform($employee),
             'permissions' => $permissions->transform(function($permission) use ($employee) {
                 try {
                     $isAssigned = $employee->user->hasPermissionTo($permission);
