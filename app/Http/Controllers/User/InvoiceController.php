@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Helpers\Constants\InvoiceStaticData;
 use App\Helpers\Transformers\InvoiceTransformer;
+use App\Helpers\Transformers\TransactionTransformer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
@@ -190,8 +191,13 @@ class InvoiceController extends Controller
                 'message' => 'You are not authorized to view this invoice',
             ], 403);
         }
+        $invoice->load('transactions.companyBank.bank', 'transactions.transactionMethod');
+
+        $transactions = $invoice->transactions->transform(fn($q) => TransactionTransformer::transaction($q));
+
         return response()->json([
             'invoice' => InvoiceTransformer::invoiceWithItems($invoice),
+            'transactions' => $transactions,
         ], 200);
     }
 

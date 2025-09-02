@@ -3,6 +3,7 @@
 namespace App\Models\Sales;
 
 use App\Models\Accounting\CompanyBank;
+use App\Models\Accounting\Transaction;
 use App\Models\HRM\Company;
 use App\Models\HRM\CompanyBranch;
 use App\Models\HRM\Employee;
@@ -80,5 +81,10 @@ class Invoice extends Model
     public function companyBank() : BelongsTo
     {
         return $this->belongsTo(CompanyBank::class);
+    }
+
+    public function transactions() : HasMany
+    {
+        return $this->hasMany(Transaction::class);
     }
 }
