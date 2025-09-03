@@ -20,4 +20,9 @@ class ProjectAssignee extends Model
     {
         return $this->belongsTo(Employee::class);
     }
+
+    public function taskAssignees()
+    {
+        return $this->hasMany(TaskAssignee::class, 'project_assignee_id', 'id');
+    }
 }

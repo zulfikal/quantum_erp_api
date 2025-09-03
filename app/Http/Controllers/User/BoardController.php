@@ -90,6 +90,15 @@ class BoardController extends Controller
         ], 200);
     }
 
+    public function destroy(ProjectBoard $board)
+    {
+        $board->delete();
+
+        return response()->json([
+            'message' => 'Board deleted successfully',
+        ], 200);
+    }
+
     public function reorderBoards(Project $project, Request $request)
     {
         $validated = $request->validate([

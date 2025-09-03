@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\HRM\Company;
 use App\Models\HRM\ProjectTask;
+use App\Models\HRM\TaskComment;
 use Illuminate\Http\Request;
 
 class ProjectTaskCommentController extends Controller
@@ -41,8 +42,35 @@ class ProjectTaskCommentController extends Controller
         ], 201);
     }
 
+    public function update(TaskComment $taskComment, Request $request)
+    {
+        $validated = $request->validate([
+            'message' => 'required|string',
+        ]);
+
+        if ($taskComment->employee_id != auth()->user()->employee->id) {
+            return response()->json([
+                'message' => 'You are not authorized to update this comment',
+            ], 403);
+        }
+
+        $taskComment->update([
+            'message' => $validated['message'],
+        ]);
+
+        return response()->json([
+            'message' => 'Comment updated successfully',
+        ], 200);
+    }
+
     public function destroy(TaskComment $taskComment)
     {
+        if ($taskComment->employee_id != auth()->user()->employee->id) {
+            return response()->json([
+                'message' => 'You are not authorized to delete this comment',
+            ], 403);
+        }
+
         $taskComment->delete();
 
         return response()->json([

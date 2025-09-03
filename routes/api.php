@@ -374,6 +374,7 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
 
             Route::prefix('comments')->group(function () {
                 Route::post('/{task}', [ProjectTaskCommentController::class, 'store']);
+                Route::post('/update/{taskComment}', [ProjectTaskCommentController::class, 'update']);
                 Route::post('/delete/{taskComment}', [ProjectTaskCommentController::class, 'destroy']);
             });
         });

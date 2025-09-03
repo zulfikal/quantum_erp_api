@@ -6,6 +6,7 @@ use App\Helpers\Transformers\EmployeeTransformer;
 use App\Http\Controllers\Controller;
 use App\Helpers\Transformers\ProjectTransformer;
 use App\Http\Requests\StoreProjectTaskRequest;
+use App\Http\Requests\UpdateProjectTaskRequest;
 use App\Models\HRM\Employee;
 use App\Models\HRM\ProjectAssignee;
 use App\Models\HRM\ProjectBoard;
@@ -59,6 +60,25 @@ class TaskController extends Controller
             'message' => 'Task created successfully',
             'task' => ProjectTransformer::tasks($task),
         ], 201);
+    }
+
+    public function update(ProjectTask $task, UpdateProjectTaskRequest $request)
+    {
+        $task->update([
+            'priority_id' => $request->priority_id,
+            'title' => $request->title,
+            'description' => $request->description,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'is_completed' => $request->is_completed,
+        ]);
+
+        $task->load('priority', 'assignees.projectAssignee.employee', 'comments.employee');
+
+        return response()->json([
+            'message' => 'Task updated successfully',
+            'task' => ProjectTransformer::tasks($task),
+        ], 200);
     }
 
     public function reorderTasks(ProjectBoard $fromBoard, ProjectBoard $toBoard, Request $request)
