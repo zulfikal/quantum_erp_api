@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\HRM\Project;
 use App\Models\HRM\ProjectBoard;
 use App\Helpers\Transformers\ProjectTransformer;
+use App\Http\Requests\StoreProjectBoardRequest;
 use App\Models\HRM\Company;
 use App\Models\HRM\ProjectAssignee;
 use Illuminate\Http\Request;
@@ -49,19 +50,16 @@ class BoardController extends Controller
         ]);
     }
 
-    public function store(Project $project, Request $request)
+    public function store(Project $project, StoreProjectBoardRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string',
-        ]);
-
         $board = $project->boards()->create([
-            'title' => $validated['title'],
+            'title' => $request->title,
+            'description' => $request->description,
             'order' => $project->boards()->max('order') + 1,
         ]);
 
         // Log the board creation activity
-        (new LogProjectActivity($project, 'create', "Created project board '{$validated['title']}'"))();
+        (new LogProjectActivity($project, 'create', "Created project board '{$request->title}'"))();
 
         return response()->json([
             'message' => 'Board created successfully',
@@ -69,20 +67,17 @@ class BoardController extends Controller
         ], 201);
     }
 
-    public function update(ProjectBoard $board, Request $request)
+    public function update(ProjectBoard $board, StoreProjectBoardRequest $request)
     {
         $oldTitle = $board->title;
 
-        $validated = $request->validate([
-            'title' => 'required|string',
-        ]);
-
         $board->update([
-            'title' => $validated['title'],
+            'title' => $request->title,
+            'description' => $request->description,
         ]);
 
         // Log the board update activity
-        (new LogProjectActivity($board->project, 'update', "Updated project board from '{$oldTitle}' to '{$validated['title']}'"))();
+        (new LogProjectActivity($board->project, 'update', "Updated project board from '{$oldTitle}' to '{$request->title}'"))();
 
         return response()->json([
             'message' => 'Board updated successfully',
@@ -111,7 +106,6 @@ class BoardController extends Controller
 
         if ($isInvalid->isNotEmpty()) {
             return response()->json([
-                'success' => false,
                 'message' => 'Invalid board IDs provided.',
             ], 400);
         }
@@ -123,7 +117,6 @@ class BoardController extends Controller
         $boards = $project->boards()->with('tasks.priority', 'tasks.assignees.employee', 'tasks.comments.employee')->get();
 
         return response()->json([
-            'success' => true,
             'message' => 'Boards reordered successfully',
             'boards' => $boards->transform(fn(ProjectBoard $board) => ProjectTransformer::boards($board)),
         ], 200);

@@ -53,8 +53,9 @@ final class ProjectTransformer
         return [
             'id' => $projectBoard->id,
             'title' => $projectBoard->title,
-            'order' => $projectBoard->order,
+            'description' => $projectBoard->description,
             'tasks' => $projectBoard->tasks->transform(fn(ProjectTask $projectTask) => self::taskList($projectTask)),
+            'order' => $projectBoard->order,
         ];
     }
 
