@@ -13,6 +13,7 @@ class EmployeeTransformer
         return [
             'id' => $employee->id,
             'user_id' => $employee->user_id,
+            'avatar' => $employee->getFirstMediaUrl('avatar'),
             'designation' => CompanyTransformer::designation($employee->designation),
             'company' => CompanyTransformer::company($employee->company),
             'branch' => CompanyTransformer::branch($employee->companyBranch),
