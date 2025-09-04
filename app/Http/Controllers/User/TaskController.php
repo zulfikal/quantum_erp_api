@@ -70,8 +70,8 @@ class TaskController extends Controller
             'priority_id' => $task->priority_id,
             'title' => $task->title,
             'description' => $task->description,
-            'start_date' => $task->start_date->format('Y-m-d'),
-            'end_date' => $task->end_date->format('Y-m-d'),
+            'start_date' => $task->start_date ? $task->start_date->format('Y-m-d') : null,
+            'end_date' => $task->end_date ? $task->end_date->format('Y-m-d') : null,
             'is_completed' => $task->is_completed,
         ];
 
