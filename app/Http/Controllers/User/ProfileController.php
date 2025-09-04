@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Helpers\Transformers\EmployeeTransformer;
+use App\Helpers\Transformers\PermissionTransformer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateProfileRequest;
 use Illuminate\Http\Request;
@@ -14,10 +15,11 @@ class ProfileController extends Controller
     public function show()
     {
         $profile = auth()->user()->employee;
+        $permissions = auth()->user()->getAllPermissions()->transform(fn($q) => PermissionTransformer::permission($q, true));
 
         return response()->json([
             'profile' => EmployeeTransformer::transform($profile),
-            'permissions' => $profile->user->getDirectPermissions()->transform(fn($role) => EmployeeTransformer::employeeRoles($role))
+            'permissions' => $permissions
         ]);
     }
 

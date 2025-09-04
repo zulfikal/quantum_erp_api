@@ -6,6 +6,7 @@ use App\Helpers\Constants\EmployeeStaticData;
 use App\Http\Controllers\Controller;
 use App\Models\HRM\Company;
 use App\Helpers\Transformers\EmployeeTransformer;
+use App\Helpers\Transformers\PermissionTransformer;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Models\HRM\Employee;
 use Illuminate\Http\Request;
@@ -157,7 +158,7 @@ class EmployeeController extends Controller
 
         return response()->json([
             'employee' => EmployeeTransformer::transform($employee),
-            'permissions' => $employee->user_id ? $employee->user->getDirectPermissions()->transform(fn($role) => EmployeeTransformer::employeeRoles($role)) : [],
+            'permissions' => $employee->user_id ? $employee->user->getDirectPermissions()->transform(fn($role) => PermissionTransformer::permission($role, true)) : [],
         ], 200);
     }
 }
