@@ -126,6 +126,7 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
         Route::get('/', [ProfileController::class, 'show']);
         Route::post('/', [ProfileController::class, 'update']);
         Route::post('/avatar', [ProfileController::class, 'updateAvatar']);
+        Route::post('/update-password', [ProfileController::class, 'updatePassword']);
     });
 
     Route::prefix('permissions')->group(function () {
