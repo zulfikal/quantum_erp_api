@@ -54,7 +54,7 @@ class ProfileController extends Controller
             $profile
                 ->addMediaFromRequest('avatar')
                 ->usingFileName($filename)
-                ->toMediaCollection('avatar');
+                ->toMediaCollection('avatar', 'public');
 
             return response()->json([
                 'message' => 'Avatar updated successfully',

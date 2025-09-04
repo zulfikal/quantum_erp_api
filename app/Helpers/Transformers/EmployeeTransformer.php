@@ -13,7 +13,7 @@ class EmployeeTransformer
         return [
             'id' => $employee->id,
             'user_id' => $employee->user_id,
-            'avatar' => $employee->getFirstMediaUrl('avatar'),
+            'avatar' => $employee->getFirstMediaUrl('avatar') ?: null,
             'designation' => CompanyTransformer::designation($employee->designation),
             'company' => CompanyTransformer::company($employee->company),
             'branch' => CompanyTransformer::branch($employee->companyBranch),
@@ -53,7 +53,8 @@ class EmployeeTransformer
         return [
             'id' => $employee->id,
             'name' => $employee->full_name,
-            'staff_id' => $employee->staff_id
+            'staff_id' => $employee->staff_id,
+            'avatar' => $employee->getFirstMediaUrl('avatar', 'thumbnail') ?: null,
         ];
     }
 
