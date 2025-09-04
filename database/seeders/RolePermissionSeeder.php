@@ -919,6 +919,7 @@ class RolePermissionSeeder extends Seeder
             'project.create',
             'project.edit',
             'project.destroy',
+            'employee.show'
             // 'bank.index',
             // 'bank.show',
             // 'company_bank.index',
