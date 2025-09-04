@@ -170,4 +170,18 @@ class EntityController extends Controller
             'message' => 'Business partner deleted successfully',
         ]);
     }
+
+    public function globalEntity()
+    {
+        $entities = Entity::where('company_id', $this->company->id)
+            ->with('contacts', 'addresses', 'createdBy', 'company')
+            ->latest()
+            ->get();
+
+        $entities->transform(fn($entity) => EntityTransformer::entities($entity));
+
+        return response()->json([
+            'entities' => $entities,
+        ], 200);
+    }
 }

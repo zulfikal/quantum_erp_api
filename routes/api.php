@@ -272,6 +272,7 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
 
     Route::prefix('entities')->group(function () {
         Route::get('/', [EntityController::class, 'index']);
+        Route::get('/global', [EntityController::class, 'globalEntity']);
         Route::post('/', [EntityController::class, 'store']);
         Route::get('/{entity}', [EntityController::class, 'show']);
         Route::post('/update/{entity}', [EntityController::class, 'update']);
