@@ -32,6 +32,7 @@ use App\Http\Controllers\User\PayrollController;
 use App\Http\Controllers\User\PermissionController;
 use App\Http\Controllers\User\ProductCategoryController;
 use App\Http\Controllers\User\ProductController;
+use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\ProjectActivityController;
 use App\Http\Controllers\User\ProjectAssigneeController;
 use App\Http\Controllers\User\ProjectController;
@@ -120,6 +121,12 @@ Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
 });
 
 Route::prefix('application')->middleware('auth:sanctum')->group(function () {
+
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'show']);
+        Route::post('/', [ProfileController::class, 'update']);
+    });
+
     Route::prefix('permissions')->group(function () {
         Route::get('/{employee}', [PermissionController::class, 'index']);
         Route::post('/manage', [PermissionController::class, 'manage']);
