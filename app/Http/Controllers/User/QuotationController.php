@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Helpers\Constants\QuotationStaticData;
+use App\Helpers\Transformers\CompanyTransformer;
 use App\Helpers\Transformers\InvoiceTransformer;
 use App\Helpers\Transformers\QuotationTransformer;
 use App\Http\Controllers\Controller;
@@ -93,6 +94,7 @@ class QuotationController extends Controller
         return response()->json([
             'constants' => [
                 'statuses' => QuotationStaticData::statuses(),
+                'company_banks' => $this->company->companyBanks()->with('bank')->get()->transform(fn($q) => CompanyTransformer::bank($q)),
             ],
             'statistics' => $this->getQuotationStatusCounts(),
             'quotations' => $quotations,

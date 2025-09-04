@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Helpers\Constants\InvoiceStaticData;
+use App\Helpers\Transformers\CompanyTransformer;
 use App\Helpers\Transformers\InvoiceTransformer;
 use App\Helpers\Transformers\TransactionTransformer;
 use App\Http\Controllers\Controller;
@@ -85,6 +86,7 @@ class InvoiceController extends Controller
         return response()->json([
             'constants' => [
                 'statuses' => InvoiceStaticData::statuses(),
+                'company_banks' => $this->company->companyBanks()->with('bank')->get()->transform(fn($q) => CompanyTransformer::bank($q)),
             ],
             'statistics' => $this->getInvoiceStatusCounts(),
             'invoices' => $invoices,
