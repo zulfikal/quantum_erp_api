@@ -113,4 +113,18 @@ class ProductController extends Controller
             'product' => ProductTransformer::product($product->refresh()),
         ], 200);
     }
+
+    public function globalProduct()
+    {
+        $products = Product::where('company_id', $this->company->id)
+            ->with('category', 'company')
+            ->latest()
+            ->get();
+
+        $products->transform(fn($product) => ProductTransformer::product($product));
+
+        return response()->json([
+            'products' => $products,
+        ], 200);
+    }
 }

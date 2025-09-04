@@ -298,6 +298,7 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
     Route::prefix('products')->group(function () {
         Route::prefix('main')->group(function () {
             Route::get('/', [ProductController::class, 'index']);
+            Route::get('/global', [ProductController::class, 'globalProduct']);
             Route::post('/', [ProductController::class, 'store']);
             Route::get('/{product}', [ProductController::class, 'show']);
             Route::post('/update/{product}', [ProductController::class, 'update']);
