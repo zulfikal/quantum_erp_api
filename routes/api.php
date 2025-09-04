@@ -32,6 +32,7 @@ use App\Http\Controllers\User\PayrollController;
 use App\Http\Controllers\User\PermissionController;
 use App\Http\Controllers\User\ProductCategoryController;
 use App\Http\Controllers\User\ProductController;
+use App\Http\Controllers\User\ProjectActivityController;
 use App\Http\Controllers\User\ProjectAssigneeController;
 use App\Http\Controllers\User\ProjectController;
 use App\Http\Controllers\User\ProjectTaskAssigneeController;
@@ -377,6 +378,10 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
                 Route::post('/update/{taskComment}', [ProjectTaskCommentController::class, 'update']);
                 Route::post('/delete/{taskComment}', [ProjectTaskCommentController::class, 'destroy']);
             });
+        });
+
+        Route::prefix('activities')->group(function () {
+            Route::get('/{project}', [ProjectActivityController::class, 'index']);
         });
     });
 });

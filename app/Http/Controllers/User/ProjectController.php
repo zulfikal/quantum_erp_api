@@ -150,7 +150,7 @@ class ProjectController extends Controller
         // Load activities separately (with limit)
         $activities = $project->activities()
             ->with('employee')
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->limit(10)
             ->get();
 

@@ -7,12 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Helpers\Transformers\ProjectTransformer;
 use App\Http\Requests\StoreProjectTaskRequest;
 use App\Http\Requests\UpdateProjectTaskRequest;
-use App\Models\HRM\Employee;
-use App\Models\HRM\ProjectAssignee;
 use App\Models\HRM\ProjectBoard;
 use App\Models\HRM\ProjectTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\Activity\LogProjectActivity;
 
 class TaskController extends Controller
 {
@@ -47,6 +46,8 @@ class TaskController extends Controller
                 }
             });
 
+            (new LogProjectActivity($projectBoard->project, 'create', "Created new task '{$request->title}'"))();
+
             // Reload the task with relationships after transaction completes
             $task = ProjectTask::with(['assignees.projectAssignee.employee', 'priority'])->findOrFail($taskId);
         } catch (\Exception $e) {
@@ -75,6 +76,8 @@ class TaskController extends Controller
 
         $task->load('priority', 'assignees.projectAssignee.employee', 'comments.employee');
 
+        (new LogProjectActivity($task->projectBoard->project, 'update', "Updated task '{$task->title}'"))();
+
         return response()->json([
             'message' => 'Task updated successfully',
             'task' => ProjectTransformer::tasks($task),
@@ -92,7 +95,6 @@ class TaskController extends Controller
 
         if ($isInvalid->isNotEmpty()) {
             return response()->json([
-                'success' => false,
                 'message' => 'Invalid task IDs provided.',
             ], 400);
         }
@@ -117,7 +119,6 @@ class TaskController extends Controller
         $boards = $fromBoard->project->boards()->with('tasks.priority', 'tasks.assignees.projectAssignee.employee', 'tasks.comments.employee')->get();
 
         return response()->json([
-            'success' => true,
             'message' => 'Tasks reordered successfully',
             'boards' => $boards->transform(fn(ProjectBoard $board) => ProjectTransformer::boards($board)),
         ], 200);
@@ -129,6 +130,19 @@ class TaskController extends Controller
 
         return response()->json([
             'task' => ProjectTransformer::tasks($task),
+        ], 200);
+    }
+
+    public function destroy(ProjectTask $task)
+    {
+        $title = $task->title;
+
+        $task->delete();
+
+        (new LogProjectActivity($task->projectBoard->project, 'delete', "Deleted task '{$title}'"))();
+
+        return response()->json([
+            'message' => 'Task deleted successfully',
         ], 200);
     }
 }

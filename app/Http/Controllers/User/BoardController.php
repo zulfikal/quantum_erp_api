@@ -36,7 +36,6 @@ class BoardController extends Controller
     {
         if ($project->company_id != $this->company->id) {
             return response()->json([
-                'success' => false,
                 'message' => 'You are not authorized to view this project.',
             ], 401);
         }
@@ -87,7 +86,11 @@ class BoardController extends Controller
 
     public function destroy(ProjectBoard $board)
     {
+        $title = $board->title;
+
         $board->delete();
+
+        (new LogProjectActivity($board->project, 'delete', "Deleted project board '{$title}'"))();
 
         return response()->json([
             'message' => 'Board deleted successfully',
