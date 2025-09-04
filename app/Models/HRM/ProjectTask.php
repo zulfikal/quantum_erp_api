@@ -20,6 +20,7 @@ class ProjectTask extends Model
     protected $casts = [
         'start_date' => 'datetime',
         'end_date' => 'datetime',
+        'is_completed' => 'boolean',
     ];
 
     public function projectBoard()

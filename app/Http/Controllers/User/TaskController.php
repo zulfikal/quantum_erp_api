@@ -65,18 +65,67 @@ class TaskController extends Controller
 
     public function update(ProjectTask $task, UpdateProjectTaskRequest $request)
     {
-        $task->update([
+        // Store original values before update
+        $originalValues = [
+            'priority_id' => $task->priority_id,
+            'title' => $task->title,
+            'description' => $task->description,
+            'start_date' => $task->start_date->format('Y-m-d'),
+            'end_date' => $task->end_date->format('Y-m-d'),
+            'is_completed' => $task->is_completed,
+        ];
+
+        $newValues = [
             'priority_id' => $request->priority_id,
             'title' => $request->title,
             'description' => $request->description,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
-            'is_completed' => $request->is_completed,
-        ]);
+            'is_completed' => (bool) $request->is_completed,
+        ];
 
-        $task->load('priority', 'assignees.projectAssignee.employee', 'comments.employee');
+        // Check if there are any changes
+        $hasChanges = false;
+        $changedFields = [];
 
-        (new LogProjectActivity($task->projectBoard->project, 'update', "Updated task '{$task->title}'"))();
+        foreach ($newValues as $field => $newValue) {
+            if ($originalValues[$field] != $newValue) {
+                $hasChanges = true;
+                $changedFields[] = $field;
+            }
+        }
+
+        // Only update and log if there are changes
+        if ($hasChanges) {
+            $task->update($newValues);
+
+            $task->load('priority', 'assignees.projectAssignee.employee', 'comments.employee');
+
+            // Create a more descriptive log message with changed fields
+            $fieldNames = [
+                'priority_id' => 'priority',
+                'title' => 'title',
+                'description' => 'description',
+                'start_date' => 'start date',
+                'end_date' => 'end date',
+                'is_completed' => 'completion status',
+            ];
+
+            $changedFieldsExcludingCompletion = array_filter($changedFields, fn($field) => $field !== 'is_completed');
+            $changedFieldNames = array_map(fn($field) => $fieldNames[$field], $changedFieldsExcludingCompletion);
+            $changedFieldsText = implode(', ', $changedFieldNames);
+
+            if (!empty($changedFieldsText)) {
+                (new LogProjectActivity($task->projectBoard->project, 'update', "Updated task '{$task->title}' - changed: {$changedFieldsText}"))();
+            }
+
+            if (in_array('is_completed', $changedFields)) {
+                (new LogProjectActivity($task->projectBoard->project, 'update', ($newValues['is_completed'] == true ? 'Completed' : 'Uncompleted') . " task '{$task->title}'"))();
+            }
+        } else {
+            // Still load relationships even if no changes
+            $task->load('priority', 'assignees.projectAssignee.employee', 'comments.employee');
+        }
 
         return response()->json([
             'message' => 'Task updated successfully',
@@ -87,6 +136,7 @@ class TaskController extends Controller
     public function reorderTasks(ProjectBoard $fromBoard, ProjectBoard $toBoard, Request $request)
     {
         $validated = $request->validate([
+            'task_id' => 'required|integer:exists:project_tasks,id',
             'to_board_task_ids' => 'required|array',
             'to_board_task_ids.*' => 'required|integer:exists:project_tasks,id',
         ]);
@@ -100,6 +150,8 @@ class TaskController extends Controller
         }
 
         DB::transaction(function () use ($validated, $fromBoard, $toBoard) {
+            $task = ProjectTask::find($validated['task_id']);
+            
             foreach ($validated['to_board_task_ids'] as $index => $taskId) {
                 ProjectTask::find($taskId)->update([
                     'project_board_id' => $toBoard->id,
@@ -113,6 +165,10 @@ class TaskController extends Controller
                 foreach ($fromBoardTasks as $index => $task) {
                     $task->update(['order' => $index + 1]);
                 }
+            }
+
+            if($fromBoard->id != $toBoard->id) {
+                (new LogProjectActivity($fromBoard->project, 'update', "Reordered '{$task->title}' from board '{$fromBoard->title}' to board '{$toBoard->title}'"))();
             }
         });
 

@@ -68,15 +68,43 @@ class BoardController extends Controller
 
     public function update(ProjectBoard $board, StoreProjectBoardRequest $request)
     {
-        $oldTitle = $board->title;
+        // Store original values before update
+        $originalValues = [
+            'title' => $board->title,
+            'description' => $board->description,
+        ];
 
-        $board->update([
+        $newValues = [
             'title' => $request->title,
             'description' => $request->description,
-        ]);
+        ];
 
-        // Log the board update activity
-        (new LogProjectActivity($board->project, 'update', "Updated project board from '{$oldTitle}' to '{$request->title}'"))();
+        // Check if there are any changes
+        $hasChanges = false;
+        $changedFields = [];
+        
+        foreach ($newValues as $field => $newValue) {
+            if ($originalValues[$field] != $newValue) {
+                $hasChanges = true;
+                $changedFields[] = $field;
+            }
+        }
+
+        // Only update and log if there are changes
+        if ($hasChanges) {
+            $board->update($newValues);
+
+            // Create a more descriptive log message with changed fields
+            $fieldNames = [
+                'title' => 'title',
+                'description' => 'description',
+            ];
+
+            $changedFieldNames = array_map(fn($field) => $fieldNames[$field], $changedFields);
+            $changedFieldsText = implode(', ', $changedFieldNames);
+
+            (new LogProjectActivity($board->project, 'update', "Updated project board '{$board->title}' - changed: {$changedFieldsText}"))();
+        }
 
         return response()->json([
             'message' => 'Board updated successfully',
