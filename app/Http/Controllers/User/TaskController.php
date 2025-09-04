@@ -168,7 +168,7 @@ class TaskController extends Controller
             }
 
             if($fromBoard->id != $toBoard->id) {
-                (new LogProjectActivity($fromBoard->project, 'update', "Reordered '{$task->title}' from board '{$fromBoard->title}' to board '{$toBoard->title}'"))();
+                (new LogProjectActivity($fromBoard->project, 'update', "Changed '{$task->title}' from board '{$fromBoard->title}' to board '{$toBoard->title}'"))();
             }
         });
 
