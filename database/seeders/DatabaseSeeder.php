@@ -244,7 +244,7 @@ class DatabaseSeeder extends Seeder
 
         IdentityType::insert([
             [
-                'name' => 'NRIC',
+                'name' => 'Identification Card Number',
             ],
             [
                 'name' => 'Passport Number',

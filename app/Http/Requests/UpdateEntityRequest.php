@@ -25,8 +25,10 @@ class UpdateEntityRequest extends FormRequest
             'name' => 'required|string|max:255',
             'type' => 'required|in:customer,supplier',
             'status' => 'nullable|in:active,inactive',
-            'register_number' => 'nullable|string|max:255',
+            'entity_id' => 'required|string|max:255',
             'tin_number' => 'nullable|string|max:255',
+            'sst_number' => 'nullable|string|max:255',
+            'identity_type_id' => 'required|exists:identity_types,id',
             'website' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
         ];
