@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->enum('type', ['customer', 'supplier']);
             $table->string('identity_number')->nullable();
+            $table->string('tin_number')->nullable();
+            $table->string('sst_number')->nullable();
             $table->string('address_1')->nullable();
             $table->string('address_2')->nullable();
             $table->string('city')->nullable();

@@ -30,6 +30,8 @@ class StoreQuotationRequest extends FormRequest
             'quotation.shipping_amount' => 'required|numeric',
             'customer.identity_type_id' => 'required|exists:identity_types,id',
             'customer.identity_number' => 'required|string|max:255',
+            'customer.tin_number' => 'nullable|string|max:255',
+            'customer.sst_number' => 'nullable|string|max:255',
             'customer.entity_id' => 'nullable|exists:entities,id',
             'customer.name' => 'required|string|max:255',
             'customer.email' => 'nullable|email',

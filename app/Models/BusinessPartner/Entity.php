@@ -19,6 +19,7 @@ class Entity extends Model
         'tin_number',
         'identity_type_id',
         'identity_number',
+        'sst_number',
         'website',
         'notes',
     ];

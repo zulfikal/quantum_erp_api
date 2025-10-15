@@ -31,6 +31,15 @@ class DatabaseSeeder extends Seeder
             "status" => "active"
         ]);
 
+        $company->companyBanks()->create([
+            "bank_id" => 21,
+            "account_number" => "140817727",
+            "holder_name" => "Quantum ERP SDN. BHD.",
+            "type" => "current",
+            "status" => "active",
+            "is_default" => true,
+        ]);
+
         $company->productCategories()->create([
             "name" => "Electronics",
             "company_id" => $company->id,

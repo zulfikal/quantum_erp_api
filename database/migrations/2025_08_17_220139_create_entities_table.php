@@ -19,6 +19,7 @@ return new class extends Migration
             $table->enum('type', ['customer', 'supplier']);
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->string('entity_id')->nullable();
+            $table->string('sst_number')->nullable();
             $table->string('tin_number')->nullable();
             $table->string('website')->nullable();
             $table->text('notes')->nullable();

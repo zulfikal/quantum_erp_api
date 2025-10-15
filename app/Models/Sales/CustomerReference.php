@@ -16,6 +16,8 @@ class CustomerReference extends Model
         'entity_id',
         'identity_type_id',
         'identity_number',
+        'sst_number',
+        'tin_number',
         'name',
         'type',
         'address_1',

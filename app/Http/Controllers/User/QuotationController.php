@@ -316,6 +316,8 @@ class QuotationController extends Controller
                 'entity_id' => $quotation->customerReferences->entity_id,
                 'identity_type_id' => $quotation->customerReferences->identity_type_id,
                 'identity_number' => $quotation->customerReferences->identity_number,
+                'sst_number' => $quotation->customerReferences->sst_number,
+                'tin_number' => $quotation->customerReferences->tin_number,
                 'name' => $quotation->customerReferences->name,
                 'email' => $quotation->customerReferences->email,
                 'phone' => $quotation->customerReferences->phone,
