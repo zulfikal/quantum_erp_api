@@ -53,6 +53,7 @@ class StoreEntityRequest extends FormRequest
             'entity.name.required' => 'Business partner name is required',
             'entity.type.required' => 'Business partner type is required',
             'entity.entity_id.required' => 'Business partner register number / nric is required',
+            'entity.identity_type_id.required' => 'Business partner identity type is required',
             'address.*.address_1.required' => 'Address is required',
             'address.*.city.required' => 'City is required',
             'address.*.state.required' => 'State is required',
