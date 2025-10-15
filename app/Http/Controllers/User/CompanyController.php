@@ -30,8 +30,10 @@ class CompanyController extends Controller
 
     public function show()
     {
+        $companyBranch = auth()->user()->employee->companyBranch;
         return response()->json([
-            'company' => CompanyTransformer::company($this->company)
+            'company' => CompanyTransformer::company($this->company),
+            'companyBranch' => CompanyTransformer::branch($companyBranch)
         ]);
     }
 
