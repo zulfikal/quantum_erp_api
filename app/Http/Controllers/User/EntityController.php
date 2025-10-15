@@ -51,7 +51,7 @@ class EntityController extends Controller
             ->when($name, fn($query) => $query->where('name', 'like', "%{$name}%"))
             ->when($type, fn($query) => $query->where('type', $type))
             ->when($status, fn($query) => $query->where('status', $status))
-            ->with('contacts', 'addresses', 'createdBy', 'company')
+            ->with('contacts', 'addresses', 'createdBy', 'company', 'identityType')
             ->latest()
             ->paginate(25);
 
