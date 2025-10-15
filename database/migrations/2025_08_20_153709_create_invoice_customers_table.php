@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('invoice_id')->nullable()->constrained('invoices')->cascadeOnDelete();
             $table->string('name');
             $table->enum('type', ['customer', 'supplier']);
+            $table->string('identity_number')->nullable();
             $table->string('address_1')->nullable();
             $table->string('address_2')->nullable();
             $table->string('city')->nullable();

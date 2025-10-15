@@ -45,6 +45,7 @@ class EntityController extends Controller
         $entity_status = EntityStaticData::status();
         $entity_address_types = EntityStaticData::addressTypes();
         $entity_contact_types = EntityStaticData::contactTypes();
+        $entity_identity_types = EntityStaticData::identityTypes();
 
         $entities = Entity::where('company_id', $this->company->id)
             ->when($name, fn($query) => $query->where('name', 'like', "%{$name}%"))
@@ -62,6 +63,7 @@ class EntityController extends Controller
                 'status' => $entity_status,
                 'address_types' => $entity_address_types,
                 'contact_types' => $entity_contact_types,
+                'identity_types' => $entity_identity_types,
             ],
             'statistics' => array_map('intval', (array) DB::table('entities')
                 ->where('company_id', $this->company->id)

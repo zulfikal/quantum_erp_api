@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\HRM\Company;
 use App\Models\HRM\ProjectPriority;
 use App\Models\HRM\ProjectStatus;
+use App\Models\IdentityType;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
@@ -23,6 +24,10 @@ class DatabaseSeeder extends Seeder
             "name" => "Quantum ERP SDN. BHD.",
             "register_number" => "A109333",
             "tin_number" => "109020020",
+            "msic_code" => "0000",
+            "sst_number" => "123456789",
+            "tourism_number" => "123456789",
+            "description" => "This is a test company",
             "status" => "active"
         ]);
 
@@ -226,6 +231,21 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Cancelled',
             ],
+        ]);
+
+        IdentityType::insert([
+            [
+                'name' => 'NRIC',
+            ],
+            [
+                'name' => 'Passport Number',
+            ],
+            [
+                'name' => 'Business Registration Number',
+            ],
+            [
+                'name' => 'Army Number',
+            ]
         ]);
 
         // $this->call(EmployeeSeeder::class);

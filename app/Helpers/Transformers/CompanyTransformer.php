@@ -16,6 +16,10 @@ class CompanyTransformer
             'id' => $company->id,
             'name' => $company->name,
             'register_number' => $company->register_number,
+            'sst_number' => $company->sst_number,
+            'msic_code' => $company->msic_code,
+            'description' => $company->description,
+            'tourism_number' => $company->tourism_number,
             'tin_number' => $company->tin_number,
         ];
     }

@@ -71,8 +71,8 @@ class AttendanceController extends Controller
         return response()->json([
             'today' => [
                 'is_exists' => $today ? true : false,
-                'clock_in_at' => $today && $today->clock_in_at ? $today->clock_in_at->format('h:i A') : null,
-                'clock_out_at' => $today && $today->clock_out_at ? $today->clock_out_at->format('h:i A') : null,
+                'clock_in_at' => $today && $today->clock_in_at ? $today->clock_in_at->format('Y-m-d H:i:s') : null,
+                'clock_out_at' => $today && $today->clock_out_at ? $today->clock_out_at->format('Y-m-d H:i:s') : null,
                 'worked_hours' => $today ? $today->worked_hours : '0 hr',
                 'break_hours' => $today ? $today->break_hours : '0 hr',
                 'breaks' => $today ? $today->breaks->transform(fn($break) => AttendanceTransformer::attendanceBreak($break)) : [],
@@ -98,6 +98,16 @@ class AttendanceController extends Controller
 
         return response()->json([
             'attendance' => AttendanceTransformer::attendance($attendance),
+            'breaks' => $attendance->breaks->transform(fn($break) => AttendanceTransformer::attendanceBreak($break))
+        ]);
+    }
+
+    public function today()
+    {
+        $attendance = auth()->user()->employee->attendances()->whereDate('date', now()->toDateString())->first();
+
+        return response()->json([
+            'attendance' => AttendanceTransformer::attendanceToday($attendance),
             'breaks' => $attendance->breaks->transform(fn($break) => AttendanceTransformer::attendanceBreak($break))
         ]);
     }

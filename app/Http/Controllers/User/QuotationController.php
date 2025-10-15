@@ -313,6 +313,9 @@ class QuotationController extends Controller
 
             $invoice->invoiceCustomer()->create([
                 'invoice_id' => $invoice->id,
+                'entity_id' => $quotation->customerReferences->entity_id,
+                'identity_type_id' => $quotation->customerReferences->identity_type_id,
+                'identity_number' => $quotation->customerReferences->identity_number,
                 'name' => $quotation->customerReferences->name,
                 'email' => $quotation->customerReferences->email,
                 'phone' => $quotation->customerReferences->phone,

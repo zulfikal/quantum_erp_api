@@ -3,13 +3,17 @@
 namespace App\Models\Sales;
 
 use App\Models\HRM\Entity;
+use App\Models\IdentityType;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class InvoiceCustomer extends Model
 {
     protected $fillable = [
         'invoice_id',
         'entity_id',
+        'identity_type_id',
+        'identity_number',
         'name',
         'email',
         'phone',
@@ -29,5 +33,10 @@ class InvoiceCustomer extends Model
     public function customer()
     {
         return $this->belongsTo(Entity::class, 'entity_id', 'id');
+    }
+
+    public function identityType(): BelongsTo
+    {
+        return $this->belongsTo(IdentityType::class);
     }
 }

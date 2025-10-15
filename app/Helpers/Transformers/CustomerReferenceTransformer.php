@@ -4,6 +4,7 @@ namespace App\Helpers\Transformers;
 
 use App\Models\Sales\CustomerReference;
 use App\Models\Sales\InvoiceCustomer;
+use App\Models\BusinessPartner\Entity;
 
 final class CustomerReferenceTransformer
 {
@@ -13,6 +14,8 @@ final class CustomerReferenceTransformer
             'id' => $customerReference->id,
             'name' => $customerReference->name,
             'entity_id' => $customerReference->entity_id,
+            'identity_type_id' => EntityTransformer::identityType($customerReference->identityType),
+            'identity_number' => $customerReference->identity_number,
             'quotation_id' => $customerReference->quotation_id,
             'type' => $customerReference->type,
             'address_1' => $customerReference->address_1,
@@ -32,6 +35,8 @@ final class CustomerReferenceTransformer
             'id' => $invoiceCustomer->id,
             'name' => $invoiceCustomer->name,
             'entity_id' => $invoiceCustomer->entity_id,
+            'identity_type_id' => EntityTransformer::identityType($invoiceCustomer->identityType),
+            'identity_number' => $invoiceCustomer->identity_number,
             'invoice_id' => $invoiceCustomer->invoice_id,
             'type' => $invoiceCustomer->type,
             'address_1' => $invoiceCustomer->address_1,

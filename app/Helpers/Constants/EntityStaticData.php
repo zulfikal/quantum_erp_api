@@ -2,8 +2,20 @@
 
 namespace App\Helpers\Constants;
 
+use App\Helpers\Transformers\EntityTransformer;
+use App\Models\IdentityType;
+
 class EntityStaticData
 {
+    public static function identityTypes(): array
+    {
+        $identityTypes = IdentityType::all();
+
+        $identityTypes->transform(fn($identityType) => EntityTransformer::identityType($identityType));
+
+        return $identityTypes->toArray();
+    }
+
     public static function types(): array
     {
         return [

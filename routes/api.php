@@ -17,6 +17,7 @@ use App\Http\Controllers\User\ClaimApprovalController;
 use App\Http\Controllers\User\ClaimController;
 use App\Http\Controllers\User\ClaimTypeController;
 use App\Http\Controllers\User\CompanyBankController;
+use App\Http\Controllers\User\CompanyController as UserCompanyController;
 use App\Http\Controllers\User\DepartmentController;
 use App\Http\Controllers\User\DesignationController as UserDesignationController;
 use App\Http\Controllers\User\EmployeeController as UserEmployeeController;
@@ -134,6 +135,11 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
         Route::post('/manage', [PermissionController::class, 'manage']);
     });
 
+    Route::prefix('company')->group(function () {
+        Route::get('/', [UserCompanyController::class, 'show']);
+        Route::post('/', [UserCompanyController::class, 'update']);
+    });
+
     Route::prefix('banks')->middleware('auth:sanctum')->group(function () {
         Route::get('/', [BankController::class, 'index']);
     });
@@ -180,6 +186,7 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
 
     Route::prefix('attendances')->group(function () {
         Route::get('/', [UserAttendanceController::class, 'index']);
+        Route::get('/today', [UserAttendanceController::class, 'today']);
         Route::get('/{attendance}', [UserAttendanceController::class, 'show']);
         Route::post('/clock-in', [UserAttendanceController::class, 'clockIn']);
         Route::post('/clock-out/{attendance}', [UserAttendanceController::class, 'clockOut']);
@@ -319,11 +326,11 @@ Route::prefix('application')->middleware('auth:sanctum')->group(function () {
             Route::prefix('main')->group(function () {
                 Route::get('/', [QuotationController::class, 'index']);
                 Route::post('/', [QuotationController::class, 'store']);
-                Route::get('/{quotation}', [QuotationController::class, 'show']);
                 Route::get('/pdf/{quotation}', [QuotationController::class, 'pdf']);
                 Route::post('/update/{quotation}', [QuotationController::class, 'update']);
                 Route::post('/delete/{quotation}', [QuotationController::class, 'destroy']);
                 Route::post('/convert/{quotation}', [QuotationController::class, 'convertToInvoice']);
+                Route::get('/{quotation}', [QuotationController::class, 'show']);
             });
 
             Route::prefix('items')->group(function () {

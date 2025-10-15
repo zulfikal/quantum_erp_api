@@ -27,6 +27,7 @@ class StoreEntityRequest extends FormRequest
             'entity.status' => 'nullable|in:active,inactive',
             'entity.entity_id' => 'required|string|max:255',
             'entity.tin_number' => 'nullable|string|max:255',
+            'entity.identity_type_id' => 'required|exists:identity_types,id',
             'entity.website' => 'nullable|string|max:255',
             'entity.notes' => 'nullable|string',
             'address' => 'required|array',

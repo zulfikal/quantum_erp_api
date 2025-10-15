@@ -22,6 +22,8 @@ class CustomerSeeder extends Seeder
                 "created_by" => Factory::create()->numberBetween(10, 20),
                 "entity_id" => Factory::create()->numerify('##########'),
                 "tin_number" => Factory::create()->numerify('##########'),
+                "identity_type_id" => 3,
+                "identity_number" => Factory::create()->numerify('##########'),
                 "status" => Factory::create()->randomElement(['active', 'inactive']),
                 "website" => Factory::create()->url,
                 "notes" => Factory::create()->text,

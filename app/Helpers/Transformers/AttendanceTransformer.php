@@ -48,4 +48,34 @@ class AttendanceTransformer
             'notes' => $attendanceBreak->notes,
         ];
     }
+
+    public static function attendanceToday(Attendance $attendance)
+    {
+        return [
+            'id' => $attendance->id,
+            'employee_id' => $attendance->employee_id,
+            'name' => $attendance->employee->first_name . ' ' . $attendance->employee->last_name,
+            'company' => $attendance->employee->companyBranch->company->name,
+            'branch' => $attendance->employee->companyBranch->name,
+            'department' => $attendance->employee->department->name,
+            'designation' => $attendance->employee->designation->name,
+            'date' => $attendance->date->format('Y-m-d'),
+            'clock_in_at' => $attendance->clock_in_at ? $attendance->clock_in_at->format('Y-m-d H:i:s') : null,
+            'clock_out_at' => $attendance->clock_out_at ? $attendance->clock_out_at->format('Y-m-d H:i:s') : null,
+            'clock_in_method' => $attendance->clock_in_method,
+            'clock_out_method' => $attendance->clock_out_method,
+            'clock_in_lat' => $attendance->clock_in_lat,
+            'clock_in_lng' => $attendance->clock_in_lng,
+            'status' => $attendance->status,
+            'worked_seconds' =>  $attendance->worked_seconds_on_demand,
+            'total_break_seconds' => $attendance->total_break_seconds,
+            'device_id' => $attendance->device_id,
+            'notes' => $attendance->notes,
+            'approved_by' => $attendance->approved_by,
+            'approved_at' => $attendance->approved_at ? $attendance->approved_at->format('Y-m-d H:i:s') : null,
+            'ip_address' => $attendance->ip_address,
+            'created_by' => $attendance->created_by,
+            'updated_by' => $attendance->updated_by,
+        ];
+    }
 }

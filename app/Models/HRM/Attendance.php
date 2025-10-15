@@ -112,6 +112,18 @@ class Attendance extends Model
         }
     }
 
+    public function getWorkedSecondsOnDemandAttribute()
+    {
+        
+        if ($this->clock_in_at != null && $this->clock_out_at == null) {
+            $seconds = $this->clock_in_at->diffInSeconds(now());
+        } else {
+            $seconds = $this->worked_seconds ?? 0;
+        }
+
+        return (int) $seconds;
+    }
+
     public function getBreakHoursAttribute()
     {
         $seconds = $this->total_break_seconds ?? 0;

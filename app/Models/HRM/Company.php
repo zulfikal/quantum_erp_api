@@ -19,6 +19,11 @@ class Company extends Model
         'name',
         'register_number',
         'tin_number',
+        'status',
+        'msic_code',
+        'sst_number',
+        'description',
+        'tourism_number',
     ];
 
     public function branches(): HasMany

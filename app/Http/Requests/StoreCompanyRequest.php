@@ -26,6 +26,10 @@ class StoreCompanyRequest extends FormRequest
             'register_number' => 'nullable|string|max:255',
             'status' => 'required|in:active,inactive',
             'tin_number' => 'nullable|string|max:255',
+            'msic_code' => 'nullable|string|max:255',
+            'sst_number' => 'nullable|string|max:255',
+            'tourism_number' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
         ];
     }
 

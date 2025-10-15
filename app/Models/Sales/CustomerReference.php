@@ -4,6 +4,7 @@ namespace App\Models\Sales;
 
 use App\Models\BusinessPartner\Entity;
 use App\Models\HRM\Company;
+use App\Models\IdentityType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
@@ -13,6 +14,8 @@ class CustomerReference extends Model
     protected $fillable = [
         'quotation_id',
         'entity_id',
+        'identity_type_id',
+        'identity_number',
         'name',
         'type',
         'address_1',
@@ -60,5 +63,10 @@ class CustomerReference extends Model
             'quotation_id', // Local key on this model (CustomerReference)
             'company_id' // Local key on the intermediate table (Quotation)
         );
+    }
+
+    public function identityType(): BelongsTo
+    {
+        return $this->belongsTo(IdentityType::class);
     }
 }

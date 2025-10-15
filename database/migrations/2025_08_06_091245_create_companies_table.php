@@ -17,6 +17,10 @@ return new class extends Migration
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->string('register_number')->nullable();
             $table->string('tin_number')->nullable();
+            $table->string('msic_code')->nullable();
+            $table->string('sst_number')->nullable();
+            $table->string('description')->nullable();
+            $table->string('tourism_number')->nullable();
             $table->timestamps();
         });
     }

@@ -5,9 +5,18 @@ namespace App\Helpers\Transformers;
 use App\Models\BusinessPartner\Entity;
 use App\Models\BusinessPartner\EntityAddress;
 use App\Models\BusinessPartner\EntityContact;
+use App\Models\IdentityType;
 
 class EntityTransformer
 {
+
+    public static function identityType(IdentityType $identityType)
+    {
+        return [
+            'id' => $identityType->id,
+            'name' => $identityType->name,
+        ];
+    }
     public static function address(EntityAddress $address)
     {
         return [
@@ -44,6 +53,7 @@ class EntityTransformer
             'type' => $entity->type,
             'label' => $entity->type_label,
             'status' => $entity->status,
+            'identity_type' => self::identityType($entity->identityType),
             'entity_id' => $entity->entity_id,
             'tin_number' => $entity->tin_number,
             'website' => $entity->website,
@@ -62,13 +72,14 @@ class EntityTransformer
     {
         // Fetch all contacts at once and organize by type
         $contacts = $entity->contacts->groupBy('type');
-        
+
         return [
             'id' => $entity->id,
             'name' => $entity->name,
             'type' => $entity->type,
             'label' => $entity->type_label,
             'status' => $entity->status,
+            'identity_type' => self::identityType($entity->identityType),
             'entity_id' => $entity->entity_id,
             'tin_number' => $entity->tin_number,
             'website' => $entity->website,
