@@ -86,7 +86,7 @@ class QuotationController extends Controller
                     $query->where('name', 'like', "%{$search}%");
                 }))
             ->when($status, fn($query) => $query->where('sale_status_id', $status))
-            ->with('customerReferences', 'items.product', 'company', 'branch', 'employee', 'saleStatus')
+            ->with('customerReferences.identityType', 'items.product', 'company', 'branch', 'employee', 'saleStatus')
             ->latest()
             ->paginate(25);
 

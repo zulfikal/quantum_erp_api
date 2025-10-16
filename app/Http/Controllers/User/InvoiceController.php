@@ -78,7 +78,7 @@ class InvoiceController extends Controller
                     $query->where('name', 'like', "%{$search}%");
                 }))
             ->when($status, fn($query) => $query->where('sale_status_id', $status))
-            ->with('invoiceCustomer', 'items.product', 'quotation', 'company', 'branch', 'employee', 'saleStatus')
+            ->with('invoiceCustomer.identityType', 'items.product', 'quotation', 'company', 'branch', 'employee', 'saleStatus')
             ->latest()
             ->paginate(25);
 
