@@ -17,7 +17,7 @@ class CompanyController extends Controller
         $this->middleware('can:company.index')->only('index');
         $this->middleware('can:company.create')->only('store');
         $this->middleware('can:company.show')->only('show');
-        // $this->middleware('can:company.edit')->only('update');
+        $this->middleware('can:company.edit')->only('update');
 
         $this->middleware(function ($request, $next) {
             $this->company = auth()->user()->employee->company;
