@@ -29,7 +29,7 @@ class UpdateInvoiceRequest extends FormRequest
             'invoice.description' => 'required|string',
             'invoice.shipping_amount' => 'required|numeric',
             'invoice.due_date' => 'nullable|date',
-            'customer.customer_id' => 'nullable|exists:customers,id',
+            'customer.entity_id' => 'nullable|exists:entities,id',
             'customer.identity_type_id' => 'required|exists:identity_types,id',
             'customer.identity_number' => 'required|string|max:255',
             'customer.tin_number' => 'nullable|string|max:255',

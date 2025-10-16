@@ -28,6 +28,7 @@ class UpdateQuotationRequest extends FormRequest
             'quotation.notes' => 'nullable|string',
             'quotation.description' => 'required|string',
             'quotation.shipping_amount' => 'required|numeric',
+            'customer.entity_id' => 'nullable|exists:entities,id',
             'customer.customer_id' => 'nullable|exists:customers,id',
             'customer.name' => 'required|string|max:255',
             'customer.identity_type_id' => 'required|exists:identity_types,id',
