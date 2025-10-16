@@ -176,7 +176,7 @@ class EntityController extends Controller
     public function globalEntity()
     {
         $entities = Entity::where('company_id', $this->company->id)
-            ->with('contacts', 'addresses', 'createdBy', 'company')
+            ->with('contacts', 'addresses', 'createdBy', 'company', 'identityType')
             ->latest()
             ->get();
 
